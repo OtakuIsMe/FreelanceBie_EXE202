@@ -1,0 +1,53 @@
+#main_header {
+    display: flex;
+    height: fit-content;
+    width: 100%;
+    align-items: center;
+    justify-content: space-around;
+    background-color: var(--default-bg-color-header);
+    position: sticky;
+    top: 0;
+}
+
+#main_header .logo {
+    font-family: 'Dancing Script', Arial, Helvetica, sans-serif;
+    font-size: 1.5em;
+}
+
+#main_header ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+#main_header li {
+    float: left;
+}
+
+#main_header li a {
+    display: block;
+    color: var(--default-color);
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#main_header li a:hover {
+    background-color: var(--default-bg-color-hover);
+    color: var(--default-color);
+}
+
+#main_header .auth {
+    width: fit-content;
+    display: flex;
+    gap: 5px;
+}
+
+#main_header .auth .btn {
+    padding: 8px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    background-color: var(--default-bg-color-header);
+}
