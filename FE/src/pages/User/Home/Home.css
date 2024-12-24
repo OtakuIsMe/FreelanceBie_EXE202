@@ -18,6 +18,7 @@
 #home .section {
     display: flex;
     height: 100vh;
+    width: 100%;
 }
 
 #home .banner {
@@ -82,4 +83,25 @@
 #home .banner .content .start-btn:hover {
     --btn-hover: light-dark(#cc4d9d, #00abce);
     background-color: var(--btn-hover);
+}
+
+#home .specialties {
+    margin: 50px auto;
+    flex-direction: column;
+}
+
+#home .section .title {
+    margin-bottom: 35px;
+    font-size: 2.5em;
+    font-weight: 500;
+    font-family: 'Kadwa', Arial, Helvetica, sans-serif;
+    color: var(--default-color);
+    text-align: center;
+}
+
+#home .spec-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 25px;
 }
