@@ -6,7 +6,7 @@ namespace BE.src.api.domains.Model
 	{
 		public required Guid PostId { get; set; }
 		public PostJob Post { get; set; } = null!;
-
-		public byte[]? File { get; set; }
+		public required string FileName { get; set; } = null!;
+		public byte[]? FileContent { get; set; }
 	}
 }

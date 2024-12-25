@@ -1,18 +1,16 @@
 using BE.src.api.domains.Model;
 using Microsoft.EntityFrameworkCore;
 using DotNetEnv;
+using BE.src.api.helpers;
+using BE.src.api.domains.Enum;
 
 namespace BE.src.api.domains.Database
 {
 	public class FLBDbContext : DbContext
 	{
-		private readonly string _connectionString;
 		public FLBDbContext(DbContextOptions<FLBDbContext> options)
 				: base(options)
 		{
-			DotNetEnv.Env.Load();
-			_connectionString = Environment.GetEnvironmentVariable("DEFAULT_CONNECTION")
-				?? throw new InvalidOperationException("Connection string not found in environment variables.");
 		}
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -20,7 +18,7 @@ namespace BE.src.api.domains.Database
 			optionsBuilder.EnableSensitiveDataLogging();
 			if (!optionsBuilder.IsConfigured)
 			{
-				optionsBuilder.UseMySql(_connectionString,
+				optionsBuilder.UseMySql("Server=localhost;Database=FreelanceBie;User=root;Password=12345;",
 							new MySqlServerVersion(new Version(8, 0, 27)));
 			}
 		}
@@ -51,13 +49,17 @@ namespace BE.src.api.domains.Database
 			{
 				entity.HasKey(a => a.Id);
 
+				entity.Property(p => p.FileName)
+					.HasMaxLength(50)
+					.IsRequired();
+				entity.Property(p => p.FileContent)
+					.IsRequired()
+					.HasColumnType("MEDIUMBLOB");
+
 				entity.HasOne(a => a.Post)
 					.WithMany(p => p.Attachments)
 					.HasForeignKey(p => p.PostId)
 					.OnDelete(DeleteBehavior.Cascade);
-
-				entity.Property(p => p.File)
-				.IsRequired();
 			});
 
 			builder.Entity<Comment>(entity =>
@@ -84,12 +86,12 @@ namespace BE.src.api.domains.Database
 				entity.HasKey(c => c.Id);
 
 				entity.HasOne(c => c.Zero)
-					.WithMany(u => u.Communications)
+					.WithMany(u => u.Zeros)
 					.HasForeignKey(c => c.ZeroId)
 					.OnDelete(DeleteBehavior.Restrict);
 
 				entity.HasOne(c => c.First)
-					.WithMany(u => u.Communications)
+					.WithMany(u => u.Firsts)
 					.HasForeignKey(c => c.FirstId)
 					.OnDelete(DeleteBehavior.Restrict);
 			});
@@ -113,19 +115,31 @@ namespace BE.src.api.domains.Database
 			{
 				entity.HasKey(iv => iv.Id);
 
+				entity.Property(iv => iv.ShotId)
+					.IsRequired(false);
+
+				entity.Property(iv => iv.UserId)
+					.IsRequired(false);
+
 				entity.Property(iv => iv.Type)
-					.IsRequired();
+					.IsRequired()
+					.HasMaxLength(20)
+					.HasConversion(
+						iv => iv.ToString(),
+						iv => iv.ToEnum<MediaTypeEnum>()
+					);
 
 				entity.Property(iv => iv.Url)
+					.HasMaxLength(100)
 					.IsRequired();
 
 				entity.HasOne(iv => iv.Shot)
-					.WithMany()
+					.WithMany(s => s.ImageVideos)
 					.HasForeignKey(iv => iv.ShotId)
 					.OnDelete(DeleteBehavior.Restrict);
 
 				entity.HasOne(iv => iv.User)
-					.WithMany()
+					.WithMany(s => s.ImageVideos)
 					.HasForeignKey(iv => iv.UserId)
 					.OnDelete(DeleteBehavior.Restrict);
 
@@ -154,6 +168,7 @@ namespace BE.src.api.domains.Database
 				entity.HasKey(m => m.Id);
 
 				entity.Property(m => m.Name)
+					.HasMaxLength(20)
 					.IsRequired();
 
 				entity.Property(m => m.Price)
@@ -163,6 +178,7 @@ namespace BE.src.api.domains.Database
 					.IsRequired();
 
 				entity.Property(m => m.Description)
+					.HasMaxLength(1000)
 					.IsRequired();
 			});
 
@@ -189,6 +205,7 @@ namespace BE.src.api.domains.Database
 					.IsRequired();
 
 				entity.Property(m => m.Content)
+					.HasMaxLength(1000)
 					.IsRequired();
 
 				entity.Property(m => m.Index)
@@ -205,25 +222,39 @@ namespace BE.src.api.domains.Database
 				entity.HasKey(p => p.Id);
 
 				entity.Property(p => p.Title)
+					.HasMaxLength(200)
 					.IsRequired();
 
 				entity.Property(p => p.Description)
+					.HasMaxLength(2000)
 					.IsRequired();
 
 				entity.Property(p => p.WorkLocation)
+					.HasMaxLength(200)
 					.IsRequired();
 
 				entity.Property(p => p.CompanyName)
+					.HasMaxLength(50)
 					.IsRequired();
 
 				entity.Property(p => p.Experience)
 					.IsRequired();
 
 				entity.Property(p => p.WorkType)
-					.IsRequired();
+					.IsRequired()
+					.HasMaxLength(20)
+					.HasConversion(
+						p => p.ToString(),
+						p => p.ToEnum<WorkTypeEnum>()
+					);
 
 				entity.Property(p => p.EmploymentType)
-					.IsRequired();
+					.IsRequired()
+					.HasMaxLength(20)
+					.HasConversion(
+						p => p.ToString(),
+						p => p.ToEnum<EmploymentTypeEnum>()
+					);
 
 				entity.HasOne(p => p.User)
 					.WithMany(u => u.Posts)
@@ -231,12 +262,12 @@ namespace BE.src.api.domains.Database
 					.OnDelete(DeleteBehavior.Restrict);
 
 				entity.HasOne(p => p.CompanyLogo)
-					.WithMany()
-					.HasForeignKey(p => p.CompanyLogoId)
+					.WithOne(iv => iv.Post)
+					.HasForeignKey<PostJob>(p => p.CompanyLogoId)
 					.OnDelete(DeleteBehavior.Restrict);
 
 				entity.HasOne(p => p.Specialty)
-					.WithMany()
+					.WithMany(s => s.Posts)
 					.HasForeignKey(p => p.SpecialtyId)
 					.OnDelete(DeleteBehavior.Restrict);
 			});
@@ -245,8 +276,11 @@ namespace BE.src.api.domains.Database
 			{
 				entity.HasKey(s => s.Id);
 
-				entity.Property(s => s.UserId)
-					.IsRequired();
+				entity.Property(s => s.PostId)
+					.IsRequired(false);
+
+				entity.Property(s => s.ShotId)
+					.IsRequired(false);
 
 				entity.HasOne(s => s.User)
 					.WithMany(u => u.Saves)
@@ -259,7 +293,7 @@ namespace BE.src.api.domains.Database
 					.OnDelete(DeleteBehavior.Restrict);
 
 				entity.HasOne(s => s.Shot)
-					.WithMany()
+					.WithMany(s => s.Saves)
 					.HasForeignKey(s => s.ShotId)
 					.OnDelete(DeleteBehavior.Restrict);
 			});
@@ -268,19 +302,13 @@ namespace BE.src.api.domains.Database
 			{
 				entity.HasKey(s => s.Id);
 
-				entity.Property(s => s.UserId)
-					.IsRequired();
-
-				entity.Property(s => s.SpecialtyId)
-					.IsRequired();
-
 				entity.Property(s => s.Html)
 					.IsRequired()
-					.HasMaxLength(5000);
+					.HasColumnType("LONGTEXT");
 
 				entity.Property(s => s.Css)
 					.IsRequired()
-					.HasMaxLength(5000);
+					.HasColumnType("LONGTEXT");
 
 				entity.Property(s => s.View)
 					.IsRequired();
@@ -291,7 +319,7 @@ namespace BE.src.api.domains.Database
 					.OnDelete(DeleteBehavior.Restrict);
 
 				entity.HasOne(s => s.Specialty)
-					.WithMany()
+					.WithMany(s => s.Shots)
 					.HasForeignKey(s => s.SpecialtyId)
 					.OnDelete(DeleteBehavior.Restrict);
 			});
@@ -301,14 +329,16 @@ namespace BE.src.api.domains.Database
 				entity.HasKey(sp => sp.Id);
 
 				entity.Property(sp => sp.Type)
-					.IsRequired();
+					.HasMaxLength(20)
+					.IsRequired()
+					.HasConversion(
+						sp => sp.ToString(),
+						sp => sp.ToEnum<TypeSocialEnum>()
+					);
 
 				entity.Property(sp => sp.Linked)
 					.IsRequired()
-					.HasMaxLength(500);
-
-				entity.Property(sp => sp.UserId)
-					.IsRequired();
+					.HasMaxLength(100);
 
 				entity.HasOne(sp => sp.User)
 					.WithMany(u => u.SocialProfiles)
@@ -322,7 +352,7 @@ namespace BE.src.api.domains.Database
 
 				entity.Property(s => s.Name)
 					.IsRequired()
-					.HasMaxLength(100);
+					.HasMaxLength(50);
 			});
 
 			builder.Entity<User>(entity =>
@@ -330,28 +360,43 @@ namespace BE.src.api.domains.Database
 				entity.HasKey(u => u.Id);
 
 				entity.Property(u => u.Name)
-					.IsRequired()
+					.IsRequired(false)
 					.HasMaxLength(100);
 
 				entity.Property(u => u.Email)
 					.IsRequired()
-					.HasMaxLength(200);
+					.HasMaxLength(100);
 
 				entity.Property(u => u.Password)
 					.IsRequired()
 					.HasMaxLength(100);
 
+				entity.Property(u => u.Role)
+					.IsRequired()
+					.HasMaxLength(20)
+					.HasConversion(
+						u => u.ToString(),
+						u => u.ToEnum<RoleEnum>()
+					);
+
 				entity.Property(u => u.Phone)
-					.HasMaxLength(15);
+					.HasMaxLength(15)
+					.IsRequired(false);
 
 				entity.Property(u => u.City)
-					.HasMaxLength(100);
+					.HasMaxLength(100)
+					.IsRequired(false);
 
 				entity.Property(u => u.Education)
-					.HasMaxLength(100);
+					.HasMaxLength(100)
+					.IsRequired(false);
 
 				entity.Property(u => u.Description)
-					.HasMaxLength(500);
+					.HasMaxLength(500)
+					.IsRequired(false);
+
+				entity.Property(u => u.DOB)
+					.IsRequired(false);
 			});
 
 			builder.Entity<UserApply>(entity =>
@@ -372,6 +417,12 @@ namespace BE.src.api.domains.Database
 			builder.Entity<ViewAnalyst>(entity =>
 			{
 				entity.HasKey(va => va.Id);
+
+				entity.Property(va => va.Date)
+				.IsRequired();
+
+				entity.Property(va => va.View)
+				.IsRequired();
 
 				entity.HasOne(va => va.Shot)
 					.WithMany(s => s.ViewAnalysts)
