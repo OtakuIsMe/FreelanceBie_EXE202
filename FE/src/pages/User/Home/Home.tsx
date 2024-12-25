@@ -7,8 +7,14 @@ import Print from '../../../assets/Print.jpg'
 import ProductDesign from '../../../assets/Product_Design.jpg'
 import Typography from '../../../assets/Typography.jpg'
 import WebDesign from '../../../assets/Web_Design.jpg'
+import D1 from '../../../assets/D1.jpg'
+import D2 from '../../../assets/D2.jpg'
+import D3 from '../../../assets/D3.jpg'
+import D4 from '../../../assets/D4.jpg'
+import D5 from '../../../assets/D5.jpg'
 import Header from '../../../components/Header/Header.tsx'
 import Specialities from '../../../components/Cards/Specialities/Specialities.tsx'
+import Explore from '../../../components/Cards/Explore/Explore.tsx'
 
 interface Special{
     type: string;
@@ -28,6 +34,19 @@ export default function Home() {
 		{type: 'WebDesign', image: WebDesign},
 	]
 	
+const exp = [
+	{username: 'Otaku', liked: 61, viewed: 126, img: D1, topic: ['Web design']},
+	{username: 'Otaku', liked: 61, viewed: 126, img: D2, topic: ['Web design']},
+	{username: 'Otaku', liked: 61, viewed: 126, img: D3, topic: ['Web design']},
+	{username: 'Otaku', liked: 61, viewed: 126, img: D4, topic: ['Web design']},
+	{username: 'Otaku', liked: 61, viewed: 126, img: D5, topic: ['Web design']},
+	{username: 'Otaku', liked: 61, viewed: 126, img: D1, topic: ['Web design']},
+	{username: 'Otaku', liked: 61, viewed: 126, img: D2, topic: ['Web design']},
+	{username: 'Otaku', liked: 61, viewed: 126, img: D3, topic: ['Web design']},
+	{username: 'Otaku', liked: 61, viewed: 126, img: D4, topic: ['Web design']},
+	{username: 'Otaku', liked: 61, viewed: 126, img: D5, topic: ['Web design']},
+]
+
 	return (
 		<div id="home">
 			<Header/>
@@ -52,7 +71,12 @@ export default function Home() {
 					</div>
 				</div>
 				<div className="explore section">
-
+					<p className='title'>Explore inspiring designs</p>
+					<div className="exp-container">
+						{exp.map((exp, index) =>
+							<Explore username={exp.username} liked={exp.liked} viewed={exp.viewed} img={exp.img} topic={exp.topic} />
+						)}
+					</div>
 				</div>
 			</div>
 		</div>
