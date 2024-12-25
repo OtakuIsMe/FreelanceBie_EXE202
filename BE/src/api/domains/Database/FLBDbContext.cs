@@ -8,17 +8,20 @@ namespace BE.src.api.domains.Database
 {
 	public class FLBDbContext : DbContext
 	{
+		private readonly string _connectionString;
 		public FLBDbContext(DbContextOptions<FLBDbContext> options)
 				: base(options)
 		{
+			Env.Load();
+			_connectionString = Environment.GetEnvironmentVariable("DEFAULT_CONNECTION")
+				?? throw new InvalidOperationException("Connection string not found in environment variables.");
 		}
-
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
 			optionsBuilder.EnableSensitiveDataLogging();
 			if (!optionsBuilder.IsConfigured)
 			{
-				optionsBuilder.UseMySql("Server=localhost;Database=FreelanceBie;User=root;Password=12345;",
+				optionsBuilder.UseMySql(_connectionString,
 							new MySqlServerVersion(new Version(8, 0, 27)));
 			}
 		}
