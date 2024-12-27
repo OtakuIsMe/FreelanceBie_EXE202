@@ -1,3 +1,5 @@
+using BE.src.api.domains.DTOs.User;
+using BE.src.api.services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BE.src.api.controllers
@@ -6,13 +8,20 @@ namespace BE.src.api.controllers
 	[Route("user/")]
 	public class UserController : ControllerBase
 	{
-		[HttpGet("cc")]
-		public async Task<IActionResult> cc()
+		private readonly IUserServ _userServ;
+		public UserController(IUserServ userServ)
 		{
-			return Ok(new
-			{
-				cc = "cc"
-			});
+			_userServ = userServ;
+		}
+		[HttpPost("register")]
+		public async Task<IActionResult> RegisterUser(UserRegisterDTO user)
+		{
+			return await _userServ.RegisterUser(user);
+		}
+		[HttpGet("get-all-users")]
+		public async Task<IActionResult> GetUsers()
+		{
+			return await _userServ.GetAllUsers();
 		}
 	}
 }

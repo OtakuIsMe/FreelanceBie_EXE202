@@ -8,6 +8,7 @@ namespace BE.src.api.domains.Model
 	public class User : BaseEntity
 	{
 		public string? Name { get; set; } = null!;
+		public required string Username { get; set; }
 		public required string Email { get; set; }
 		public required string Password { get; set; }
 		public required RoleEnum Role { get; set; }
