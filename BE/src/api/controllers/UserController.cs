@@ -1,3 +1,6 @@
+using BE.src.api.domains.DTOs.User;
+using BE.src.api.services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BE.src.api.controllers
@@ -6,13 +9,18 @@ namespace BE.src.api.controllers
 	[Route("user/")]
 	public class UserController : ControllerBase
 	{
-		[HttpGet("cc")]
-		public async Task<IActionResult> cc()
+		private readonly IUserServ _userServ;
+		private readonly IRedisServ _redisServ;
+		public UserController(IUserServ userServ, IRedisServ redisServ)
 		{
-			return Ok(new
-			{
-				cc = "cc"
-			});
+			_userServ = userServ;
+			_redisServ = redisServ;
+		}
+
+		[HttpPost("Login")]
+		public async Task<IActionResult> Login([FromQuery] LoginRq data)
+		{
+			return await _userServ.Login(data);
 		}
 	}
 }
