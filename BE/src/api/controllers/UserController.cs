@@ -22,5 +22,15 @@ namespace BE.src.api.controllers
 		{
 			return await _userServ.Login(data);
 		}
+		[HttpPost("register")]
+		public async Task<IActionResult> RegisterUser(UserRegisterDTO user)
+		{
+			return await _userServ.RegisterUser(user);
+		}
+		[HttpGet("get-all-users")]
+		public async Task<IActionResult> GetUsers()
+		{
+			return await _userServ.GetAllUsers();
+		}
 	}
 }

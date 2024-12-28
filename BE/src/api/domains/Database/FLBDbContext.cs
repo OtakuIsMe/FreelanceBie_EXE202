@@ -366,6 +366,10 @@ namespace BE.src.api.domains.Database
 					.IsRequired(false)
 					.HasMaxLength(100);
 
+				entity.Property(u => u.Username)
+					.IsRequired()
+					.HasMaxLength(100);
+
 				entity.Property(u => u.Email)
 					.IsRequired()
 					.HasMaxLength(100);

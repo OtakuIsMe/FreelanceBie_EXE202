@@ -14,6 +14,8 @@ namespace BE.src.api.services
 	public interface IUserServ
 	{
 		Task<IActionResult> Login(LoginRq data);
+		Task<IActionResult> RegisterUser(UserRegisterDTO user);
+		Task<IActionResult> GetAllUsers();
 	}
 	public class UserServ : IUserServ
 	{
@@ -61,6 +63,55 @@ namespace BE.src.api.services
 			);
 
 			return new JwtSecurityTokenHandler().WriteToken(token);
+		}
+		public async Task<IActionResult> GetAllUsers()
+		{
+			try
+			{
+				var users = await _userRepo.GetUsers();
+				if (users.Count == 0)
+				{
+					return ErrorResp.NotFound("No users found");
+				}
+				return SuccessResp.Ok(users);
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+		public async Task<IActionResult> RegisterUser(UserRegisterDTO user)
+		{
+			try
+			{
+				var existingUser = await _userRepo.GetUserByEmail(user.Email);
+				if (existingUser != null)
+				{
+					return ErrorResp.BadRequest("User already exists");
+				}
+
+				var newUser = new User
+				{
+					Name = user.Name,
+					Username = user.UserName,
+					Email = user.Email,
+					Password = Utils.HashObject<string>(user.Password),
+					Role = RoleEnum.Customer,
+					CreateAt = DateTime.Now,
+					UpdateAt = DateTime.Now
+				};
+
+				var result = await _userRepo.CreateUser(newUser);
+				if (!result)
+				{
+					return ErrorResp.BadRequest("Failed to create user");
+				}
+				return SuccessResp.Created("User created successfully");
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
 		}
 	}
 }
