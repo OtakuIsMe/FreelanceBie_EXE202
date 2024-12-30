@@ -49,6 +49,7 @@ builder.Services.AddScoped<IMembershipRepo, MembershipRepo>();
 builder.Services.AddScoped<IUserServ, UserServ>();
 builder.Services.AddScoped<IMembershipServ, MembershipServ>();
 builder.Services.AddSingleton<IRedisServ, RedisServ>();
+builder.Services.AddSingleton<EmailServ>();
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisConnectionString));
 builder.Services.AddDbContext<FLBDbContext>();

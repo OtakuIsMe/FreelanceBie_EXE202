@@ -10,6 +10,7 @@ namespace BE.src.api.repositories
 		Task<bool> CreateUser(User user);
 		Task<List<User>> GetUsers();
 		Task<User?> GetUserByEmail(string email);
+		Task<bool> ChangePassword(string email, string newPassword);
 	}
 	public class UserRepo : IUserRepo
 	{
@@ -38,6 +39,16 @@ namespace BE.src.api.repositories
 		public async Task<List<User>> GetUsers()
 		{
 			return await _context.Users.ToListAsync();
+		}
+
+		public async Task<bool> ChangePassword(string email, string newPassword)
+		{
+			var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+			if (user == null) return false;
+
+			user.Password = newPassword;
+			_context.Users.Update(user);
+			return await _context.SaveChangesAsync() > 0;
 		}
 	}
 

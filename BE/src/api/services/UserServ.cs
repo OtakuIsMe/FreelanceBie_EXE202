@@ -18,20 +18,24 @@ namespace BE.src.api.services
 		Task<IActionResult> Login(LoginRq data);
 		Task<IActionResult> RegisterUser(UserRegisterDTO user);
 		Task<IActionResult> GetAllUsers();
+		Task<IActionResult> ForgotPassword(string email);
+		Task<IActionResult> ChangePassword(UserChangePwdDTO data);
 	}
 	public class UserServ : IUserServ
 	{
 		private readonly IUserRepo _userRepo;
-		public UserServ(IUserRepo userRepo)
+		private readonly EmailServ _emailServ;
+		public UserServ(IUserRepo userRepo, EmailServ emailServ)
 		{
 			_userRepo = userRepo;
+			_emailServ = emailServ;
 		}
 
 		public async Task<IActionResult> Login(LoginRq data)
 		{
 			try
 			{
-				var user = await _userRepo.GetUserByEmailPassword(data.Email, data.Password);
+				var user = await _userRepo.GetUserByEmailPassword(data.Email, Utils.HashObject<string>(data.Password));
 				if (user == null)
 				{
 					return ErrorResp.BadRequest("Login fail");
@@ -109,6 +113,53 @@ namespace BE.src.api.services
 					return ErrorResp.BadRequest("Failed to create user");
 				}
 				return SuccessResp.Created("User created successfully");
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+
+		public async Task<IActionResult> ForgotPassword(string email)
+		{
+			try
+			{
+				var user = await _userRepo.GetUserByEmail(email);
+				if (user == null)
+				{
+					return ErrorResp.NotFound("User not found");
+				}
+
+				var htmlBody = $"<h3>Click the link below to verify your email address:</h3><a href=\"https://localhost:5173/\">Verify Email</a>";
+
+				var result = _emailServ.SendVerificationEmail(email, "Email Vertification", htmlBody);
+				if (!result.Result)
+				{
+					return ErrorResp.BadRequest("Failed to send email");
+				}
+				return SuccessResp.Ok("Email sent successfully");
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+
+		public async Task<IActionResult> ChangePassword(UserChangePwdDTO data)
+		{
+			try
+			{
+				if (data.NewPassword != data.ConfirmPassword)
+				{
+					return ErrorResp.BadRequest("Passwords do not match");
+				}
+
+				var result = await _userRepo.ChangePassword(data.Email, Utils.HashObject<string>(data.NewPassword));
+				if (!result)
+				{
+					return ErrorResp.BadRequest("Failed to change password");
+				}
+				return SuccessResp.Ok("Password changed successfully");
 			}
 			catch (System.Exception ex)
 			{

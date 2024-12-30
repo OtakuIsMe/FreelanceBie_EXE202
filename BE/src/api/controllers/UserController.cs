@@ -32,5 +32,15 @@ namespace BE.src.api.controllers
 		{
 			return await _userServ.GetAllUsers();
 		}
+		[HttpGet("forgot-password")]
+		public async Task<IActionResult> ForgotPassword([FromQuery] string email)
+		{
+			return await _userServ.ForgotPassword(email);
+		}
+		[HttpPost("change-password")]
+		public async Task<IActionResult> ChangePassword([FromForm] UserChangePwdDTO data)
+		{
+			return await _userServ.ChangePassword(data);
+		}
 	}
 }
