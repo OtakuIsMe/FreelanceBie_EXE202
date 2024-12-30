@@ -253,7 +253,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="profile-page">
+    <div id="profile-page">
       <header className="profile-header">
         <div className="cover-image"></div>
         <div className="profile-info">
