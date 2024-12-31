@@ -40,6 +40,25 @@ interface WorkPost {
   datePosted: string;
 }
 
+// Thêm interface cho validation
+interface ValidationRules {
+  [key: string]: {
+    required?: boolean;
+    minLength?: number;
+    maxLength?: number;
+    pattern?: RegExp;
+    errorMessage?: string;
+  }
+}
+
+interface EditableProfile {
+  email: string;
+  languages: string;
+  nickname: string;
+  workHistory: string;
+  education: string;
+}
+
 export default function Profile() {
   const [profile, setProfile] = useState<ProfileData>({
     name: "Rick Roll",
@@ -47,7 +66,7 @@ export default function Profile() {
     location: "Ha Noi, Viet Nam",
     followers: 852,
     following: 156,
-    email: "duynmse173649@fpt.edu.vn",
+    email: "hunglcse161248@fpt.edu.vn",
     languages: ["Vietnamese", "English"],
     nickname: "FreelanceBie",
     joinDate: "2 months ago, on 08/26/2024",
@@ -193,10 +212,86 @@ export default function Profile() {
   ]);
 
   const [activeTab, setActiveTab] = useState<string>('work');
-  const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState('');
   const [editField, setEditField] = useState('');
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
+
+  // Cập nhật state để theo dõi lỗi cho từng trường
+  const [validationErrors, setValidationErrors] = useState<{ [key: string]: string }>({});
+
+  // Định nghĩa rules cho từng trường
+  const validationRules: ValidationRules = {
+    email: {
+      required: true,
+      pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+      errorMessage: 'Please enter a valid email address'
+    },
+    languages: {
+      required: true,
+      pattern: /^[a-zA-Z\s,]+$/,
+      errorMessage: 'Languages should only contain letters, spaces, and commas'
+    },
+    nickname: {
+      required: true,
+      minLength: 3,
+      maxLength: 20,
+      pattern: /^[a-zA-Z0-9_]+$/,
+      errorMessage: 'Nickname should be 3-20 characters and contain only letters, numbers, and underscores'
+    },
+    workHistory: {
+      required: true,
+      pattern: /^[a-zA-Z0-9\s,.-]+$/,
+      errorMessage: 'Work history should not contain special characters'
+    },
+    education: {
+      required: true,
+      pattern: /^[a-zA-Z0-9\s,.-]+$/,
+      errorMessage: 'Education should not contain special characters'
+    }
+  };
+
+  // Cập nhật hàm validateField
+  const validateField = (field: string, value: string): boolean => {
+    const rules = validationRules[field.toLowerCase()];
+    if (!rules) return true;
+
+    // Clear error for this field
+    setValidationErrors(prev => ({ ...prev, [field]: '' }));
+
+    if (rules.required && !value.trim()) {
+      setValidationErrors(prev => ({ 
+        ...prev, 
+        [field]: `${field} is required` 
+      }));
+      return false;
+    }
+
+    if (rules.minLength && value.length < rules.minLength) {
+      setValidationErrors(prev => ({ 
+        ...prev, 
+        [field]: `${field} must be at least ${rules.minLength} characters` 
+      }));
+      return false;
+    }
+
+    if (rules.maxLength && value.length > rules.maxLength) {
+      setValidationErrors(prev => ({ 
+        ...prev, 
+        [field]: `${field} must be less than ${rules.maxLength} characters` 
+      }));
+      return false;
+    }
+
+    if (rules.pattern && !rules.pattern.test(value)) {
+      setValidationErrors(prev => ({ 
+        ...prev, 
+        [field]: rules.errorMessage || `Invalid ${field} format` 
+      }));
+      return false;
+    }
+
+    return true;
+  };
 
   const handleTabClick = (tab: string) => (e: React.MouseEvent) => {
     e.preventDefault();
@@ -217,7 +312,7 @@ export default function Profile() {
       if (field === 'languages' || field === 'workHistory') {
         newProfile[field] = value.split(',').map(item => item.trim());
       } else {
-        newProfile[field] = value;
+        (newProfile as any)[field] = value;
       }
       
       return newProfile;
@@ -244,12 +339,80 @@ export default function Profile() {
     }
   };
 
+  // Cập nhật hàm handleSave
   const handleSave = () => {
+    setValidationError('');
+    
+    if (!validateField(editField, editValue)) {
+      return;
+    }
+
+    const fieldKey = editField.toLowerCase().replace(/\s+/g, '') as keyof ProfileData;
+    
     setProfile(prev => ({
       ...prev,
-      [editField.toLowerCase()]: editValue
+      [fieldKey]: editField === 'Languages' || editField === 'Work History' 
+        ? editValue.split(',').map(item => item.trim())
+        : editValue
     }));
+    
     setIsEditPopupOpen(false);
+    setValidationErrors({}); // Clear all validation errors
+  };
+
+  const [editableProfile, setEditableProfile] = useState<EditableProfile>({
+    email: profile.email,
+    languages: profile.languages.join(', '),
+    nickname: profile.nickname,
+    workHistory: profile.workHistory.join(', '),
+    education: profile.education
+  });
+
+  const handleEditAll = () => {
+    setEditableProfile({
+      email: profile.email,
+      languages: profile.languages.join(', '),
+      nickname: profile.nickname,
+      workHistory: profile.workHistory.join(', '),
+      education: profile.education
+    });
+    setIsEditPopupOpen(true);
+  };
+
+  const handleSaveAll = () => {
+    // Reset all validation errors
+    setValidationErrors(prev => ({ ...prev }));
+    
+    // Validate all fields
+    let hasErrors = false;
+    
+    for (const [field, value] of Object.entries(editableProfile)) {
+      if (!validateField(field, value)) {
+        hasErrors = true;
+      }
+    }
+    
+    // If there are any validation errors, stop here
+    if (hasErrors) {
+      return;
+    }
+    
+    try {
+      // Cập nhật profile nếu tất cả validation đều pass
+      setProfile(prev => ({
+        ...prev,
+        email: editableProfile.email,
+        languages: editableProfile.languages.split(',').map(item => item.trim()),
+        nickname: editableProfile.nickname,
+        workHistory: editableProfile.workHistory.split(',').map(item => item.trim()),
+        education: editableProfile.education
+      }));
+      
+      setIsEditPopupOpen(false);
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      // Có thể thêm thông báo lỗi cho user ở đây
+    }
   };
 
   return (
@@ -422,105 +585,106 @@ export default function Profile() {
         <aside className="additional-details">
           <div className="section-header">
             <h3>Additional Details</h3>
+            <button 
+              className="edit-all-btn"
+              onClick={handleEditAll}
+              title="Edit Details"
+            >
+              <FiEdit2 />
+            </button>
           </div>
           
           <div className="details-list">
             <div className="detail-item">
-              <span className="label">Email</span>
+              <span className="label">Email :</span>
               <span className="value">{profile.email}</span>
-              <button 
-                className="edit-icon"
-                onClick={() => handleEditClick('Email', profile.email)}
-              >
-                <FiEdit2 />
-              </button>
             </div>
 
             <div className="detail-item">
-              <span className="label">Languages</span>
+              <span className="label">Languages :</span>
               <span className="value">{profile.languages.join(', ')}</span>
-              <button 
-                className="edit-icon"
-                onClick={() => handleEditClick('Languages', profile.languages.join(', '))}
-              >
-                <FiEdit2 />
-              </button>
             </div>
 
             <div className="detail-item">
-              <span className="label">Nickname</span>
+              <span className="label">Nickname :</span>
               <span className="value">{profile.nickname}</span>
-              <button 
-                className="edit-icon"
-                onClick={() => handleEditClick('Nickname', profile.nickname)}
-              >
-                <FiEdit2 />
-              </button>
             </div>
 
             <div className="detail-item">
               <span className="label">Work History</span>
               <span className="value">{profile.workHistory.join(', ')}</span>
-              <button 
-                className="edit-icon"
-                onClick={() => handleEditClick('Work History', profile.workHistory.join(', '))}
-              >
-                <FiEdit2 />
-              </button>
             </div>
 
             <div className="detail-item">
-              <span className="label">Education</span>
+              <span className="label">Education :</span>
               <span className="value">{profile.education}</span>
-              <button 
-                className="edit-icon"
-                onClick={() => handleEditClick('Education', profile.education)}
-              >
-                <FiEdit2 />
-              </button>
             </div>
           </div>
+
+          {isEditPopupOpen && (
+            <div className="edit-popup-overlay">
+              <div className="edit-popup">
+                <div className="edit-popup-header">
+                  <button 
+                    className="close-btn"
+                    onClick={() => {
+                      setIsEditPopupOpen(false);
+                      setValidationError('');
+                    }}
+                  >
+                    ×
+                  </button>
+                </div>
+                <div className="edit-popup-content">
+                  {Object.entries(editableProfile).map(([field, value]) => (
+                    <div key={field} className="edit-field">
+                      <label>{field.charAt(0).toUpperCase() + field.slice(1)}</label>
+                      <input
+                        type="text"
+                        value={value}
+                        onChange={(e) => {
+                          setEditableProfile(prev => ({
+                            ...prev,
+                            [field]: e.target.value
+                          }));
+                          // Clear validation error for this field when typing
+                          setValidationErrors(prev => ({ ...prev, [field]: '' }));
+                        }}
+                        className={`edit-popup-input ${
+                          validationErrors[field] ? 'error' : ''
+                        }`}
+                        placeholder={`Enter ${field}`}
+                      />
+                      {validationErrors[field] && (
+                        <div className="validation-message error">
+                          {validationErrors[field]}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <div className="edit-popup-actions">
+                  <button 
+                    className="cancel-btn"
+                    onClick={() => {
+                      setIsEditPopupOpen(false);
+                      setValidationError('');
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    className="save-btn"
+                    onClick={handleSaveAll}
+                  >
+                    Save All Changes
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </aside>
       </div>
-
-      {isEditPopupOpen && (
-        <div className="edit-popup-overlay">
-          <div className="edit-popup">
-            <div className="edit-popup-header">
-              <h3>Edit {editField}</h3>
-              <button 
-                className="close-btn"
-                onClick={() => setIsEditPopupOpen(false)}
-              >
-                ×
-              </button>
-            </div>
-            <div className="edit-popup-content">
-              <input
-                type="text"
-                value={editValue}
-                onChange={(e) => setEditValue(e.target.value)}
-                className="edit-popup-input"
-                placeholder={`Enter ${editField.toLowerCase()}`}
-              />
-            </div>
-            <div className="edit-popup-actions">
-              <button 
-                className="cancel-btn"
-                onClick={() => setIsEditPopupOpen(false)}
-              >
-                Cancel
-              </button>
-              <button 
-                className="save-btn"
-                onClick={handleSave}
-              >
-                Save Changes
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
