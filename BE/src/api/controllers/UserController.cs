@@ -64,5 +64,10 @@ namespace BE.src.api.controllers
 		{
 			return await _userServ.EditProfile(userId, user);
 		}
+		[HttpGet("search-designers")]
+		public async Task<IActionResult> SearchingDesigners([FromQuery] UserSearchingDTO userSearchingDTO)
+		{
+			return await _userServ.SearchingDesigners(userSearchingDTO);
+		}
 	}
 }

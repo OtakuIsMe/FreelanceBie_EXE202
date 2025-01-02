@@ -23,6 +23,7 @@ namespace BE.src.api.services
 		Task<IActionResult> ViewProfile(Guid userId);
 		Task<IActionResult> EditSocialLinkProfiles(Guid userId, UserEditSocialLinksDTO user);
 		Task<IActionResult> EditProfile(Guid userId, UserEditProfileDTO user);
+		Task<IActionResult> SearchingDesigners(UserSearchingDTO userSearchingDTO);
 	}
 	public class UserServ : IUserServ
 	{
@@ -245,7 +246,7 @@ namespace BE.src.api.services
 				userObj.City = user.City ?? userObj.City;
 				userObj.Education = user.Education ?? userObj.Education;
 				userObj.Description = user.Description ?? userObj.Description;
-				
+
 				if (!string.IsNullOrEmpty(user.DOB))
 				{
 					if (DateOnly.TryParse(user.DOB, out var parsedDOB))
@@ -260,6 +261,23 @@ namespace BE.src.api.services
 
 				await _userRepo.EditProfile(userObj);
 				return SuccessResp.Ok("Profile updated successfully.");
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+
+		public async Task<IActionResult> SearchingDesigners(UserSearchingDTO userSearchingDTO)
+		{
+			try
+			{
+				var users = await _userRepo.FindUsers(userSearchingDTO);
+				if (users.Count == 0)
+				{
+					return ErrorResp.NotFound("No users found");
+				}
+				return SuccessResp.Ok(users);
 			}
 			catch (System.Exception ex)
 			{
