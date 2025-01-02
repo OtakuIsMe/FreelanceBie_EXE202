@@ -45,11 +45,14 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<IMembershipRepo, MembershipRepo>();
+builder.Services.AddScoped<INotificationRepo, NotificationRepo>();
+builder.Services.AddScoped<ISocialProfileRepo, SocialProfileRepo>();
 
 builder.Services.AddScoped<IUserServ, UserServ>();
 builder.Services.AddScoped<IMembershipServ, MembershipServ>();
 builder.Services.AddSingleton<IRedisServ, RedisServ>();
 builder.Services.AddSingleton<EmailServ>();
+builder.Services.AddScoped<INotificationServ, NotificationServ>();
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisConnectionString));
 builder.Services.AddDbContext<FLBDbContext>();

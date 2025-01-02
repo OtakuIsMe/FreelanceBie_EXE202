@@ -11,10 +11,12 @@ namespace BE.src.api.controllers
 	{
 		private readonly IUserServ _userServ;
 		private readonly IRedisServ _redisServ;
-		public UserController(IUserServ userServ, IRedisServ redisServ)
+		private readonly INotificationServ _notificationServ;
+		public UserController(IUserServ userServ, IRedisServ redisServ, INotificationServ notificationServ)
 		{
 			_userServ = userServ;
 			_redisServ = redisServ;
+			_notificationServ = notificationServ;
 		}
 
 		[HttpPost("Login")]
@@ -41,6 +43,26 @@ namespace BE.src.api.controllers
 		public async Task<IActionResult> ChangePassword([FromForm] UserChangePwdDTO data)
 		{
 			return await _userServ.ChangePassword(data);
+		}
+		[HttpGet("view-notifications")]
+		public async Task<IActionResult> ViewNotifications([FromQuery] Guid userId)
+		{
+			return await _notificationServ.ViewNotifications(userId);
+		}
+		[HttpGet("view-profile")]
+		public async Task<IActionResult> ViewProfile([FromQuery] Guid userId)
+		{
+			return await _userServ.ViewProfile(userId);
+		}
+		[HttpPut("edit-social-links")]
+		public async Task<IActionResult> EditSocialLinkProfiles([FromQuery] Guid userId, [FromForm] UserEditSocialLinksDTO user)
+		{
+			return await _userServ.EditSocialLinkProfiles(userId, user);
+		}
+		[HttpPut("edit-profile")]
+		public async Task<IActionResult> EditProfile([FromQuery] Guid userId, [FromForm] UserEditProfileDTO user)
+		{
+			return await _userServ.EditProfile(userId, user);
 		}
 	}
 }
