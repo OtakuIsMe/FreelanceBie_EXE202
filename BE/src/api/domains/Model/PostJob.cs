@@ -13,14 +13,14 @@ namespace BE.src.api.domains.Model
 		public required EmploymentTypeEnum EmploymentType { get; set; }
 		public required int Experience { get; set; }
 
-		public required Guid UserId { get; set; }
+		public Guid UserId { get; set; }
 		public User User { get; set; } = null!;
 
-		public required Guid CompanyLogoId { get; set; }
-		public required ImageVideo CompanyLogo { get; set; }
+		public Guid CompanyLogoId { get; set; }
+		public ImageVideo CompanyLogo { get; set; } = null!;
 
 		public required Guid SpecialtyId { get; set; }
-		public required Specialty Specialty { get; set; }
+		public Specialty Specialty { get; set; } = null!;
 
 		public ICollection<Attachment> Attachments { get; set; } = null!;
 		public ICollection<Save> Saves { get; set; } = null!;

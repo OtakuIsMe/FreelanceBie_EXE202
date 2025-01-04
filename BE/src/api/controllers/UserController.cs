@@ -10,13 +10,15 @@ namespace BE.src.api.controllers
 	public class UserController : ControllerBase
 	{
 		private readonly IUserServ _userServ;
-		private readonly IRedisServ _redisServ;
 		public UserController(IUserServ userServ, IRedisServ redisServ)
 		{
 			_userServ = userServ;
-			_redisServ = redisServ;
 		}
-
+		[HttpPost("AddDataUser")]
+		public async Task<IActionResult> AddDataUser([FromForm] UserAddData data)
+		{
+			return await _userServ.AddDataUser(data);
+		}
 		[HttpPost("Login")]
 		public async Task<IActionResult> Login([FromQuery] LoginRq data)
 		{
@@ -31,6 +33,27 @@ namespace BE.src.api.controllers
 		public async Task<IActionResult> GetUsers()
 		{
 			return await _userServ.GetAllUsers();
+		}
+		[Authorize(Policy = "Customer")]
+		[HttpPost("AddComment")]
+		public async Task<IActionResult> AddComment([FromBody] AddCommentDTO data)
+		{
+			Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
+			return await _userServ.AddComment(userId, data);
+		}
+		[Authorize(Policy = "Customer")]
+		[HttpPut("FollowStateChange")]
+		public async Task<IActionResult> FollowChange([FromQuery] Guid Followed, [FromQuery] bool State)
+		{
+			Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
+			return await _userServ.FollowChange(userId, Followed, State);
+		}
+		[Authorize(Policy = "Customer")]
+		[HttpGet("SavePostShot")]
+		public async Task<IActionResult> SavePostShot([FromQuery] Guid? PostId, [FromQuery] Guid? ShotId, [FromQuery] bool State)
+		{
+			Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
+			return await _userServ.SavePostShot(userId, PostId, ShotId, State);
 		}
 	}
 }

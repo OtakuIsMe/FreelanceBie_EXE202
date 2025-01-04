@@ -1,5 +1,6 @@
 using System.Collections;
 using System.ComponentModel.DataAnnotations;
+using Azure.Storage.Blobs.Models;
 using BE.src.api.domains.Enum;
 using BE.src.api.domains.Model.Base;
 
@@ -18,6 +19,7 @@ namespace BE.src.api.domains.Model
 		public string? Description { get; set; } = null!;
 		public DateOnly? DOB { get; set; } = null;
 
+		public ICollection<Experience> Experiences { get; set; } = null!;
 		public ICollection<SocialProfile> SocialProfiles { get; set; } = null!;
 		public ICollection<Comment> Comments { get; set; } = null!;
 		public ICollection<Communication> Zeros { get; set; } = null!;
