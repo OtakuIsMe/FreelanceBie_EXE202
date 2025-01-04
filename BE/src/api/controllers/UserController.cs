@@ -10,9 +10,11 @@ namespace BE.src.api.controllers
 	public class UserController : ControllerBase
 	{
 		private readonly IUserServ _userServ;
-		public UserController(IUserServ userServ, IRedisServ redisServ)
+		private readonly INotificationServ _notificationServ;
+		public UserController(IUserServ userServ, IRedisServ redisServ, INotificationServ notificationServ)
 		{
 			_userServ = userServ;
+			_notificationServ = notificationServ;
 		}
 		[HttpPost("AddDataUser")]
 		public async Task<IActionResult> AddDataUser([FromForm] UserAddData data)
@@ -54,6 +56,41 @@ namespace BE.src.api.controllers
 		{
 			Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
 			return await _userServ.SavePostShot(userId, PostId, ShotId, State);
+		}
+		[HttpGet("forgot-password")]
+		public async Task<IActionResult> ForgotPassword([FromQuery] string email)
+		{
+			return await _userServ.ForgotPassword(email);
+		}
+		[HttpPost("change-password")]
+		public async Task<IActionResult> ChangePassword([FromForm] UserChangePwdDTO data)
+		{
+			return await _userServ.ChangePassword(data);
+		}
+		[HttpGet("view-notifications")]
+		public async Task<IActionResult> ViewNotifications([FromQuery] Guid userId)
+		{
+			return await _notificationServ.ViewNotifications(userId);
+		}
+		[HttpGet("view-profile")]
+		public async Task<IActionResult> ViewProfile([FromQuery] Guid userId)
+		{
+			return await _userServ.ViewProfile(userId);
+		}
+		[HttpPut("edit-social-links")]
+		public async Task<IActionResult> EditSocialLinkProfiles([FromQuery] Guid userId, [FromForm] UserEditSocialLinksDTO user)
+		{
+			return await _userServ.EditSocialLinkProfiles(userId, user);
+		}
+		[HttpPut("edit-profile")]
+		public async Task<IActionResult> EditProfile([FromQuery] Guid userId, [FromForm] UserEditProfileDTO user)
+		{
+			return await _userServ.EditProfile(userId, user);
+		}
+		[HttpGet("search-designers")]
+		public async Task<IActionResult> SearchingDesigners([FromQuery] UserSearchingDTO userSearchingDTO)
+		{
+			return await _userServ.SearchingDesigners(userSearchingDTO);
 		}
 	}
 }

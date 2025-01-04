@@ -22,20 +22,30 @@ namespace BE.src.api.services
 		Task<IActionResult> AddComment(Guid userId, AddCommentDTO data);
 		Task<IActionResult> FollowChange(Guid Follower, Guid Followed, bool State);
 		Task<IActionResult> SavePostShot(Guid userId, Guid? postId, Guid? shotId, bool state);
+		Task<IActionResult> ForgotPassword(string email);
+		Task<IActionResult> ChangePassword(UserChangePwdDTO data);
+		Task<IActionResult> ViewProfile(Guid userId);
+		Task<IActionResult> EditSocialLinkProfiles(Guid userId, UserEditSocialLinksDTO user);
+		Task<IActionResult> EditProfile(Guid userId, UserEditProfileDTO user);
+		Task<IActionResult> SearchingDesigners(UserSearchingDTO userSearchingDTO);
 	}
 	public class UserServ : IUserServ
 	{
 		private readonly IUserRepo _userRepo;
-		public UserServ(IUserRepo userRepo)
+		private readonly EmailServ _emailServ;
+		private readonly ISocialProfileRepo _socialProfileRepo;
+		public UserServ(IUserRepo userRepo, EmailServ emailServ, ISocialProfileRepo socialProfileRepo)
 		{
 			_userRepo = userRepo;
+			_emailServ = emailServ;
+			_socialProfileRepo = socialProfileRepo;
 		}
 
 		public async Task<IActionResult> Login(LoginRq data)
 		{
 			try
 			{
-				var user = await _userRepo.GetUserByEmailPassword(data.Email, data.Password);
+				var user = await _userRepo.GetUserByEmailPassword(data.Email, Utils.HashObject<string>(data.Password));
 				if (user == null)
 				{
 					return ErrorResp.BadRequest("Login fail");
@@ -298,6 +308,166 @@ namespace BE.src.api.services
 					}
 					return SuccessResp.Ok("Unsave success");
 				}
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+
+		public async Task<IActionResult> ForgotPassword(string email)
+		{
+			try
+			{
+				var user = await _userRepo.GetUserByEmail(email);
+				if (user == null)
+				{
+					return ErrorResp.NotFound("User not found");
+				}
+
+				var htmlBody = $"<h3>Click the link below to verify your email address:</h3><a href=\"https://localhost:5173/\">Verify Email</a>";
+
+				var result = _emailServ.SendVerificationEmail(email, "Email Vertification", htmlBody);
+				if (!result.Result)
+				{
+					return ErrorResp.BadRequest("Failed to send email");
+				}
+				return SuccessResp.Ok("Email sent successfully");
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+
+		public async Task<IActionResult> ChangePassword(UserChangePwdDTO data)
+		{
+			try
+			{
+				if (data.NewPassword != data.ConfirmPassword)
+				{
+					return ErrorResp.BadRequest("Passwords do not match");
+				}
+
+				var result = await _userRepo.ChangePassword(data.Email, Utils.HashObject<string>(data.NewPassword));
+				if (!result)
+				{
+					return ErrorResp.BadRequest("Failed to change password");
+				}
+				return SuccessResp.Ok("Password changed successfully");
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+
+		public async Task<IActionResult> ViewProfile(Guid userId)
+		{
+			try
+			{
+				var user = await _userRepo.ViewProfileUser(userId);
+				if (user == null)
+				{
+					return ErrorResp.NotFound("User not found");
+				}
+				return SuccessResp.Ok(user);
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+
+		public async Task<IActionResult> EditSocialLinkProfiles(Guid userId, UserEditSocialLinksDTO user)
+		{
+			try
+			{
+				var userObj = await _userRepo.GetUserById(userId);
+				if (userObj == null)
+				{
+					return ErrorResp.NotFound("User not found");
+				}
+
+				var existingSocialProfiles = await _socialProfileRepo.GetSocialProfiles(userId);
+
+				foreach (TypeSocialEnum type in Enum.GetValues(typeof(TypeSocialEnum)))
+				{
+					var profile = existingSocialProfiles.FirstOrDefault(sp => sp.Type == type);
+
+					if (profile == null)
+					{
+						var newProfile = new SocialProfile
+						{
+							UserId = userId,
+							Type = type,
+							Linked = user.GetLinkByType(type) ?? string.Empty
+						};
+						await _socialProfileRepo.AddNewSocialProfile(newProfile);
+					}
+					else
+					{
+						profile.Linked = user.GetLinkByType(type) ?? profile.Linked;
+						await _socialProfileRepo.EditSocialProfile(profile);
+					}
+				}
+
+				return SuccessResp.Ok("Social profiles updated successfully.");
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+
+		public async Task<IActionResult> EditProfile(Guid userId, UserEditProfileDTO user)
+		{
+			try
+			{
+				var userObj = await _userRepo.GetUserById(userId);
+				if (userObj == null)
+				{
+					return ErrorResp.NotFound("User not found");
+				}
+
+				userObj.Name = user.Name ?? userObj.Name;
+				userObj.Phone = user.Phone ?? userObj.Phone;
+				userObj.City = user.City ?? userObj.City;
+				userObj.Education = user.Education ?? userObj.Education;
+				userObj.Description = user.Description ?? userObj.Description;
+
+				if (!string.IsNullOrEmpty(user.DOB))
+				{
+					if (DateOnly.TryParse(user.DOB, out var parsedDOB))
+					{
+						userObj.DOB = parsedDOB;
+					}
+				}
+				else
+				{
+					userObj.DOB = userObj.DOB;
+				}
+
+
+				await _userRepo.EditProfile(userObj);
+				return SuccessResp.Ok("Profile updated successfully.");
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+
+		public async Task<IActionResult> SearchingDesigners(UserSearchingDTO userSearchingDTO)
+		{
+			try
+			{
+				var users = await _userRepo.FindUsers(userSearchingDTO);
+				if (users.Count == 0)
+				{
+					return ErrorResp.NotFound("No users found");
+				}
+				return SuccessResp.Ok(users);
 			}
 			catch (System.Exception ex)
 			{

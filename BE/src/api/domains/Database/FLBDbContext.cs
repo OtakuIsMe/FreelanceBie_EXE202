@@ -43,6 +43,7 @@ namespace BE.src.api.domains.Database
 		public DbSet<Communication> Communications { get; set; } = null!;
 		public DbSet<Message> Messages { get; set; } = null!;
 		public DbSet<SocialProfile> SocialProfiles { get; set; } = null!;
+		public DbSet<Notification> Notifications { get; set; } = null!;
 
 		protected override void OnModelCreating(ModelBuilder builder)
 		{
@@ -434,6 +435,17 @@ namespace BE.src.api.domains.Database
 				entity.HasOne(va => va.Shot)
 					.WithMany(s => s.ViewAnalysts)
 					.HasForeignKey(va => va.ShotId)
+					.OnDelete(DeleteBehavior.Cascade);
+			});
+
+			builder.Entity<Notification>(entity =>
+			{
+				entity.HasKey(n => n.Id);
+				entity.Property(n => n.Title).IsRequired().HasMaxLength(255);
+				entity.Property(n => n.Message).IsRequired();
+				entity.HasOne(n => n.User)
+					.WithMany(u => u.Notifications)
+					.HasForeignKey(n => n.UserId)
 					.OnDelete(DeleteBehavior.Cascade);
 			});
 		}
