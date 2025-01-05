@@ -26,5 +26,10 @@ namespace BE.src.api.controllers
 			Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
 			return await _postServ.ApplyJob(userId, postId);
 		}
+		[HttpGet("filter-posts")]
+		public async Task<IActionResult> GetPosts([FromQuery] PostJobFilterDTO filter)
+		{
+			return await _postServ.GetPosts(filter);
+		}
 	}
 }

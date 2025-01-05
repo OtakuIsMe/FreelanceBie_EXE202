@@ -12,6 +12,7 @@ namespace BE.src.api.services
 	{
 		Task<IActionResult> AddShotData(ShotAddData data);
 		Task<IActionResult> LikeShot(Guid userId, Guid shotId, bool state);
+		Task<IActionResult> GetShots(ShotSearchFilterDTO filter);
 	}
 	public class ShotServ : IShotServ
 	{
@@ -84,6 +85,23 @@ namespace BE.src.api.services
 					}
 					return SuccessResp.Ok("UnLike shot successful");
 				}
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+		
+		public async Task<IActionResult> GetShots(ShotSearchFilterDTO filter)
+		{
+			try
+			{
+				var shots = await _shotRepo.GetShots(filter);
+				if(shots.Count == 0)
+				{
+					return ErrorResp.NotFound("No shot found");
+				}
+				return SuccessResp.Ok(shots);
 			}
 			catch (System.Exception ex)
 			{

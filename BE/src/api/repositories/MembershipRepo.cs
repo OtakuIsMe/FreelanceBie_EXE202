@@ -1,4 +1,5 @@
 using BE.src.api.domains.Database;
+using BE.src.api.domains.DTOs.Membership;
 using BE.src.api.domains.Model;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +12,8 @@ namespace BE.src.api.repositories
         Task<bool> UpdateMembership(Membership membership);
         Task<bool> DeleteMembership(Guid id);
         Task<Membership?> GetMembershipById(Guid id);
+		Task<bool> AddMembershipUser(MembershipUser membershipUser);
+		Task<MembershipUser?> GetMembershipUserById(Guid membershipId, Guid userId);
     }
 	public class MembershipRepo : IMembershipRepo
 	{
@@ -51,6 +54,18 @@ namespace BE.src.api.repositories
 		{
 			_context.Memberships.Update(membership);
             return await _context.SaveChangesAsync() > 0;
+		}
+		
+		public async Task<bool> AddMembershipUser(MembershipUser membershipUser)
+		{
+			await _context.MemberUsers.AddAsync(membershipUser);
+			await _context.SaveChangesAsync();
+			return true;
+		}
+
+		public async Task<MembershipUser?> GetMembershipUserById(Guid membershipId, Guid userId)
+		{
+			return await _context.MemberUsers.FirstOrDefaultAsync(mu => mu.MembershipId == membershipId && mu.UserId == userId);
 		}
 	}
 }

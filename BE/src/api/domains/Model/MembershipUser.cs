@@ -1,3 +1,4 @@
+using BE.src.api.domains.Enum;
 using BE.src.api.domains.Model.Base;
 
 namespace BE.src.api.domains.Model
@@ -9,5 +10,7 @@ namespace BE.src.api.domains.Model
 
 		public required Guid MembershipId { get; set; }
 		public Membership Membership { get; set; } = null!;
+
+		public ICollection<Transaction> Transactions { get; set; } = null!;
 	}
 }

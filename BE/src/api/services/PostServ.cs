@@ -12,6 +12,7 @@ namespace BE.src.api.services
 	{
 		Task<IActionResult> AddPostData(Guid userId, PostAddData data);
 		Task<IActionResult> ApplyJob(Guid userId, Guid PostId);
+		Task<IActionResult> GetPosts(PostJobFilterDTO filter);
 	}
 	public class PostServ : IPostServ
 	{
@@ -80,6 +81,23 @@ namespace BE.src.api.services
 		public Task<IActionResult> ApplyJob(Guid userId, Guid PostId)
 		{
 			throw new NotImplementedException();
+		}
+
+		public async Task<IActionResult> GetPosts(PostJobFilterDTO filter)
+		{
+			try
+			{
+				var posts = await _postRepo.GetPosts(filter);
+				if(posts.Count == 0)
+				{
+					return ErrorResp.NotFound("No post found");
+				}
+				return SuccessResp.Ok(posts);
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
 		}
 	}
 }

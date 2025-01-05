@@ -24,5 +24,10 @@ namespace BE.src.api.controllers
 			Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
 			return await _shotServ.LikeShot(userId, shotId, state);
 		}
+		[HttpGet("search-filter-shots")]
+		public async Task<IActionResult> GetShots([FromQuery] ShotSearchFilterDTO filter)
+		{
+			return await _shotServ.GetShots(filter);
+		}
 	}
 }
