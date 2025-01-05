@@ -23,7 +23,7 @@ namespace BE.src.api.controllers
         }
         [Authorize(Policy = "Customer")]
         [HttpGet("payment-membership-success")]
-        public async Task<IActionResult> PaymentMembershipSuccess([FromForm] Guid membershipId)
+        public async Task<IActionResult> PaymentMembershipSuccess([FromQuery] Guid membershipId)
         {
             Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
             return await _transactionServ.PaymentMembershipSuccess(membershipId, userId);
