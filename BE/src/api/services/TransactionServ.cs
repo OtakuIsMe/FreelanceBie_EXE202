@@ -13,7 +13,7 @@ namespace BE.src.api.services
     public interface ITransactionServ
     {
         Task<IActionResult> BuyMembership(Guid membershipId, Guid userId);
-        Task<IActionResult> PaymentMembershipSuccess(Guid membershipId, Guid userId);
+        Task<IActionResult> PaymentMembershipSuccess(Guid membershipId, Guid userId, string paymentId, string PayerID);
     }
     public class TransactionServ : ITransactionServ
     {
@@ -101,7 +101,7 @@ namespace BE.src.api.services
             }
 		}
 
-		public async Task<IActionResult> PaymentMembershipSuccess(Guid membershipId, Guid userId)
+		public async Task<IActionResult> PaymentMembershipSuccess(Guid membershipId, Guid userId, string paymentId, string PayerID)
 		{
 			try
             {
@@ -109,6 +109,15 @@ namespace BE.src.api.services
                 if (membership == null)
                 {
                     return ErrorResp.NotFound("Cant find membership");
+                }
+
+                var paymentExecution = new PaymentExecution { payer_id = PayerID };
+                var payment = new PayPal.Api.Payment() { id = paymentId };
+                var executedPayment = payment.Execute(GetAPIContext(), paymentExecution);
+
+                if (executedPayment.state.ToLower() != "approved")
+                {
+                    return ErrorResp.BadRequest("Payment was not approved.");
                 }
                 
                 var newMembershipUser = new MembershipUser
@@ -137,7 +146,7 @@ namespace BE.src.api.services
                 {
                     return ErrorResp.BadRequest("Cant create transaction");
                 }
-                return SuccessResp.Redirect("http://localhost:5173/");
+                return SuccessResp.Ok(new {Redirect = "http://localhost:5173/"});
             }
             catch (System.Exception ex)
             {

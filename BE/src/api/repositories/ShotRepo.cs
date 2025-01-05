@@ -43,7 +43,15 @@ namespace BE.src.api.repositories
 		public async Task<List<Shot>> GetShots(ShotSearchFilterDTO filter)
 		{
 			var query = _context.Shots
+							.Include(s => s.ImageVideos)
+							.Include(s => s.Comments)
+								.ThenInclude(c => c.User)
+									.ThenInclude(u => u.ImageVideos)
+							.Include(s => s.Likes)
+								.ThenInclude(l => l.User)
+									.ThenInclude(u => u.ImageVideos)
 							.Include(s => s.User)      
+								.ThenInclude(u => u.ImageVideos)
 							.Include(s => s.Specialty)
 							.AsQueryable();
 

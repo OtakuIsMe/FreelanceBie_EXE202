@@ -23,10 +23,10 @@ namespace BE.src.api.controllers
         }
         [Authorize(Policy = "Customer")]
         [HttpGet("payment-membership-success")]
-        public async Task<IActionResult> PaymentMembershipSuccess([FromQuery] Guid membershipId)
+        public async Task<IActionResult> PaymentMembershipSuccess([FromQuery] Guid membershipId, [FromQuery] string paymentId, [FromQuery] string PayerID)
         {
             Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
-            return await _transactionServ.PaymentMembershipSuccess(membershipId, userId);
+            return await _transactionServ.PaymentMembershipSuccess(membershipId, userId, paymentId, PayerID);
         }
     }
 }

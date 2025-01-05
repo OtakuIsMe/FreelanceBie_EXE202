@@ -27,6 +27,7 @@ namespace BE.src.api.repositories
 		{
 			var query = _context.PostJobs
 								.Include(p => p.User)
+									.ThenInclude(u => u.ImageVideos)
 								.Include(p => p.Specialty)
 								.AsQueryable();
 
