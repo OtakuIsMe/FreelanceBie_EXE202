@@ -28,17 +28,25 @@ namespace BE.src.api.services
 		Task<IActionResult> EditSocialLinkProfiles(Guid userId, UserEditSocialLinksDTO user);
 		Task<IActionResult> EditProfile(Guid userId, UserEditProfileDTO user);
 		Task<IActionResult> SearchingDesigners(UserSearchingDTO userSearchingDTO);
+		Task<IActionResult> CheckNotificationWhenPost(Guid userId, Guid postId);
 	}
-	public class UserServ : IUserServ
+	public class UserServ : IUserServ	
 	{
 		private readonly IUserRepo _userRepo;
 		private readonly EmailServ _emailServ;
 		private readonly ISocialProfileRepo _socialProfileRepo;
-		public UserServ(IUserRepo userRepo, EmailServ emailServ, ISocialProfileRepo socialProfileRepo)
+		private readonly IMembershipRepo _membershipRepo;
+		private readonly IPostRepo _postRepo;
+		private readonly INotificationRepo _notificationRepo;
+		public UserServ(IUserRepo userRepo, EmailServ emailServ, ISocialProfileRepo socialProfileRepo,
+						IMembershipRepo membershipRepo, IPostRepo postRepo, INotificationRepo notificationRepo)
 		{
 			_userRepo = userRepo;
 			_emailServ = emailServ;
 			_socialProfileRepo = socialProfileRepo;
+			_membershipRepo = membershipRepo;
+			_postRepo = postRepo;
+			_notificationRepo = notificationRepo;
 		}
 
 		public async Task<IActionResult> Login(LoginRq data)
@@ -468,6 +476,50 @@ namespace BE.src.api.services
 					return ErrorResp.NotFound("No users found");
 				}
 				return SuccessResp.Ok(users);
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+
+		public async Task<IActionResult> CheckNotificationWhenPost(Guid userId, Guid postId)
+		{
+			try
+			{
+				var memberUser = await _membershipRepo.GetMembershipUserRegistered(userId);
+				if (memberUser == null)
+				{
+					return ErrorResp.NotFound("User not registered yet");
+				}
+
+				var membership = await _membershipRepo.GetMembershipById(memberUser.MembershipId);
+				if (membership == null)
+				{
+					return ErrorResp.NotFound("Membership not found");
+				}
+
+				var post = await _postRepo.GetPostById(postId);
+				if (post == null)
+				{
+					return ErrorResp.NotFound("Post not found");
+				}
+
+				var newNotification = new Notification
+				{
+					Title = post.Title,
+					Message = "Notification have been sent to your account followed by your membership",
+					UserId = userId,
+					CreateAt = DateTime.Now,
+					UpdateAt = DateTime.Now
+				};
+
+				var result = await _notificationRepo.AddNotification(newNotification);
+				if (!result)
+				{
+					return ErrorResp.BadRequest("Failed to send notification");
+				}
+				return SuccessResp.Ok("Notification sent successfully");
 			}
 			catch (System.Exception ex)
 			{

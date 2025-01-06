@@ -100,5 +100,12 @@ namespace BE.src.api.controllers
 		{
 			return await _userServ.SearchingDesigners(userSearchingDTO);
 		}
+		[Authorize(Policy = "Customer")]
+		[HttpGet("nofitications-membership")]
+		public async Task<IActionResult> NofiticationsMembership([FromQuery] Guid postId)
+		{
+			Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
+			return await _userServ.CheckNotificationWhenPost(userId, postId);
+		}
 	}
 }

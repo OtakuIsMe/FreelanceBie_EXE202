@@ -14,6 +14,7 @@ namespace BE.src.api.services
     {
         Task<IActionResult> BuyMembership(Guid membershipId, Guid userId);
         Task<IActionResult> PaymentMembershipSuccess(Guid membershipId, Guid userId, string paymentId, string PayerID);
+        Task<IActionResult> ViewTransactions(Guid userId);
     }
     public class TransactionServ : ITransactionServ
     {
@@ -147,6 +148,23 @@ namespace BE.src.api.services
                     return ErrorResp.BadRequest("Cant create transaction");
                 }
                 return SuccessResp.Ok(new {Redirect = "http://localhost:5173/"});
+            }
+            catch (System.Exception ex)
+            {
+                return ErrorResp.BadRequest(ex.Message);
+            }
+		}
+
+		public async Task<IActionResult> ViewTransactions(Guid userId)
+		{
+			try
+            {
+                var transactions = await _transactionRepo.GetTransactions(userId);
+                if(transactions.Count == 0)
+                {
+                    return ErrorResp.NotFound("No transaction found");
+                }
+                return SuccessResp.Ok(transactions);
             }
             catch (System.Exception ex)
             {

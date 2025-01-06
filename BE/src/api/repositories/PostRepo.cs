@@ -9,6 +9,7 @@ namespace BE.src.api.repositories
 	{
 		Task<bool> CreatePost(PostJob post);
 		Task<List<PostJob>> GetPosts(PostJobFilterDTO filter);
+		Task<PostJob?> GetPostById(Guid id);
 	}
 	public class PostRepo : IPostRepo
 	{
@@ -62,6 +63,14 @@ namespace BE.src.api.repositories
 				query = query.Where(p => p.Specialty.Name.Contains(filter.SpecialtyName));
 
 			return await query.ToListAsync();
+		}
+		
+		public async Task<PostJob?> GetPostById(Guid id)
+		{
+			return await _context.PostJobs
+								.Include(p => p.User)
+									.ThenInclude(u => u.ImageVideos)
+								.FirstOrDefaultAsync(p => p.Id == id);
 		}
 	}
 }

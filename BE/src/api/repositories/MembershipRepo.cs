@@ -14,6 +14,7 @@ namespace BE.src.api.repositories
         Task<Membership?> GetMembershipById(Guid id);
 		Task<bool> AddMembershipUser(MembershipUser membershipUser);
 		Task<MembershipUser?> GetMembershipUserById(Guid membershipId, Guid userId);
+		Task<MembershipUser?> GetMembershipUserRegistered(Guid userId);
     }
 	public class MembershipRepo : IMembershipRepo
 	{
@@ -66,6 +67,11 @@ namespace BE.src.api.repositories
 		public async Task<MembershipUser?> GetMembershipUserById(Guid membershipId, Guid userId)
 		{
 			return await _context.MemberUsers.FirstOrDefaultAsync(mu => mu.MembershipId == membershipId && mu.UserId == userId);
+		}
+
+		public async Task<MembershipUser?> GetMembershipUserRegistered(Guid userId)
+		{
+			return await _context.MemberUsers.FirstOrDefaultAsync(mu => mu.UserId == userId);
 		}
 	}
 }

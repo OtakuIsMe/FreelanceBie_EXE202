@@ -28,5 +28,12 @@ namespace BE.src.api.controllers
             Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
             return await _transactionServ.PaymentMembershipSuccess(membershipId, userId, paymentId, PayerID);
         }
+        [Authorize(Policy = "Customer")]
+        [HttpGet("view-transactions")]
+        public async Task<IActionResult> ViewTransactions()
+        {
+            Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
+            return await _transactionServ.ViewTransactions(userId);
+        }
     }
 }
