@@ -16,11 +16,6 @@ import Header from '../../../components/Header/Header.tsx'
 import Specialities from '../../../components/Cards/Specialities/Specialities.tsx'
 import Explore from '../../../components/Cards/Explore/Explore.tsx'
 
-interface Special{
-    type: string;
-    img: string;
-}
-
 export default function Home() {
 
 	const spec = [

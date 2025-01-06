@@ -97,7 +97,6 @@
 }
 
 #home > .page-content .banner .content .start-btn:hover {
-    --btn-hover: light-dark(#cc4d9d, #00abce);
     background-color: var(--btn-hover);
 }
 
