@@ -28,7 +28,7 @@ namespace BE.src.api.services
 		Task<IActionResult> EditSocialLinkProfiles(Guid userId, UserEditSocialLinksDTO user);
 		Task<IActionResult> EditProfile(Guid userId, UserEditProfileDTO user);
 		Task<IActionResult> SearchingDesigners(UserSearchingDTO userSearchingDTO);
-		Task<IActionResult> CheckNotificationWhenPost(Guid userId, Guid postId);
+		Task<IActionResult> CheckNotificationWhenPost(Guid userId);
 	}
 	public class UserServ : IUserServ	
 	{
@@ -483,7 +483,7 @@ namespace BE.src.api.services
 			}
 		}
 
-		public async Task<IActionResult> CheckNotificationWhenPost(Guid userId, Guid postId)
+		public async Task<IActionResult> CheckNotificationWhenPost(Guid userId)
 		{
 			try
 			{
@@ -499,16 +499,16 @@ namespace BE.src.api.services
 					return ErrorResp.NotFound("Membership not found");
 				}
 
-				var post = await _postRepo.GetPostById(postId);
+				var post = await _postRepo.GetLatestPosts();
 				if (post == null)
 				{
-					return ErrorResp.NotFound("Post not found");
+					return ErrorResp.NotFound("No recent posts available");
 				}
 
 				var newNotification = new Notification
 				{
 					Title = post.Title,
-					Message = "Notification have been sent to your account followed by your membership",
+					Message = $"A new post titled '{post.Title}' has been published. Check it out!",
 					UserId = userId,
 					CreateAt = DateTime.Now,
 					UpdateAt = DateTime.Now
@@ -519,9 +519,10 @@ namespace BE.src.api.services
 				{
 					return ErrorResp.BadRequest("Failed to send notification");
 				}
+
 				return SuccessResp.Ok("Notification sent successfully");
 			}
-			catch (System.Exception ex)
+			catch (Exception ex)
 			{
 				return ErrorResp.BadRequest(ex.Message);
 			}

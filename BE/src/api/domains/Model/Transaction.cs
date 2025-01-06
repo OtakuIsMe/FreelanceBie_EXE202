@@ -10,5 +10,7 @@ namespace BE.src.api.domains.Model
 
         public float Total { get; set; }
         public TransactionStatusEnum Status { get; set; }
+
+        public string PaymentId { get; set; } = null!;
     }
 }

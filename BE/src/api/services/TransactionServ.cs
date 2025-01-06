@@ -106,6 +106,12 @@ namespace BE.src.api.services
 		{
 			try
             {
+                if (membershipId == Guid.Empty || userId == Guid.Empty || 
+                    string.IsNullOrEmpty(paymentId) || string.IsNullOrEmpty(PayerID))
+                {
+                    return ErrorResp.BadRequest("Invalid input parameters.");
+                }
+
                 var membership = await _membershipRepo.GetMembershipById(membershipId);
                 if (membership == null)
                 {
@@ -120,34 +126,49 @@ namespace BE.src.api.services
                 {
                     return ErrorResp.BadRequest("Payment was not approved.");
                 }
-                
-                var newMembershipUser = new MembershipUser
-                {
-                    MembershipId = membershipId,
-                    UserId = userId,
-                    CreateAt = DateTime.Now,
-                    UpdateAt = DateTime.Now
-                };
 
-                var isPurchase = await _membershipRepo.AddMembershipUser(newMembershipUser);
-                if (!isPurchase)
+                var membershipUser = await _membershipRepo.GetMembershipUserRegistered(userId);
+                bool operationResult;
+
+                if (membershipUser != null)
                 {
-                    return ErrorResp.BadRequest("Purchase failed");
+                    membershipUser.MembershipId = membershipId;
+                    membershipUser.UpdateAt = DateTime.Now;
+                    operationResult = await _membershipRepo.UpdateMembershipUser(membershipUser);
+                }
+                else
+                {
+                    membershipUser = new MembershipUser
+                    {
+                        MembershipId = membershipId,
+                        UserId = userId,
+                        CreateAt = DateTime.Now,
+                        UpdateAt = DateTime.Now
+                    };
+                    operationResult = await _membershipRepo.AddMembershipUser(membershipUser);
+                }
+
+                if (!operationResult)
+                {
+                    return ErrorResp.BadRequest("Failed to process membership user.");
                 }
 
                 var transaction = new MyTransaction
                 {
-                    MemberUserId = newMembershipUser.Id,
+                    MemberUserId = membershipUser.Id,
                     Total = membership.Price,
-                    Status = TransactionStatusEnum.Completed
+                    Status = TransactionStatusEnum.Completed,
+                    PaymentId = paymentId, 
+                    CreateAt = DateTime.Now
                 };
 
-                var isCreatedTrasaction = await _transactionRepo.CreateTransaction(transaction);
-                if (!isCreatedTrasaction)
+                var isTransactionCreated = await _transactionRepo.CreateTransaction(transaction);
+                if (!isTransactionCreated)
                 {
-                    return ErrorResp.BadRequest("Cant create transaction");
+                    return ErrorResp.BadRequest("Failed to create transaction.");
                 }
-                return SuccessResp.Ok(new {Redirect = "http://localhost:5173/"});
+
+                return SuccessResp.Ok(new { Redirect = Environment.GetEnvironmentVariable("FRONTEND_REDIRECT_URL") ?? "http://localhost:5173/" });                   
             }
             catch (System.Exception ex)
             {

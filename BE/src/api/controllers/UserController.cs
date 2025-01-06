@@ -102,10 +102,10 @@ namespace BE.src.api.controllers
 		}
 		[Authorize(Policy = "Customer")]
 		[HttpGet("nofitications-membership")]
-		public async Task<IActionResult> NofiticationsMembership([FromQuery] Guid postId)
+		public async Task<IActionResult> NofiticationsMembership()
 		{
 			Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
-			return await _userServ.CheckNotificationWhenPost(userId, postId);
+			return await _userServ.CheckNotificationWhenPost(userId);
 		}
 	}
 }

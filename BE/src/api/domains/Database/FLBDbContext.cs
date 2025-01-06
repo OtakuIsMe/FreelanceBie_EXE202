@@ -469,6 +469,10 @@ namespace BE.src.api.domains.Database
 						u => u.ToString(),
 						u => u.ToEnum<TransactionStatusEnum>()
 					);
+				
+				entity.Property(u => u.PaymentId)
+					.HasMaxLength(100)
+					.IsRequired();
 			});
 		}
 	}
