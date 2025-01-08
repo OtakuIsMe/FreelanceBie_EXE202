@@ -441,7 +441,6 @@ namespace BE.src.api.domains.Database
 			builder.Entity<Notification>(entity =>
 			{
 				entity.HasKey(n => n.Id);
-				entity.Property(n => n.Title).IsRequired().HasMaxLength(255);
 				entity.Property(n => n.Message).IsRequired();
 				entity.HasOne(n => n.User)
 					.WithMany(u => u.Notifications)

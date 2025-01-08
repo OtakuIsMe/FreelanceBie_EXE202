@@ -10,6 +10,9 @@ namespace BE.src.api.repositories
 		Task<Like?> GetLike(Guid userId, Guid shotId);
 		Task<bool> CreateLikeShot(Like like);
 		Task<bool> DeleteLikeShot(Like like);
+		Task<List<Shot>> GetShotsByUser(Guid userId);
+		Task<int> GetLikeCount(Guid ShotId);
+		Task<int> GetViewCount(Guid ShotId);
 	}
 	public class ShotRepo : IShotRepo
 	{
@@ -36,6 +39,24 @@ namespace BE.src.api.repositories
 		{
 			_context.Likes.Remove(like);
 			return await _context.SaveChangesAsync() > 0;
+		}
+
+		public async Task<List<Shot>> GetShotsByUser(Guid userId)
+		{
+			return await _context.Shots.Where(s => s.UserId == userId)
+										.Include(s => s.User)
+											.ThenInclude(u => u.ImageVideos)
+										.Include(s => s.ImageVideos)
+										.ToListAsync();
+		}
+		public async Task<int> GetLikeCount(Guid ShotId)
+		{
+			return await _context.Likes.CountAsync(l => l.ShotId == ShotId);
+		}
+		public async Task<int> GetViewCount(Guid ShotId)
+		{
+			return await _context.ViewAnalysts.Where(va => va.ShotId == ShotId)
+											.SumAsync(va => va.View);
 		}
 	}
 }

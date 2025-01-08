@@ -12,6 +12,8 @@ namespace BE.src.api.services
 	{
 		Task<IActionResult> AddShotData(ShotAddData data);
 		Task<IActionResult> LikeShot(Guid userId, Guid shotId, bool state);
+		Task<IActionResult> ShotOwner(Guid userId);
+		Task<IActionResult> GetShotDetail(Guid? userId, string shotCode);
 	}
 	public class ShotServ : IShotServ
 	{
@@ -84,6 +86,54 @@ namespace BE.src.api.services
 					}
 					return SuccessResp.Ok("UnLike shot successful");
 				}
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+
+		public async Task<IActionResult> ShotOwner(Guid userId)
+		{
+			try
+			{
+				var shots = await _shotRepo.GetShotsByUser(userId);
+				var shotCards = await GetShotCards(shots);
+				return SuccessResp.Ok(shotCards);
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+		private async Task<List<ShotCard>> GetShotCards(List<Shot> shots)
+		{
+			List<ShotCard> shotCards = [];
+			foreach (Shot s in shots)
+			{
+				int countLike = await _shotRepo.GetLikeCount(s.Id);
+				int countView = await _shotRepo.GetViewCount(s.Id);
+				ShotCard newShotCard = new()
+				{
+					Image = s.ImageVideos.First().Url,
+					CountView = countView,
+					CountLike = countLike,
+					User = new UserShotCard()
+					{
+						Username = s.User.Username,
+						Image = s.User.ImageVideos.First().Url
+					}
+				};
+				shotCards.Add(newShotCard);
+			}
+			return shotCards;
+		}
+
+		public async Task<IActionResult> GetShotDetail(Guid? userId, string shotCode)
+		{
+			try
+			{
+				return SuccessResp.Ok(userId);
 			}
 			catch (System.Exception ex)
 			{

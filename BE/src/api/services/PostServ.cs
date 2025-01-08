@@ -11,14 +11,16 @@ namespace BE.src.api.services
 	public interface IPostServ
 	{
 		Task<IActionResult> AddPostData(Guid userId, PostAddData data);
-		Task<IActionResult> ApplyJob(Guid userId, Guid PostId);
+		Task<IActionResult> ApplyJob(Guid userId, Guid postId);
 	}
 	public class PostServ : IPostServ
 	{
 		private readonly IPostRepo _postRepo;
-		public PostServ(IPostRepo postRepo)
+		private readonly INotificationRepo _notificationRepo;
+		public PostServ(IPostRepo postRepo, INotificationRepo notificationRepo)
 		{
 			_postRepo = postRepo;
+			_notificationRepo = notificationRepo;
 		}
 
 		public async Task<IActionResult> AddPostData(Guid userId, PostAddData data)
@@ -77,9 +79,40 @@ namespace BE.src.api.services
 			}
 		}
 
-		public Task<IActionResult> ApplyJob(Guid userId, Guid PostId)
+		public async Task<IActionResult> ApplyJob(Guid userId, Guid postId)
 		{
-			throw new NotImplementedException();
+			try
+			{
+				var userApply = new UserApply
+				{
+					UserId = userId,
+					PostId = postId
+				};
+				var notification = await _notificationRepo.GetNotificationByPostId(postId);
+				if (notification == null)
+				{
+					PostJob post = await _postRepo.GetPostJobById(postId);
+					var newNotification = new Notification
+					{
+						Message = "has applied to your job post",
+						UserId = post.UserId,
+						PostId = postId,
+						CountUser = 1
+					};
+					await _notificationRepo.CreateNotification(newNotification);
+				}
+				else
+				{
+					notification.CountUser = notification.CountUser++;
+					await _notificationRepo.UpdateNotification(notification);
+				}
+				await _postRepo.CreateUserApply(userApply);
+				return SuccessResp.Created("Apply succes");
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
 		}
 	}
 }

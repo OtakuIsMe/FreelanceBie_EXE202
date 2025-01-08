@@ -24,5 +24,27 @@ namespace BE.src.api.controllers
 			Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
 			return await _shotServ.LikeShot(userId, shotId, state);
 		}
+
+		[Authorize(Policy = "Customer")]
+		[HttpGet("ShotOwner")]
+		public async Task<IActionResult> ShotOwner()
+		{
+			Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
+			return await _shotServ.ShotOwner(userId);
+		}
+
+		[AllowAnonymous]
+		[HttpGet("ShotDetail")]
+		public async Task<IActionResult> Shot([FromQuery] string shotCode)
+		{
+			Guid? userId = null;
+
+			if (User?.Identity?.IsAuthenticated == true)
+			{
+				userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
+			}
+
+			return await _shotServ.GetShotDetail(userId, shotCode);
+		}
 	}
 }
