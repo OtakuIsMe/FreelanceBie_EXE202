@@ -12,6 +12,7 @@ namespace BE.src.api.services
 	{
 		Task<IActionResult> AddPostData(Guid userId, PostAddData data);
 		Task<IActionResult> ApplyJob(Guid userId, Guid postId);
+		Task<IActionResult> PostJobDetail(Guid? userId, string postCode);
 	}
 	public class PostServ : IPostServ
 	{
@@ -108,6 +109,18 @@ namespace BE.src.api.services
 				}
 				await _postRepo.CreateUserApply(userApply);
 				return SuccessResp.Created("Apply succes");
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+
+		public async Task<IActionResult> PostJobDetail(Guid? userId, string postCode)
+		{
+			try
+			{
+				return SuccessResp.Ok("Hey");
 			}
 			catch (System.Exception ex)
 			{

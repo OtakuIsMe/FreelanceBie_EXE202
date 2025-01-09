@@ -4,6 +4,7 @@ namespace BE.src.api.domains.Model
 {
 	public class Shot : BaseEntity
 	{
+		public required string Title { get; set; }
 		public required Guid UserId { get; set; }
 		public User User { get; set; } = null!;
 

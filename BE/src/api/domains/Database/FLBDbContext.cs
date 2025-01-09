@@ -306,6 +306,10 @@ namespace BE.src.api.domains.Database
 			{
 				entity.HasKey(s => s.Id);
 
+				entity.Property(s => s.Title)
+					.HasMaxLength(200)
+					.IsRequired();
+
 				entity.Property(s => s.Html)
 					.IsRequired()
 					.HasColumnType("LONGTEXT");
@@ -404,6 +408,10 @@ namespace BE.src.api.domains.Database
 					.IsRequired(false);
 
 				entity.Property(u => u.DOB)
+					.IsRequired(false);
+
+				entity.Property(u => u.Slogan)
+					.HasMaxLength(200)
 					.IsRequired(false);
 			});
 

@@ -18,6 +18,7 @@ namespace BE.src.api.domains.Model
 		public string? Education { get; set; } = null!;
 		public string? Description { get; set; } = null!;
 		public DateOnly? DOB { get; set; } = null;
+		public string? Slogan { get; set; } = null!;
 
 		public ICollection<Experience> Experiences { get; set; } = null!;
 		public ICollection<SocialProfile> SocialProfiles { get; set; } = null!;

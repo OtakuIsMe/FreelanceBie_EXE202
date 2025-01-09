@@ -28,6 +28,7 @@ namespace BE.src.api.services
 			{
 				Shot newShot = new()
 				{
+					Title = data.Title,
 					UserId = data.UserId,
 					SpecialtyId = data.SpecialtyId,
 					Html = data.Html,
@@ -133,7 +134,37 @@ namespace BE.src.api.services
 		{
 			try
 			{
-				return SuccessResp.Ok(userId);
+				var shot = await _shotRepo.GetShotByShotCode(shotCode);
+				if (shot == null)
+				{
+					return ErrorResp.BadRequest("Cant find shot");
+				}
+				if (shot.User.ImageVideos == null || shot.User.Slogan == null)
+				{
+					return ErrorResp.BadRequest("Owner is not set up profile");
+				}
+				var shotDetail = new ShotDetail
+				{
+					Title = shot.Title,
+					Html = shot.Html,
+					Css = shot.Css,
+					Owner = new ShotOwner
+					{
+						Image = shot.User.ImageVideos.First().Url,
+						Name = shot.User.Username,
+						Status = "Available",
+						Slogan = shot.User.Slogan
+					}
+				};
+				if (userId.HasValue)
+				{
+					shotDetail.User = new ShotUser
+					{
+						IsLiked = await _shotRepo.IsLikedShot(userId.Value, shot.Id),
+						IsSaved = await _shotRepo.IsSaved(userId.Value, shot.Id)
+					};
+				}
+				return SuccessResp.Ok(shotDetail);
 			}
 			catch (System.Exception ex)
 			{

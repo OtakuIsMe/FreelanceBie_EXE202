@@ -26,5 +26,18 @@ namespace BE.src.api.controllers
 			Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
 			return await _postServ.ApplyJob(userId, postId);
 		}
+
+		[AllowAnonymous]
+		[HttpGet("PostJobDetail")]
+		public async Task<IActionResult> PostJobDetail([FromQuery] string postCode)
+		{
+			Guid? userId = null;
+
+			if (User?.Identity?.IsAuthenticated == true)
+			{
+				userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
+			}
+			return await _postServ.PostJobDetail(userId, postCode);
+		}
 	}
 }

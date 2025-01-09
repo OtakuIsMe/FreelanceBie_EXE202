@@ -1,5 +1,6 @@
 using BE.src.api.domains.Database;
 using BE.src.api.domains.Model;
+using BE.src.api.helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace BE.src.api.repositories
@@ -13,6 +14,9 @@ namespace BE.src.api.repositories
 		Task<List<Shot>> GetShotsByUser(Guid userId);
 		Task<int> GetLikeCount(Guid ShotId);
 		Task<int> GetViewCount(Guid ShotId);
+		Task<Shot?> GetShotByShotCode(string shotCode);
+		Task<bool> IsLikedShot(Guid UserId, Guid ShotId);
+		Task<bool> IsSaved(Guid UserId, Guid ShotId);
 	}
 	public class ShotRepo : IShotRepo
 	{
@@ -57,6 +61,26 @@ namespace BE.src.api.repositories
 		{
 			return await _context.ViewAnalysts.Where(va => va.ShotId == ShotId)
 											.SumAsync(va => va.View);
+		}
+
+		public async Task<Shot?> GetShotByShotCode(string shotCode)
+		{
+			return await _context.Shots
+						.Include(s => s.User)
+							.ThenInclude(u => u.ImageVideos)
+						.FirstOrDefaultAsync(s => Utils.HashObject<Guid>(s.Id) == shotCode);
+		}
+
+		public async Task<bool> IsLikedShot(Guid UserId, Guid ShotId)
+		{
+			return await _context.Likes.AnyAsync(l => l.UserId == UserId
+										&& l.ShotId == ShotId);
+		}
+
+		public async Task<bool> IsSaved(Guid UserId, Guid ShotId)
+		{
+			return await _context.Saves.AnyAsync(s => s.UserId == UserId
+										&& s.ShotId == ShotId);
 		}
 	}
 }

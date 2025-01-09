@@ -2,6 +2,7 @@ namespace BE.src.api.domains.DTOs.Shot
 {
 	public class ShotAddData
 	{
+		public required string Title { get; set; }
 		public required Guid UserId { get; set; }
 		public required Guid SpecialtyId { get; set; }
 
