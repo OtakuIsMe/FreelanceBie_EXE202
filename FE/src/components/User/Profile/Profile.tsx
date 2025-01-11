@@ -161,7 +161,7 @@ export default function Profile() {
   const [workPosts] = useState<WorkPost[]>([
     {
       id: '1',
-      title: 'Mobile Banking App Design', 
+      title: 'Mobile Banking App Design',
       image: '/src/assets/Post Like.jpg',
       description: 'A modern banking app designed with user experience in mind',
       category: 'Mobile App',
@@ -259,33 +259,33 @@ export default function Profile() {
     setValidationErrors(prev => ({ ...prev, [field]: '' }));
 
     if (rules.required && !value.trim()) {
-      setValidationErrors(prev => ({ 
-        ...prev, 
-        [field]: `${field} is required` 
+      setValidationErrors(prev => ({
+        ...prev,
+        [field]: `${field} is required`
       }));
       return false;
     }
 
     if (rules.minLength && value.length < rules.minLength) {
-      setValidationErrors(prev => ({ 
-        ...prev, 
-        [field]: `${field} must be at least ${rules.minLength} characters` 
+      setValidationErrors(prev => ({
+        ...prev,
+        [field]: `${field} must be at least ${rules.minLength} characters`
       }));
       return false;
     }
 
     if (rules.maxLength && value.length > rules.maxLength) {
-      setValidationErrors(prev => ({ 
-        ...prev, 
-        [field]: `${field} must be less than ${rules.maxLength} characters` 
+      setValidationErrors(prev => ({
+        ...prev,
+        [field]: `${field} must be less than ${rules.maxLength} characters`
       }));
       return false;
     }
 
     if (rules.pattern && !rules.pattern.test(value)) {
-      setValidationErrors(prev => ({ 
-        ...prev, 
-        [field]: rules.errorMessage || `Invalid ${field} format` 
+      setValidationErrors(prev => ({
+        ...prev,
+        [field]: rules.errorMessage || `Invalid ${field} format`
       }));
       return false;
     }
@@ -307,14 +307,14 @@ export default function Profile() {
   const handleChange = (field: keyof ProfileData, value: string) => {
     setProfile(prev => {
       const newProfile = { ...prev };
-      
+
       // Handle arrays
       if (field === 'languages' || field === 'workHistory') {
         newProfile[field] = value.split(',').map(item => item.trim());
       } else {
         (newProfile as any)[field] = value;
       }
-      
+
       return newProfile;
     });
   };
@@ -323,8 +323,8 @@ export default function Profile() {
     setLikedPosts(prev => {
       const post = prev.find(p => p.id === postId);
       if (post) {
-        return prev.map(p => 
-          p.id === postId 
+        return prev.map(p =>
+          p.id === postId
             ? { ...p, likes: p.likes + 1 }
             : p
         );
@@ -342,20 +342,20 @@ export default function Profile() {
   // Cập nhật hàm handleSave
   const handleSave = () => {
     setValidationError('');
-    
+
     if (!validateField(editField, editValue)) {
       return;
     }
 
     const fieldKey = editField.toLowerCase().replace(/\s+/g, '') as keyof ProfileData;
-    
+
     setProfile(prev => ({
       ...prev,
-      [fieldKey]: editField === 'Languages' || editField === 'Work History' 
+      [fieldKey]: editField === 'Languages' || editField === 'Work History'
         ? editValue.split(',').map(item => item.trim())
         : editValue
     }));
-    
+
     setIsEditPopupOpen(false);
     setValidationErrors({}); // Clear all validation errors
   };
@@ -382,21 +382,21 @@ export default function Profile() {
   const handleSaveAll = () => {
     // Reset all validation errors
     setValidationErrors(prev => ({ ...prev }));
-    
+
     // Validate all fields
     let hasErrors = false;
-    
+
     for (const [field, value] of Object.entries(editableProfile)) {
       if (!validateField(field, value)) {
         hasErrors = true;
       }
     }
-    
+
     // If there are any validation errors, stop here
     if (hasErrors) {
       return;
     }
-    
+
     try {
       // Cập nhật profile nếu tất cả validation đều pass
       setProfile(prev => ({
@@ -407,11 +407,34 @@ export default function Profile() {
         workHistory: editableProfile.workHistory.split(',').map(item => item.trim()),
         education: editableProfile.education
       }));
-      
+
       setIsEditPopupOpen(false);
     } catch (error) {
       console.error('Error updating profile:', error);
       // Có thể thêm thông báo lỗi cho user ở đây
+    }
+  };
+
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const handleAddNewPost = () => {
+    setIsPopupOpen(true);
+  };
+
+  const handleClosePopup = () => {
+    setIsPopupOpen(false);
+    setImagePreview(null); // Reset image preview on close
+  };
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -426,8 +449,8 @@ export default function Profile() {
           <div className="main-info">
             <div className="name-section">
               <h1>{profile.name}</h1>
-              <button className="like-btn">♡</button>
-              <button className="edit-btn">Edit Profile</button>
+              {/* <button className="like-btn">♡</button>
+              <button className="edit-btn">Edit Profile</button> */}
             </div>
             <p className="title">{profile.title}</p>
             <p className="location">{profile.location}</p>
@@ -462,36 +485,36 @@ export default function Profile() {
       <div className="profile-content">
         <div className="main-content">
           <nav className="profile-nav">
-            <a 
-              href="#" 
+            <a
+              href="#"
               className={activeTab === 'work' ? 'active' : ''}
               onClick={handleTabClick('work')}
             >
               Work
             </a>
-            <a 
-              href="#" 
+            <a
+              href="#"
               className={activeTab === 'collection' ? 'active' : ''}
               onClick={handleTabClick('collection')}
             >
               Collection
             </a>
-            <a 
-              href="#" 
+            <a
+              href="#"
               className={activeTab === 'liked' ? 'active' : ''}
               onClick={handleTabClick('liked')}
             >
               Liked Posts
             </a>
-            <a 
-              href="#" 
+            <a
+              href="#"
               className={activeTab === 'comments' ? 'active' : ''}
               onClick={handleTabClick('comments')}
             >
               Comments
             </a>
-            <a 
-              href="#" 
+            <a
+              href="#"
               className={activeTab === 'about' ? 'active' : ''}
               onClick={handleTabClick('about')}
             >
@@ -502,6 +525,14 @@ export default function Profile() {
           {activeTab === 'work' && (
             <section className="work-posts">
               <div className="posts-grid">
+                <div
+                  className="post-card work-card add-new-post"
+                  style={{ backgroundColor: '#E8E8E8', border: '0.1px solid #333333' }}
+                  onClick={handleAddNewPost}
+                >
+                  <span className="plus-icon">+</span>
+                  <span>Add New Post</span>
+                </div>
                 {workPosts.map(post => (
                   <div key={post.id} className="post-card work-card">
                     <div className="post-image">
@@ -536,13 +567,13 @@ export default function Profile() {
                       <div className="post-meta">
                         <span className="author">by {post.author}</span>
                         <div className="actions">
-                          <button 
+                          <button
                             className="like-button"
                             onClick={() => handleLikePost(post.id)}
                           >
                             ♥ {post.likes}
                           </button>
-                          <button 
+                          <button
                             className="remove-button"
                             onClick={() => handleRemoveLikedPost(post.id)}
                           >
@@ -585,7 +616,7 @@ export default function Profile() {
         <aside className="additional-details">
           <div className="section-header">
             <h3>Additional Details</h3>
-            <button 
+            <button
               className="edit-all-btn"
               onClick={handleEditAll}
               title="Edit Details"
@@ -593,7 +624,7 @@ export default function Profile() {
               <FiEdit2 />
             </button>
           </div>
-          
+
           <div className="details-list">
             <div className="detail-item">
               <span className="label">Email :</span>
@@ -625,7 +656,7 @@ export default function Profile() {
             <div className="edit-popup-overlay">
               <div className="edit-popup">
                 <div className="edit-popup-header">
-                  <button 
+                  <button
                     className="close-btn"
                     onClick={() => {
                       setIsEditPopupOpen(false);
@@ -650,9 +681,8 @@ export default function Profile() {
                           // Clear validation error for this field when typing
                           setValidationErrors(prev => ({ ...prev, [field]: '' }));
                         }}
-                        className={`edit-popup-input ${
-                          validationErrors[field] ? 'error' : ''
-                        }`}
+                        className={`edit-popup-input ${validationErrors[field] ? 'error' : ''
+                          }`}
                         placeholder={`Enter ${field}`}
                       />
                       {validationErrors[field] && (
@@ -664,7 +694,7 @@ export default function Profile() {
                   ))}
                 </div>
                 <div className="edit-popup-actions">
-                  <button 
+                  <button
                     className="cancel-btn"
                     onClick={() => {
                       setIsEditPopupOpen(false);
@@ -673,7 +703,7 @@ export default function Profile() {
                   >
                     Cancel
                   </button>
-                  <button 
+                  <button
                     className="save-btn"
                     onClick={handleSaveAll}
                   >
@@ -685,6 +715,31 @@ export default function Profile() {
           )}
         </aside>
       </div>
+
+      {isPopupOpen && (
+        <div className="popup-overlay-add-post">
+          <div className="popup-content">
+            <button className="close-btn-add-post" onClick={handleClosePopup}>×</button>
+            <h2>New Post</h2>
+            <form>
+              {imagePreview && <img src={imagePreview} alt="Preview" className="image-preview" />}
+              <div className="form-group">
+                <label htmlFor="image">Image</label>
+                <input type="file" id="image" name="image" onChange={handleImageChange} />
+              </div>
+              <div className="form-group">
+                <label htmlFor="title">Title</label>
+                <input type="text" id="title" name="title" />
+              </div>
+              <div className="form-group">
+                <label htmlFor="description">Description</label>
+                <textarea id="description" name="description"></textarea>
+              </div>
+              <button type="submit">Submit</button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

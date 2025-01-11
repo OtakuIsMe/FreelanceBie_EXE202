@@ -1,21 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import { IoSearch } from "react-icons/io5"; // Search icon from react-icons
+import { FaBars } from "react-icons/fa"; // Hamburger icon for mobile menu
+import { Link } from "react-router-dom"; // Import Link from React Router
 import "./Header.css";
 
 const Header = () => {
+	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+	const toggleMobileMenu = () => {
+		setIsMobileMenuOpen(!isMobileMenuOpen);
+	};
+
 	return (
 		<header id="main_header">
-			<div className="logo">FreelanceBie</div>
-			<nav className="navbar">
+			<Link to="/" className="logo">FreelanceBie</Link>
+			<nav className={`navbar ${isMobileMenuOpen ? "open" : ""}`}>
 				<ul>
 					<li>
-						<a href="#">Explore</a>
+						<Link to="#">Explore</Link>
 					</li>
 					<li>
-						<a href="#">Hire a Designer</a>
+						<Link to="#">Hire a Designer</Link>
 					</li>
 					<li>
-						<a href="#">Find Jobs</a>
+						<Link to="#">Find Jobs</Link>
 					</li>
 				</ul>
 			</nav>
@@ -23,10 +31,10 @@ const Header = () => {
 				<div className="search-input-wrapper">
 					<input
 						type="text"
-						placeholder="What are you looking for?"
+						placeholder="Search..."
 						className="search-input"
 					/>
-                    <IoSearch size={20} className="search-icon" />
+					<IoSearch size={20} className="search-icon" />
 				</div>
 			</div>
 			<div className="auth">

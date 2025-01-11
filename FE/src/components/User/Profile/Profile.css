@@ -757,27 +757,20 @@
 
 #profile-page .close-btn {
 	position: absolute;
-	right: 0;
-	top: 50%;
-	transform: translateY(-50%);
+	right: 10px;
 	background: none;
 	border: none;
-	font-size: 24px;
-	color: #666;
+	font-size: 1.5rem;
 	cursor: pointer;
-	padding: 8px;
-	width: 40px;
-	height: 40px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	border-radius: 8px;
-	transition: all 0.2s ease;
+	color: #333;
+	z-index: 10;
+	padding: 5px;
+	transition: background-color 0.2s ease;
 }
 
 #profile-page .close-btn:hover {
-	background: #f8f9fa;
-	color: #1a1a1a;
+	background-color: #f0f0f0;
+	border-radius: 50%;
 }
 
 #profile-page .edit-popup-content {
@@ -993,4 +986,142 @@
 		opacity: 1;
 		transform: translateY(0);
 	}
+}
+
+#profile-page .add-new-post {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	transition: transform 0.2s ease;
+	cursor: pointer;
+	color: #333; /* Text color */
+	font-weight: bold;
+	font-size: 1.2rem;
+	text-align: center; /* Center text */
+	height: 99%;
+}
+
+#profile-page .add-new-post .plus-icon {
+	font-size: 2rem;
+	margin-bottom: 10px; /* Space between the icon and text */
+}
+
+#profile-page .add-new-post:hover {
+	transform: translateY(-5px);
+	background-color: #f0f0f0; /* Optional: change background on hover */
+}
+
+#profile-page .popup-overlay-add-post {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(
+		0,
+		0,
+		0,
+		0.6
+	); /* Slightly darker overlay for better focus */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+}
+
+#profile-page .popup-content {
+	position: relative;
+	background-color: white;
+	padding: 30px; /* Increased padding for more space */
+	border-radius: 12px; /* Slightly more rounded corners */
+	width: 600px; /* Increased width for a larger popup */
+	max-width: 90vw; /* Responsive width */
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Deeper shadow for a more pronounced effect */
+	transition: transform 0.3s ease, opacity 0.3s ease; /* Smooth transition for appearance */
+	transform: scale(1.05); /* Slightly larger scale for a pop effect */
+	opacity: 0;
+	animation: popupFadeIn 0.3s forwards; /* Animation for smooth entry */
+}
+
+@keyframes popupFadeIn {
+	from {
+		transform: scale(0.95);
+		opacity: 0;
+	}
+	to {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+
+#profile-page .close-btn-add-post {
+	position: absolute;
+	top: 20px;
+	right: 30px;
+	background: none;
+	border: none;
+	font-size: 1.5rem;
+	cursor: pointer;
+	color: #333; /* Ensure the button is visible */
+	z-index: 10; /* Ensure it appears above other content */
+	padding: 5px; /* Add some padding for better clickability */
+	transition: background-color 0.2s ease;
+}
+
+#profile-page .close-btn-add-post:hover {
+	background-color: #f0f0f0; /* Optional: add a hover effect */
+	border-radius: 50%; /* Make the hover effect circular */
+}
+
+#profile-page .form-group {
+	margin-bottom: 20px; /* Increased margin for better spacing */
+}
+
+#profile-page .form-group label {
+	display: block;
+	margin-bottom: 8px; /* Slightly more space for clarity */
+	font-weight: bold; /* Bold labels for better readability */
+}
+
+#profile-page .form-group input,
+#profile-page .form-group textarea {
+	width: 100%;
+	padding: 10px; /* Increased padding for comfort */
+	box-sizing: border-box;
+	border: 1px solid #ccc;
+	border-radius: 6px; /* Slightly more rounded inputs */
+	transition: border-color 0.2s ease;
+}
+
+#profile-page .form-group input:focus,
+#profile-page .form-group textarea:focus {
+	border-color: #007bff; /* Highlight border on focus */
+	outline: none; /* Remove default outline */
+}
+
+#profile-page .image-preview {
+	width: 100%;
+	height: auto;
+	max-height: 250px; /* Increased max height for better visibility */
+	margin-bottom: 20px;
+	border-radius: 6px;
+	object-fit: cover;
+}
+
+#profile-page button[type="submit"] {
+	background-color: #007bff;
+	color: white;
+	padding: 12px 20px; /* Larger button for better usability */
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	font-weight: bold; /* Bold text for emphasis */
+	transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+#profile-page button[type="submit"]:hover {
+	background-color: #0056b3;
+	transform: translateY(-2px); /* Slight lift on hover */
 }
