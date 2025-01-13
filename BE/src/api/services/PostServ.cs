@@ -4,6 +4,7 @@ using BE.src.api.domains.Model;
 using BE.src.api.helpers;
 using BE.src.api.repositories;
 using BE.src.api.shared.Type;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BE.src.api.services
@@ -120,7 +121,38 @@ namespace BE.src.api.services
 		{
 			try
 			{
-				return SuccessResp.Ok("Hey");
+				var post = await _postRepo.GetPostJobByCode(postCode);
+				if (post == null)
+				{
+					return ErrorResp.BadRequest("Cant find post");
+				}
+				var postDetail = new PostDetail
+				{
+					Title = post.Title,
+					CompanyLogo = post.CompanyLogo.Url,
+					CompanyName = post.CompanyName,
+					WorkLocation = post.WorkLocation,
+					WorkType = post.WorkType,
+					EmploymentType = post.EmploymentType,
+					Experience = post.Experience,
+					Description = post.Description,
+					AttachmentPosts = post.Attachments.Select(a =>
+					new AttachmentPost
+					{
+						Id = a.Id,
+						Name = a.FileName,
+						Type = a.FileType.ToString()
+					})
+				};
+				if (userId.HasValue)
+				{
+					postDetail.User = new UserPost
+					{
+						IsApplied = await _postRepo.IsApply(userId.Value, post.Id),
+						IsSaved = await _postRepo.IsSaved(userId.Value, post.Id)
+					};
+				}
+				return SuccessResp.Ok(postDetail);
 			}
 			catch (System.Exception ex)
 			{

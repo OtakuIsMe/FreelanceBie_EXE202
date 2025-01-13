@@ -59,6 +59,13 @@ namespace BE.src.api.domains.Database
 				entity.Property(p => p.FileContent)
 					.IsRequired()
 					.HasColumnType("MEDIUMBLOB");
+				entity.Property(p => p.FileType)
+					.IsRequired()
+					.HasMaxLength(10)
+					.HasConversion(
+						p => p.ToString(),
+						p => p.ToEnum<FileTypeEnum>()
+					);
 
 				entity.HasOne(a => a.Post)
 					.WithMany(p => p.Attachments)
