@@ -50,6 +50,7 @@ builder.Services.AddScoped<ISocialProfileRepo, SocialProfileRepo>();
 builder.Services.AddScoped<ISpecialtyRepo, SpecialtyRepo>();
 builder.Services.AddScoped<ITransactionRepo, TransactionRepo>();
 builder.Services.AddScoped<IPostRepo, PostRepo>();
+builder.Services.AddScoped<ICommunicationRepo, CommunicationRepo>();
 
 builder.Services.AddScoped<IUserServ, UserServ>();
 builder.Services.AddScoped<IMembershipServ, MembershipServ>();
@@ -59,6 +60,7 @@ builder.Services.AddScoped<INotificationServ, NotificationServ>();
 builder.Services.AddScoped<ISpecialtyServ, SpecialtyServ>();
 builder.Services.AddScoped<ITransactionServ, TransactionServ>();
 builder.Services.AddScoped<IPostServ, PostServ>();
+builder.Services.AddScoped<ICommunicationServ, CommunicationServ>();
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisConnectionString));
 builder.Services.AddDbContext<FLBDbContext>();

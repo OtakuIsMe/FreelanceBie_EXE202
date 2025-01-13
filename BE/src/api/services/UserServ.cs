@@ -30,7 +30,7 @@ namespace BE.src.api.services
 		Task<IActionResult> SearchingDesigners(UserSearchingDTO userSearchingDTO);
 		Task<IActionResult> CheckNotificationWhenPost(Guid userId);
 	}
-	public class UserServ : IUserServ	
+	public class UserServ : IUserServ
 	{
 		private readonly IUserRepo _userRepo;
 		private readonly EmailServ _emailServ;

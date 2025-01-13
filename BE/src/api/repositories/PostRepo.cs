@@ -10,6 +10,7 @@ namespace BE.src.api.repositories
 		Task<bool> CreatePost(PostJob post);
 		Task<List<PostJob>> GetPosts(PostJobFilterDTO filter);
 		Task<PostJob?> GetLatestPosts();
+		Task<PostJob?> GetPostById(Guid id);
 	}
 	public class PostRepo : IPostRepo
 	{
@@ -72,6 +73,15 @@ namespace BE.src.api.repositories
                              .ThenInclude(u => u.ImageVideos)
                          .OrderByDescending(p => p.CreateAt)
                          .FirstOrDefaultAsync();
+		}
+
+		public async Task<PostJob?> GetPostById(Guid id)
+		{
+			return await _context.PostJobs
+						 .Include(p => p.User)
+							 .ThenInclude(u => u.ImageVideos)
+						 .Include(p => p.Specialty)
+						 .FirstOrDefaultAsync(p => p.Id == id);
 		}
 	}
 }
