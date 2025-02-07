@@ -1,3 +1,4 @@
+using BE.src.api.domains.Enum;
 using BE.src.api.domains.Model.Base;
 
 namespace BE.src.api.domains.Model
@@ -9,6 +10,8 @@ namespace BE.src.api.domains.Model
 
 		public required Guid PostId { get; set; }
 		public PostJob Post { get; set; } = null!;
+
+		public required ApplyStatusEnum Status { get; set; }
 	}
 }
 

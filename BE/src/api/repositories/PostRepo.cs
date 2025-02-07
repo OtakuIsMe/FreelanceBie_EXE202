@@ -1,7 +1,9 @@
 using BE.src.api.domains.Database;
+using BE.src.api.domains.Enum;
 using BE.src.api.domains.Model;
 using BE.src.api.helpers;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1.UA;
 
 namespace BE.src.api.repositories
 {
@@ -13,6 +15,7 @@ namespace BE.src.api.repositories
 		Task<PostJob?> GetPostJobByCode(string code);
 		Task<bool> IsApply(Guid UserId, Guid PostId);
 		Task<bool> IsSaved(Guid UserId, Guid PostId);
+		Task<List<UserApply>> UserApplyByPost(Guid PostId);
 	}
 	public class PostRepo : IPostRepo
 	{
@@ -58,5 +61,14 @@ namespace BE.src.api.repositories
 			return await _context.Saves.AnyAsync(s => s.UserId == UserId
 										&& s.PostId == PostId);
 		}
+
+		public async Task<List<UserApply>> UserApplyByPost(Guid PostId)
+		{
+			return await _context.UserApplies.Where(ua => ua.PostId == PostId
+										&& ua.Status == ApplyStatusEnum.Accept)
+										.Include(ua => ua.User)
+										.ToListAsync();
+		}
+
 	}
 }
