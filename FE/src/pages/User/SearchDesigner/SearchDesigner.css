@@ -1,0 +1,90 @@
+#search_designer > .page-content {
+    padding: 50px 80px;
+}
+
+#search_designer > .page-content > .section {
+    display: flex; 
+    flex-direction: column;
+}
+
+#search_designer > .page-content > .heading {
+    margin-top: 40px;
+    align-items: center;
+    font-family: 'Kadwa', Arial, Helvetica, sans-serif;
+}
+
+#search_designer > .page-content > .heading > p:first-child{
+    font-size: 40px;
+}
+
+#search_designer > .page-content > .heading > p:last-child{
+    font-size: 20px;
+}
+
+#search_designer > .page-content > .search-filter .toggle-bar {
+    display: flex;
+    gap: 5px;
+    padding: 25px 0 20px;
+    /* justify-content: center; */
+    overflow-x: auto;
+}
+
+#search_designer > .page-content > .search-filter .toggle-button {
+    border: none;
+    background: none;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    color: #666;
+    padding: 8px 16px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+#search_designer > .page-content > .search-filter .toggle-button:hover {
+    background-color: #ececec;
+}
+
+#search_designer > .page-content > .search-filter .toggle-button.active {
+    background-color: #d1d1d1;
+    color: #000;
+}
+
+#search_designer > .page-content > .search-filter .addition {
+    display: flex;
+    gap: 10px;
+}
+
+#search_designer > .page-content > .search-filter .addition input {
+    font-size: 16px;
+    padding: 8px;
+    border-radius: 10px;
+    border: 1px solid #aaaaaa;
+}
+
+#search_designer > .page-content > .search-filter .addition label {
+    position: relative;
+}
+
+#search_designer > .page-content > .search-filter .addition label > p {
+    position: absolute;
+    top: 0;
+}
+
+#search_designer > .page-content > .search-filter .addition label > p {
+    right: 5%;
+}
+
+#search_designer > .page-content > .designers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); */
+    gap: 20px;
+    margin-top: 20px;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

@@ -24,11 +24,9 @@
 }
 
 #inspiration > .page-content > .search-filter {
-    height: calc(100vh - 50px);
-    /* justify-content: center; */
     align-items: center;
     position: relative;
-    margin: 180px auto;
+    margin: 180px auto 100px;
 }
 
 #inspiration > .page-content > .search-filter > .title {
@@ -102,6 +100,7 @@
 #inspiration > .page-content > .inspis {
     display: flex;
     justify-content: center;
+    margin-top: 0;
 }
 
 #inspiration > .page-content > .inspis > .inspis-container {

@@ -11,6 +11,7 @@ function App() {
 				<Route path='/' element={<Home />} />
 				<Route path='/inspiration' element={<Inspiration />} />
 				<Route path='/search-designer' element={<SearchDesigner />} />
+				<Route path='/find-job' element={<FindJob />} />
 			</Routes>
 		</BrowserRouter>
 	)
