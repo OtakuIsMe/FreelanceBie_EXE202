@@ -3,6 +3,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './pages/User/Home/Home'
 import Inspiration from './pages/User/Inspriration/Inspiration'
 import SearchDesigner from './pages/User/SearchDesigner/SearchDesigner'
+import FindJob from './pages/User/FindJob/FindJob'
+import ProfilePage from './pages/User/ProfilePage/ProfilePage'
+import Login from './pages/User/Login/Login'
 
 function App() {
 	return (
