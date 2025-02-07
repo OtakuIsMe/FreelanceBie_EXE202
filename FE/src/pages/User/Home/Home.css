@@ -7,7 +7,7 @@
     position: relative;
 }
 
-#home .page-content {
+#home > .page-content {
     width: 100%;
     height: fit-content;
     min-height: 100vh;
@@ -15,19 +15,27 @@
     display: block;
 }
 
-#home .section {
+#home > .page-content .section {
     display: flex;
+    flex-direction: column;
     height: 100vh;
+    width: 100%;
+    margin: 50px auto;
 }
 
-#home .banner {
-    width: 100%;
+#home > .page-content .banner {
     justify-content: center;
     align-items: center;
     position: relative;
 }
 
-#home .banner::before {
+#home > .page-content .explore {
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+#home > .page-content .banner::before {
     content: '';
     position: absolute;
     background-image: url(../../../assets/banner.jpg);
@@ -41,7 +49,7 @@
     mask-position: center;
 }
 
-#home .banner .content {
+#home > .page-content .banner .content {
     font-family: 'Kadwa', Arial, Helvetica, sans-serif;
     display: flex;
     flex-direction: column;
@@ -50,7 +58,16 @@
     text-align: center;
 }
 
-#home .banner .title {
+#home > .page-content .section .title {
+    margin-bottom: 35px;
+    font-size: 2.5em;
+    font-weight: 500;
+    font-family: 'Kadwa', Arial, Helvetica, sans-serif;
+    color: var(--default-color);
+    text-align: center;
+}
+
+#home > .page-content .banner .title {
     font-size: 4em;
     font-weight: 700;
     color: #eee;
@@ -59,15 +76,15 @@
     -webkit-text-stroke: 2px var(--color-banner);
 }
 
-#home .banner .title span {
+#home > .page-content .banner .title span {
     color: var(--color-banner);
 }
 
-#home .banner p {
+#home > .page-content .banner p {
     font-size: 1.3em;
 }
 
-#home .banner .content .start-btn {
+#home > .page-content .banner .content .start-btn {
     width: fit-content;
     padding: 12px 15px;
     border: 1px solid var(--color-banner);
@@ -79,7 +96,19 @@
     cursor: pointer;
 }
 
-#home .banner .content .start-btn:hover {
-    --btn-hover: light-dark(#cc4d9d, #00abce);
+#home > .page-content .banner .content .start-btn:hover {
     background-color: var(--btn-hover);
+}
+
+#home > .page-content .spec-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 25px;
+}
+
+#home > .page-content .exp-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 30px;
 }
