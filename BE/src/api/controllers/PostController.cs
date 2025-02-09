@@ -40,11 +40,11 @@ namespace BE.src.api.controllers
 			return await _postServ.PostJobDetail(userId, postCode);
 		}
 
-		[Authorize(Policy = "Customer")]
-		[HttpGet("HistoryHiring")]
-		public async Task<IActionResult> HistoryHiring([FromQuery] Guid postId)
-		{
-			return await _postServ.
-		}
+		// [Authorize(Policy = "Customer")]
+		// [HttpGet("HistoryHiring")]
+		// public async Task<IActionResult> HistoryHiring([FromQuery] Guid postId)
+		// {
+		// 	return await _postServ.
+		// }
 	}
 }

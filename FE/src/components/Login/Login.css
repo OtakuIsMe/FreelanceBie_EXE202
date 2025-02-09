@@ -1,0 +1,164 @@
+#login {
+	height: 100vh;
+	width: 100%;
+	top: 0;
+	left: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: fixed;
+}
+
+#login .background {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-color: rgba(48, 48, 48, 0.459);
+	z-index: -1;
+}
+
+#login .login-form {
+	height: 800px;
+	width: 1270px;
+	display: flex;
+	background-color: white;
+	border-radius: 15px;
+	padding: 10px;
+	box-sizing: border-box;
+}
+
+#login .form-side {
+	flex: 1;
+	display: flex;
+	align-items: center;
+}
+
+#login .side-image {
+	flex: 1;
+}
+
+#login .side-image img {
+	height: 100%;
+	width: 100%;
+	object-fit: cover;
+	object-position: center;
+	border-radius: 15px;
+}
+
+#login .form-center {
+	padding-left: 80px;
+	width: fit-content;
+}
+
+#login .form-center .logo {
+	margin-bottom: 50px;
+}
+
+#login .form-center .welcomeback {
+	font-size: 50px;
+	font-weight: 900;
+	font-family: "Open Sans", serif;
+	line-height: 1.2;
+	margin-bottom: 20px;
+}
+
+#login .form-center .welcome-description,
+#login .form-center .rem-span,
+#login .form-center .forgot,
+#login .form-center .sign-up {
+	font-size: 14px;
+	color: rgb(112, 112, 112);
+}
+
+#login .form-center .welcome-description {
+	margin-bottom: 50px;
+}
+
+#login .form-center .input {
+	display: block;
+	width: 100%;
+	border: 2px solid #e4e4e4;
+	padding: 12px 17px;
+	margin-bottom: 10px;
+	border-radius: 5px;
+	box-sizing: border-box;
+}
+
+#login .form-center .input.password {
+	margin-bottom: 35px;
+}
+
+#login .form-center .check-rem {
+	appearance: none;
+	width: 13px;
+	height: 13px;
+	border: 2px solid #f27fea;
+	border-radius: 2px;
+	margin-right: 5px;
+}
+
+#login .form-center .remember-forget {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 50px;
+	position: relative;
+}
+
+#login .form-center .wrong-txt {
+	position: absolute;
+	top: -23px;
+	font-size: 14px;
+	color: rgb(240, 82, 82);
+}
+
+#login .form-center .check-rem:checked {
+	background-color: #f27fea;
+	color: white;
+	position: relative;
+}
+
+#login .form-center .check-rem:checked::after {
+	content: "✔";
+	color: white;
+	font-size: 10px;
+	font-weight: bold;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+}
+
+#login .form-center .forgot {
+	cursor: pointer;
+}
+
+#login .form-center .forgot:hover {
+	text-decoration: underline;
+}
+
+#login .form-center .sign-in {
+	width: 120px;
+	height: 40px;
+	border: none;
+	background-color: #f27fea;
+	border-radius: 8px;
+	color: white;
+	cursor: pointer;
+	margin-bottom: 70px;
+}
+
+#login .form-center .sign-in:hover {
+	background-color: #f367ea;
+}
+
+#login .form-center .sign-up .bold {
+	color: #f367ea;
+	cursor: pointer;
+}
+
+#login .form-center .sign-up .bold:hover {
+	text-decoration: underline;
+}

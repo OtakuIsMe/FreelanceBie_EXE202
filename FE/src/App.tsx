@@ -5,19 +5,20 @@ import Inspiration from './pages/User/Inspriration/Inspiration'
 import SearchDesigner from './pages/User/SearchDesigner/SearchDesigner'
 import FindJob from './pages/User/FindJob/FindJob'
 import ProfilePage from './pages/User/ProfilePage/ProfilePage'
-import Login from './pages/User/Login/Login'
+import AuthenProvider from './hooks/AuthenContext'
 
 function App() {
 	return (
 		<BrowserRouter>
-			<Routes>
-				<Route path='/' element={<Home />} />
-				<Route path='/inspiration' element={<Inspiration />} />
-				<Route path='/search-designer' element={<SearchDesigner />} />
-				<Route path='/find-job' element={<FindJob />} />
-				<Route path='/Profile' element={<ProfilePage />} />
-				<Route path="/login" element={<Login />} />
-			</Routes>
+			<AuthenProvider>
+				<Routes>
+					<Route path='/' element={<Home />} />
+					<Route path='/inspiration' element={<Inspiration />} />
+					<Route path='/search-designer' element={<SearchDesigner />} />
+					<Route path='/find-job' element={<FindJob />} />
+					<Route path='/Profile' element={<ProfilePage />} />
+				</Routes>
+			</AuthenProvider>
 		</BrowserRouter>
 	)
 }

@@ -62,7 +62,8 @@ namespace BE.src.api.services
 					{
 						PostId = newPost.Id,
 						FileName = fileAttachment.FileName,
-						FileContent = memoryStream.ToArray()
+						FileContent = memoryStream.ToArray(),
+						FileType = FileTypeEnum.PDF
 					};
 
 					attachments.Add(attachment);
@@ -89,7 +90,8 @@ namespace BE.src.api.services
 				var userApply = new UserApply
 				{
 					UserId = userId,
-					PostId = postId
+					PostId = postId,
+					Status = ApplyStatusEnum.Waiting
 				};
 				var notification = await _notificationRepo.GetNotificationByPostId(postId);
 				if (notification == null)
@@ -122,7 +124,7 @@ namespace BE.src.api.services
 		{
 			try
 			{
-				
+				return SuccessResp.Ok("Ok");
 			}
 			catch (System.Exception ex)
 			{

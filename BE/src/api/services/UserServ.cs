@@ -28,6 +28,7 @@ namespace BE.src.api.services
 		Task<IActionResult> EditSocialLinkProfiles(Guid userId, UserEditSocialLinksDTO user);
 		Task<IActionResult> EditProfile(Guid userId, UserEditProfileDTO user);
 		Task<IActionResult> SearchingDesigners(UserSearchingDTO userSearchingDTO);
+		Task<IActionResult> GetUserById(Guid userId);
 	}
 	public class UserServ : IUserServ
 	{
@@ -468,6 +469,23 @@ namespace BE.src.api.services
 					return ErrorResp.NotFound("No users found");
 				}
 				return SuccessResp.Ok(users);
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+
+		public async Task<IActionResult> GetUserById(Guid userId)
+		{
+			try
+			{
+				var user = await _userRepo.GetUserById(userId);
+				if (user == null)
+				{
+					return ErrorResp.NotFound("Cant found user");
+				}
+				return SuccessResp.Ok(user);
 			}
 			catch (System.Exception ex)
 			{

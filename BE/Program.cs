@@ -12,6 +12,7 @@ using StackExchange.Redis;
 using DotNetEnv;
 
 Env.Load();
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 var redisConnectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION")
 	?? throw new InvalidOperationException("Connection string not found in environment variables.");
@@ -42,6 +43,17 @@ builder.Services.AddAuthorization(options =>
 						options.AddPolicy("Staff", policy =>
 							policy.RequireClaim(ClaimTypes.Role, RoleEnum.Staff.ToString()));
 					});
+
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy(name: MyAllowSpecificOrigins,
+					  policy =>
+					  {
+						  policy.WithOrigins("http://localhost:5173")
+								.AllowAnyMethod()
+								.AllowAnyHeader();
+					  });
+});
 
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<IMembershipRepo, MembershipRepo>();
@@ -98,6 +110,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthentication();
 
