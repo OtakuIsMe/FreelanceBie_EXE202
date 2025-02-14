@@ -3,7 +3,7 @@ import { IoSearch } from "react-icons/io5"; // Search icon from react-icons
 import { FaBars } from "react-icons/fa"; // Hamburger icon for mobile menu
 import { Link } from "react-router-dom"; // Import Link from React Router
 import "./Header.css";
-import Login from "../Login/Login";
+import Authenication from "../Authenication/Authenication";
 import { ApiGateway } from "../../services/api/ApiService";
 import { useAuthenContext } from "../../hooks/AuthenContext";
 
@@ -87,7 +87,7 @@ const Header = () => {
 				</div>
 			)}
 			{isLoginOpen && (
-				<Login closeLogin={closeLogin} fetchUser={fetchUser} />
+				<Authenication closeLogin={closeLogin} fetchUser={fetchUser} />
 			)}
 		</header>
 	);

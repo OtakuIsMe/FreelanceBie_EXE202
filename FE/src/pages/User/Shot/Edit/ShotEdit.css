@@ -1,0 +1,579 @@
+#Shot-edit {
+	background-color: white;
+	width: 100%;
+	min-height: 100vh;
+	display: flex;
+}
+
+#Shot-edit .body-edit {
+	flex: 5;
+}
+
+#Shot-edit .custom-toolbar {
+	flex: 1;
+	padding: 32px;
+	position: relative;
+	background-color: white;
+	box-shadow: -10px 0 48px rgba(0, 0, 0, .06);
+	transition: all 0.2s ease;
+	z-index: 1;
+}
+
+#Shot-edit .custome-edior-tool {
+	border: none;
+}
+
+#Shot-edit .custom-toolbar .fixed {
+	position: fixed;
+	width: calc(17% - 32px);
+}
+
+#Shot-edit p,
+#Shot-edit ul,
+#Shot-edit span {
+	font-family: "Mona Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+#Shot-edit .control-btn {
+	display: flex;
+	justify-content: space-between;
+	padding: 24px 20px;
+}
+
+#Shot-edit .control-btn .btn,
+#Shot-edit .chang-rem .img-btn,
+#Shot-edit .insert-container .insert,
+#Shot-edit .select-media {
+	font-family: "Mona Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	padding: 10px 20px;
+	border-radius: 999px;
+	border: none;
+	font-size: 13px;
+	font-weight: 600;
+	cursor: pointer;
+	min-width: 80px;
+}
+
+#Shot-edit .control-btn .save-continute {
+	display: flex;
+	gap: 16px;
+}
+
+#Shot-edit .control-btn .btn.cancel,
+#Shot-edit .chang-rem .img-btn {
+	background-color: transparent;
+	border: 1px solid rgb(224, 224, 224);
+}
+
+#Shot-edit .control-btn .btn.save {
+	background-color: rgb(248, 247, 244);
+	border: 1px solid rgb(248, 247, 244);
+}
+
+#Shot-edit .control-btn .btn.continute {
+	background-color: black;
+	border: 1px solid black;
+	color: white;
+}
+
+#Shot-edit .content {
+	display: flex;
+	width: 100%;
+	flex-direction: column;
+	align-items: center;
+}
+
+#Shot-edit .content .title {
+	font-size: 28px;
+	font-weight: 600;
+	margin-bottom: 30px;
+}
+
+#Shot-edit .content input[type="file"] {
+	display: none;
+}
+
+#Shot-edit .content .media-input {
+	height: 590px;
+	width: 48%;
+	border: 1px dashed #e2e2e2;
+	border-radius: 15px;
+	display: grid;
+	place-content: center;
+	cursor: pointer;
+}
+
+#Shot-edit .content .media-input .media-content-show {
+	height: fit-content;
+	width: fit-content;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+#Shot-edit .content .media-input .media-content-show .i-show {
+	width: 80px;
+	height: 80px;
+	margin-bottom: 10px;
+}
+
+#Shot-edit .content .media-input .media-content-show .title-show {
+	font-size: 16px;
+	font-weight: 400;
+	color: rgb(61, 61, 78);
+	margin-bottom: 10px;
+}
+
+#Shot-edit .content .media-input .media-content-show .description,
+#Shot-edit .content .media-input .media-content-show li {
+	font-size: 14px;
+	color: rgb(110, 109, 122);
+}
+
+#Shot-edit .content .media-input .media-content-show .description {
+	margin-bottom: 40px;
+}
+
+#Shot-edit .content .media-input .media-content-show .title-show span {
+	box-shadow: 0 2px 0 #fff, 0 4px 0 #ea64d9;
+}
+
+#Shot-edit .content .media-input .media-content-show .upload-requirements-containers {
+	display: flex;
+	max-width: 700px;
+	flex-flow: wrap;
+	list-style-position: inside;
+}
+
+#Shot-edit .content .media-input .media-content-show .upload-requirements-containers .upload-requirement {
+	width: 50%;
+	padding: 4px 24px;
+	box-sizing: border-box;
+}
+
+#Shot-edit .page-content .content-title {
+	display: grid;
+	place-content: center;
+}
+
+#Shot-edit .page-content .content-title .title {
+	border: none;
+	resize: none;
+	background-color: transparent;
+	height: 38px;
+	width: 656px;
+	font-size: 32px;
+	font-weight: 600;
+	text-align: center;
+	font-family: Mona Sans, Helvetica Neue, Helvetica, Arial, sans-serif;
+}
+
+#Shot-edit .page-content .content-title .title:focus {
+	outline: none;
+}
+
+#Shot-edit .page-content .content-block {
+	padding: 48px 0;
+	display: grid;
+	place-content: center;
+}
+
+#Shot-edit .page-content .content-block.first {
+	padding-top: 24px;
+}
+
+#Shot-edit .page-content .content-block .image-block {
+	transition: all 0.3s ease;
+}
+
+#Shot-edit .page-content .content-block .block-hover {
+	position: relative;
+}
+
+#Shot-edit .page-content .content-block .block-hover::before {
+	position: absolute;
+	content: '';
+	top: -16px;
+	left: -16px;
+	width: calc(100% + 32px);
+	height: calc(100% + 32px);
+	border: 2px solid #e7e7e9;
+	border-radius: 12px;
+	opacity: 0;
+	z-index: 0;
+}
+
+#Shot-edit .page-content .content-block .block-hover:hover:before {
+	opacity: 1;
+}
+
+#Shot-edit .page-content .content-block .block-hover.focus-block:before {
+	opacity: 1;
+	border: 2px solid #ea64d9;
+}
+
+#Shot-edit .page-content .content-block .image-block img {
+	width: 100%;
+	border-radius: 10px;
+}
+
+#Shot-edit .page-content .content-block .text-block {
+	width: 752px;
+	position: relative;
+	z-index: 1;
+}
+
+#Shot-edit .custom-toolbar .title {
+	font-size: 20px;
+	margin-bottom: 30px;
+	display: flex;
+	align-items: center;
+}
+
+#Shot-edit .custom-toolbar .title svg {
+	font-size: 28px;
+	margin-right: 6px;
+}
+
+#Shot-edit .custom-toolbar .font-title,
+#Shot-edit .custom-toolbar .align-title {
+	font-size: 14px;
+	font-weight: 600;
+}
+
+#Shot-edit .custom-toolbar .font-group,
+#Shot-edit .custom-toolbar .align-group {
+	width: 100%;
+}
+
+#Shot-edit .custom-toolbar .ql-picker {
+	display: block;
+	width: 100%;
+	background-color: transparent;
+	border: 1px solid rgb(223, 223, 223);
+	padding: 12px 0px;
+	margin-top: 10px;
+	border-radius: 10px;
+	box-sizing: content-box;
+	font-size: 15px;
+	font-weight: 600;
+	margin-bottom: 20px;
+	outline-width: 0;
+}
+
+#Shot-edit .ql-container {
+	border: none;
+}
+
+#Shot-edit .text-block.focus .ql-container {
+	border: 2px solid #1b71e2;
+	border-radius: 4px;
+}
+
+#Shot-edit .custom-toolbar .ql-picker .ql-picker-label svg polygon {
+	stroke: black;
+}
+
+#Shot-edit .custom-toolbar .ql-picker .ql-picker-label {
+	color: rgb(61, 61, 78);
+}
+
+#Shot-edit .custom-toolbar .ql-picker .ql-picker-label:hover {
+	color: inherit;
+}
+
+#Shot-edit .custom-toolbar .ql-picker .ql-picker-label:focus {
+	border: transparent;
+	outline-width: none;
+}
+
+#Shot-edit .custom-toolbar .ql-header .ql-picker-item::before {
+	font-size: 14px;
+	color: rgb(61, 61, 78);
+}
+
+#Shot-edit .custom-toolbar .ql-header .ql-picker-item {
+	padding: 10px 8px;
+	font-weight: 400;
+}
+
+#Shot-edit .custom-toolbar .ql-header .ql-picker-item:hover {
+	background-color: rgb(243, 243, 244);
+	border-radius: 5px;
+}
+
+#Shot-edit .custom-toolbar .ql-header .ql-picker-item.ql-selected {
+	background-color: rgb(243, 243, 244);
+	border-radius: 5px;
+	font-weight: 600;
+}
+
+#Shot-edit .custom-toolbar .ql-header .ql-picker-options {
+	padding: 10px;
+	box-shadow: none;
+	top: calc(100% + 10px);
+	border-radius: 10px;
+	border: 1px solid rgb(223, 223, 223);
+}
+
+#Shot-edit .custom-toolbar .button-group-font,
+#Shot-edit .custom-toolbar .button-group-align {
+	display: inline-block;
+	width: 100%;
+	border: 1px solid rgb(223, 223, 223);
+	border-radius: 10px;
+}
+
+#Shot-edit .custom-toolbar .button-group-align {
+	border-radius: 10px;
+}
+
+#Shot-edit .custom-toolbar .ql-bold,
+#Shot-edit .custom-toolbar .ql-align.left,
+#Shot-edit .minimize {
+	border-radius: 10px 0 0 10px;
+}
+
+#Shot-edit .custom-toolbar .ql-underline,
+#Shot-edit .custom-toolbar .ql-align.right,
+#Shot-edit .maximize {
+	border-radius: 0 10px 10px 0;
+}
+
+#Shot-edit .custom-toolbar .button-group-font button,
+#Shot-edit .custom-toolbar .button-group-align button {
+	width: 33.33%;
+	display: flex;
+	justify-content: center;
+	padding: 8px 0;
+	height: fit-content;
+	position: relative;
+}
+
+#Shot-edit .custom-toolbar .button-group-font button:hover,
+#Shot-edit .custom-toolbar .button-group-font .ql-active,
+#Shot-edit .custom-toolbar .button-group-align button:hover,
+#Shot-edit .custom-toolbar .button-group-align .ql-active,
+#Shot-edit .layout-group .layout-btn:hover,
+#Shot-edit .layout-group .layout-btn.active {
+	background-color: rgb(243, 243, 244);
+	border: 1px solid var(--color-banner);
+}
+
+#Shot-edit .custom-toolbar .button-group-font button,
+#Shot-edit .custom-toolbar .button-group-align button {
+	border: 1px solid transparent;
+}
+
+#Shot-edit .custom-toolbar button:hover path,
+#Shot-edit .custom-toolbar .ql-active path,
+#Shot-edit .custom-toolbar button:hover line,
+#Shot-edit .custom-toolbar .ql-active line,
+#Shot-edit .custom-toolbar button:hover rect,
+#Shot-edit .custom-toolbar .ql-active rect {
+	stroke: var(--color-banner);
+}
+
+#Shot-edit .custom-toolbar .button-group-font .ql-italic::before,
+#Shot-edit .custom-toolbar .button-group-font .ql-italic::after,
+#Shot-edit .custom-toolbar .button-group-align .ql-align.center::before,
+#Shot-edit .custom-toolbar .button-group-align .ql-align.center::after {
+	width: 1px;
+	height: 100%;
+	content: '';
+	position: absolute;
+	top: 0px;
+	background-color: rgb(243, 243, 244);
+}
+
+#Shot-edit .custom-toolbar .button-group-font .ql-italic::before,
+#Shot-edit .custom-toolbar .button-group-align .ql-align.center::before {
+	left: 0;
+}
+
+#Shot-edit .custom-toolbar .button-group-font .ql-italic::after,
+#Shot-edit .custom-toolbar .button-group-align .ql-align.center::after {
+	right: 0;
+}
+
+#Shot-edit .custom-toolbar .button-group-font button svg,
+#Shot-edit .custom-toolbar .button-group-align button svg {
+	height: 20px;
+}
+
+#Shot-edit .custom-toolbar .button-group-font {
+	margin-bottom: 30px;
+}
+
+#Shot-edit .custom-toolbar .align-title {
+	margin-bottom: 10px;
+}
+
+#Shot-edit .custom-toolbar .close {
+	margin-bottom: 30px;
+	cursor: pointer;
+}
+
+#Shot-edit .custom-toolbar .close:hover {
+	color: #868686;
+}
+
+#Shot-edit .custom-toolbar .type-block {
+	display: flex;
+	align-items: center;
+	padding: 8px 5px;
+	cursor: pointer;
+	margin: 5px 0;
+}
+
+#Shot-edit .custom-toolbar .type-block:hover {
+	background-color: rgb(243, 243, 244);
+	border-radius: 10px;
+}
+
+#Shot-edit .custom-toolbar .type-block svg {
+	font-size: 24px;
+	margin-right: 15px;
+}
+
+#Shot-edit .custom-toolbar .type-block span {
+	font-size: 14px;
+}
+
+#Shot-edit .custom-toolbar .type-block.video {
+	margin-bottom: 30px;
+}
+
+#Shot-edit .custom-toolbar .border-image,
+#Shot-edit .custom-toolbar .input-blank-img-container {
+	width: 100%;
+	padding: 16px 20px;
+	box-sizing: border-box;
+	height: fit-content;
+	border-radius: 10px;
+	border: 1px solid #e2e2e2;
+	margin-bottom: 20px;
+	margin-top: 25px;
+}
+
+#Shot-edit .custom-toolbar .input-blank-img-container {
+	background-color: #f3f3f4;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	padding: 30px 20px;
+}
+
+#Shot-edit .custom-toolbar .border-image img {
+	width: 100%;
+	margin-bottom: 15px;
+}
+
+#Shot-edit .chang-rem {
+	display: flex;
+	justify-content: space-between;
+}
+
+#Shot-edit .chang-rem .img-btn {
+	padding: 10px 35px;
+}
+
+#Shot-edit .font-title.image {
+	margin-bottom: 10px;
+}
+
+#Shot-edit .layout-group .buttons-choice {
+	display: flex;
+	width: 100%;
+	border: 1px solid #e2e2e2;
+	border-radius: 10px;
+	height: 40px;
+}
+
+#Shot-edit .layout-group .layout-btn {
+	background-color: transparent;
+	width: 50%;
+	border: 1px solid transparent;
+}
+
+
+#Shot-edit .layout-group .layout-btn:hover svg {
+	color: var(--color-banner);
+}
+
+#Shot-edit .layout-group .layout-btn svg path {
+	stroke: transparent;
+}
+
+#Shot-edit .alt-group .input-alt:focus {
+	outline: none;
+	border-color: rgba(234, 100, 217, 0.4);
+	box-shadow: 0 0 0 4px rgba(234, 100, 217, 0.1);
+}
+
+#Shot-edit .alt-group .input-alt {
+	border: 1px solid #e2e2e2;
+	padding: 21px 20px 20px;
+	border-radius: 8px;
+	font-weight: 400;
+	width: 100%;
+	box-sizing: border-box;
+	margin-bottom: 20px;
+	font-size: 14px;
+}
+
+#Shot-edit .alt-group .input-alt::placeholder {
+	color: #868686;
+}
+
+#Shot-edit .insert-container {
+	position: relative;
+	width: 100%;
+	display: grid;
+	place-content: center;
+	margin-bottom: 100px;
+}
+
+#Shot-edit .insert-container::before {
+	position: absolute;
+	width: 100%;
+	height: 1px;
+	content: '';
+	background-color: #e2e2e2;
+	top: 50%;
+	left: 0;
+	z-index: 0;
+}
+
+#Shot-edit .insert-container .insert {
+	background-color: white;
+	border: 1px solid #e2e2e2;
+	display: flex;
+	align-items: center;
+	z-index: 1;
+	padding: 10px 50px;
+}
+
+#Shot-edit .insert-container .insert svg {
+	margin-right: 10px;
+}
+
+#Shot-edit .blank-image {
+	background-color: #f3f3f4;
+	display: grid;
+	place-content: center;
+	width: 752px;
+	height: 376px;
+}
+
+#Shot-edit .select-media {
+	background-color: white;
+	border: 1px solid #e2e2e2;
+	padding: 13px 60px;
+	margin-bottom: 10px;
+}
+
+#Shot-edit .append-title {
+	color: rgb(124, 124, 124);
+}

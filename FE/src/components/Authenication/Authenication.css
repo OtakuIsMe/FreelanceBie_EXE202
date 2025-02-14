@@ -64,12 +64,20 @@
 	margin-bottom: 20px;
 }
 
+#login .form-center .forgot-title {
+	font-size: 36px;
+}
+
 #login .form-center .welcome-description,
 #login .form-center .rem-span,
 #login .form-center .forgot,
 #login .form-center .sign-up {
 	font-size: 14px;
 	color: rgb(112, 112, 112);
+}
+
+#login .form-center .forgot-des {
+	max-width: 400px;
 }
 
 #login .form-center .welcome-description {
@@ -86,6 +94,11 @@
 	box-sizing: border-box;
 }
 
+#login .form-center .input::placeholder {
+	color: rgb(189, 189, 189);
+}
+
+#login .form-center .input.password,
 #login .form-center .input.password {
 	margin-bottom: 35px;
 }
