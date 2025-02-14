@@ -4,8 +4,9 @@ import Home from './pages/User/Home/Home'
 import Inspiration from './pages/User/Inspriration/Inspiration'
 import SearchDesigner from './pages/User/SearchDesigner/SearchDesigner'
 import FindJob from './pages/User/FindJob/FindJob'
-import ProfilePage from './pages/User/ProfilePage/ProfilePage'
+import ProfilePage, { DesProfilePage } from './pages/User/ProfilePage/ProfilePage'
 import Login from './pages/User/Login/Login'
+import JobDetail from './pages/User/JobDetail/JobDetail'
 
 function App() {
 	return (
@@ -16,7 +17,9 @@ function App() {
 				<Route path='/search-designer' element={<SearchDesigner />} />
 				<Route path='/find-job' element={<FindJob />} />
 				<Route path='/Profile' element={<ProfilePage />} />
+				<Route path='/des-profile' element={<DesProfilePage />} />
 				<Route path="/login" element={<Login />} />
+				<Route path='/job-detail' element={<JobDetail />} />
 			</Routes>
 		</BrowserRouter>
 	)

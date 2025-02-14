@@ -21,7 +21,7 @@ const Designer : React.FC<Designer> = ({avatarURL, name, location, isSaved, spec
 
     return (
         <div id='designer_card'>
-            <div className="container">
+            <div className="des-container">
                 <div className="card-section user-info">
                     <div className='first-part'>
                         <img src={avatarURL} alt={name} height={24} width={24}/>
@@ -67,7 +67,7 @@ const Designer : React.FC<Designer> = ({avatarURL, name, location, isSaved, spec
                             hideSkills ? 
                             <span onClick={() => hideShillToggle()}>+{specialty.length - 3} {(specialty.length - 3) > 2 ? "skills" : "skill"}</span>
                             :
-                            <span onClick={() => hideShillToggle()}>Hide</span>
+                            <span onClick={() => hideShillToggle()} style={{paddingLeft: '5px'}}>Hide</span>
                         }
                     </div>
                 </div>

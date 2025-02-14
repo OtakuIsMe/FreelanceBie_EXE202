@@ -36,6 +36,7 @@ const SearchDesigner = () => {
   const handleToggle = (category: string) => {
     setActive(category);
   };
+  
   return (
     <div id='search_designer'>
         <Header/>

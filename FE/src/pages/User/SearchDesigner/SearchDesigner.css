@@ -1,5 +1,5 @@
 #search_designer > .page-content {
-    padding: 50px 80px;
+    padding: 0 60px 20px;
 }
 
 #search_designer > .page-content > .section {
@@ -56,6 +56,7 @@
 }
 
 #search_designer > .page-content > .search-filter .addition input {
+    outline-color: #ff9ada;
     font-size: 16px;
     padding: 8px;
     border-radius: 10px;
