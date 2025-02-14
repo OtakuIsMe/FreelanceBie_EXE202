@@ -1,0 +1,27 @@
+#job_card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+#job_card .job-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#job_card .company-logo {
+    height: 50px;
+    width: auto;
+    aspect-ratio: 1/1;
+}
+
+#job_card .job-meta {
+    text-align: right;
+    color: gray;
+    font-size: 14px;
+}

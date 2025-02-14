@@ -8,7 +8,7 @@
     width: 100%;
 }
 
-#designer_card > .container > .user-info {
+#designer_card > .des-container > .user-info {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -16,28 +16,28 @@
     padding: 10px 20px;
 }
 
-#designer_card > .container > .user-info > div {
+#designer_card > .des-container > .user-info > div {
     display: flex;
     gap: 25px;
 }
 
-#designer_card > .container > .user-info > .second-part > div {
+#designer_card > .des-container > .user-info > .second-part > div {
     display: flex;
     align-items: center;
 }
 
-#designer_card > .container > .user-info > div > div > p:first-child {
+#designer_card > .des-container > .user-info > div > div > p:first-child {
     font-size: 22px;
     font-weight: 600;
 }
 
-#designer_card > .container > .user-info > div > img {
+#designer_card > .des-container > .user-info > div > img {
     height: 48px;
     width: 48px;
     border-radius: 50%;
 }
 
-#designer_card > .container > .user-products > .product-container {
+#designer_card > .des-container > .user-products > .product-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
@@ -45,8 +45,9 @@
     overflow-x: auto;
 }
 
-#designer_card > .container > .user-products > .product-container > .img-container {
+#designer_card > .des-container > .user-products > .product-container > .img-container {
     width: 100%;
+    height: 10em;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -55,16 +56,16 @@
     overflow: hidden;
 }
 
-#designer_card > .container > .user-products > .product-container > .img-container > img {
+#designer_card > .des-container > .user-products > .product-container > .img-container > img {
     width: 100%;
-    transition: transform 0.2s;
+    transition: all 0.2s;
 }
 
-#designer_card > .container > .user-skills {
+#designer_card > .des-container > .user-skills {
     width: 100%;
 }
 
-#designer_card > .container > .user-skills > .skill-container {
+#designer_card > .des-container > .user-skills > .skill-container {
     height: fit-content;
     width: 100%;
     display: flex;
@@ -73,20 +74,30 @@
     align-items: center;
 }
 
-#designer_card > .container > .user-skills > .skill-container span {
+#designer_card > .des-container > .user-skills > .skill-container span {
     color: #aaa;
     cursor: pointer;
     font-size: 14px;
 }
 
 #designer_card:hover {
-    border: #888888 solid 1px;
+    border: #ff9ada solid 1px;
+    box-shadow: 0 0 5px rgba(228, 111, 185, 0.62);
 }
 
-#designer_card > .container > .user-products > .product-container > .img-container:hover > img {
+#designer_card > .des-container > .user-products > .product-container > .img-container:hover> img {
     transform: scale(1.2);
 }
 
-#designer_card > .container > .user-skills > .skill-container span:hover {
+#designer_card > .des-container > .user-products > .product-container > .img-container:hover + * > img,
+#designer_card > .des-container > .user-products > .product-container > .img-container:hover + * + * > img,
+#designer_card > .des-container > .user-products > .product-container > .img-container:hover + * + * + * > img,
+#designer_card > .des-container > .user-products > .product-container > .img-container:has(+ * :hover) > img,
+#designer_card > .des-container > .user-products > .product-container > .img-container:has(+ * + * :hover) > img,
+#designer_card > .des-container > .user-products > .product-container > .img-container:has(+ * + * + * :hover) > img {
+    filter: brightness(.5);
+}
+
+#designer_card > .des-container > .user-skills > .skill-container span:hover {
     text-decoration: underline;
 }

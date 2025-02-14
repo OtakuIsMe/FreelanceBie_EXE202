@@ -17,13 +17,13 @@ const Header = () => {
 			<nav className={`navbar ${isMobileMenuOpen ? "open" : ""}`}>
 				<ul>
 					<li>
-						<Link to="#">Explore</Link>
+						<Link to="/inspiration">Explore</Link>
 					</li>
 					<li>
-						<Link to="#">Hire a Designer</Link>
+						<Link to="/search-designer">Hire a Designer</Link>
 					</li>
 					<li>
-						<Link to="#">Find Jobs</Link>
+						<Link to="/find-job">Find Jobs</Link>
 					</li>
 				</ul>
 			</nav>
