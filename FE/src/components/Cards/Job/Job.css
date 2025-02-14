@@ -14,6 +14,12 @@
     gap: 10px;
 }
 
+#job_card .mini p {
+    font-size: 0.7em;
+    gap: 5px;
+    color: gray;
+}
+
 #job_card .company-logo {
     height: 50px;
     width: auto;
@@ -23,5 +29,4 @@
 #job_card .job-meta {
     text-align: right;
     color: gray;
-    font-size: 14px;
 }

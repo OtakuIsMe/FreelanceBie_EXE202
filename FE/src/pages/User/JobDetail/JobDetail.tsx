@@ -2,8 +2,18 @@ import React from "react";
 import FPTLogo from "../../../assets/logo-fpt.jpg";
 import Tag from "../../../components/Cards/Tag/Tag";
 import "./JobDetail.css";
+import Job from "../../../components/Cards/Job/Job";
 
 const JobDetail: React.FC = () => {
+
+    const sameJobs = Array(4).fill({
+        company: "FPT Software",
+        title: "Senior UX/UI Designer",
+        location: "Ho Chi Minh",
+        specialty: ["Web Design", "Mobile Design"],
+        jType: "Full-time",
+        timePosted: "1 hour ago",
+      });
 
     const jobPosts = ({
         img: FPTLogo,
@@ -79,10 +89,19 @@ Brainstorm with team members to execute design sprints.`
                 <div className="job-right-column">
                     <div className="similar-jobs">
                         <p className="tittle">Similar jobs</p>
-                        <ul>
-                            <li>Lead UI Designer - Cogitek - Ha Noi, Viet Nam</li>
-                            <li>Lead UI Designer - Cogitek - Ha Noi, Viet Nam</li>
-                        </ul>
+                        {sameJobs.map((job, index) => (
+                            <Job
+                                key={index}
+                                img={FPTLogo}
+                                company={job.company}
+                                title={job.title}
+                                location={job.location}
+                                spectialty={job.specialty}
+                                jType={job.jType}
+                                timePosted={job.timePosted}
+                                mini={true}
+                            />
+                            ))}
                     </div>
                 </div>
             </div>

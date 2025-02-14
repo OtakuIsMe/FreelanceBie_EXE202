@@ -38,6 +38,7 @@ const FindJob: React.FC = () => {
                 spectialty={job.specialty}
                 jType={job.jType}
                 timePosted={job.timePosted}
+                mini={false}
               />
             ))}
           </div>
