@@ -577,3 +577,15 @@
 #Shot-edit .append-title {
 	color: rgb(124, 124, 124);
 }
+
+#Shot-edit .ql-editor p {
+	font-size: 16px;
+}
+
+#Shot-edit .ql-editor h1 {
+	font-size: 48px;
+}
+
+#Shot-edit .ql-editor h2 {
+	font-size: 32px;
+}

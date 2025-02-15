@@ -114,6 +114,10 @@ const ShotEdit = () => {
 		setContentBlocks(prevBlocks => prevBlocks ? [...prevBlocks, newBlock] : [newBlock]);
 	}
 
+	const hanldeContinuteClick = () => {
+		window.location.href = '/profile?s=add'
+	}
+
 	return (
 		<div id="Shot-edit">
 			<div className="body-edit">
@@ -121,7 +125,7 @@ const ShotEdit = () => {
 					<button type="button" className='btn cancel'>Cancel</button>
 					<div className="save-continute">
 						<button type="button" className='btn save'>Save As Draft</button>
-						<button type="button" className='btn continute'>Continute</button>
+						<button type="button" onClick={hanldeContinuteClick} className='btn continute'>Continute</button>
 					</div>
 				</div>
 				{contentBlocks == null ? (

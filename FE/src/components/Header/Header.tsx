@@ -71,8 +71,8 @@ const Header = () => {
 				</div>
 			) : (
 				<div className="auth">
-					<div className="username">
-						{user.username}
+					<div className="username" onClick={() => { window.location.href = '/profile' }}>
+						Rick Roll
 					</div>
 					<button className="Btn" onClick={LogOut}>
 						<div className="sign">

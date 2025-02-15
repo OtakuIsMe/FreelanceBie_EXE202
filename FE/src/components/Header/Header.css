@@ -119,6 +119,7 @@
 
 #main_header .username {
 	color: black;
+	cursor: pointer;
 }
 
 /* Responsive Design */

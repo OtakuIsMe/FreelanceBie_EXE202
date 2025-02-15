@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './Profile.css'
 import { MdEmail } from "react-icons/md";
 import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 import avatarImg from '../../../assets/avatar.jpg'
 import { FiEdit2 } from 'react-icons/fi';
+import { useSearchParams } from "react-router-dom";
 
 interface ProfileData {
 	name: string;
@@ -60,6 +61,25 @@ interface EditableProfile {
 }
 
 export default function Profile() {
+	const [searchParams] = useSearchParams();
+	const sParam = searchParams.get("s");
+
+	useEffect(() => {
+		if (sParam === 'add') {
+			const newPost: WorkPost = {
+				id: (workPosts.length + 1).toString(),
+				title: "Crypto Trading Mobile App",
+				image: "/src/assets/shot.webp",
+				description: "This crypto trading app UI delivers a seamless, high-performance experience for both beginners and professional traders.",
+				category: "Mobile App",
+				views: 0,
+				likes: 0,
+				datePosted: new Date().toISOString().split("T")[0],
+			};
+			setWorkPosts([...workPosts, newPost]);
+		}
+	}, [sParam])
+
 	const [profile, setProfile] = useState<ProfileData>({
 		name: "Rick Roll",
 		title: "UI/UX Designer",
@@ -158,7 +178,7 @@ export default function Profile() {
 		}
 	]);
 
-	const [workPosts] = useState<WorkPost[]>([
+	const [workPosts, setWorkPosts] = useState<WorkPost[]>([
 		{
 			id: '1',
 			title: 'Mobile Banking App Design',
