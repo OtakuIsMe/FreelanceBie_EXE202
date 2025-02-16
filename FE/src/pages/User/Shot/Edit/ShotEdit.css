@@ -465,7 +465,7 @@
 	padding: 30px 20px;
 }
 
-#Shot-edit .custom-toolbar .border-image img {
+#Shot-edit .custom-toolbar .border-image .media-change {
 	width: 100%;
 	margin-bottom: 15px;
 }
@@ -588,4 +588,8 @@
 
 #Shot-edit .ql-editor h2 {
 	font-size: 32px;
+}
+
+#Shot-edit .video-block video {
+	width: 100%;
 }

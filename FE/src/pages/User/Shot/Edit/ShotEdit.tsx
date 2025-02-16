@@ -6,7 +6,6 @@ import 'react-quill/dist/quill.snow.css';
 import { RxText } from "react-icons/rx";
 import { RxImage } from "react-icons/rx";
 import { RxVideo } from "react-icons/rx";
-import { data } from 'react-router-dom';
 
 interface contentBlock {
 	type: string,
@@ -182,7 +181,7 @@ const ShotEdit = () => {
 											</div>
 										)}
 										{contentBlock.type == "text" && (
-											<div className="content-block">
+											<div className="content-block" key={key}>
 												<div
 													className={`block-hover ${key === focusAction ? 'focus-block' : ''}`}
 													onClick={() => {
@@ -199,6 +198,26 @@ const ShotEdit = () => {
 															onBlur={() => { setTextFocus(-1) }}
 														/>
 													</div>
+												</div>
+											</div>
+										)}
+										{contentBlock.type == "video" && (
+											<div className="content-block" key={key}>
+												<div
+													className={`block-hover ${key === focusAction ? 'focus-block' : ''}`}
+													onClick={() => {
+														setFocusAction(key)
+														setSideAction("video")
+													}}>
+													{contentBlock.data !== '' ? (
+														<div className="video-block" style={contentBlock.isMinimize ? { width: '752px' } : { width: '1024px' }}>
+															<video className='video-play' src={contentBlock.data} loop={true} autoPlay={true} />
+														</div>
+													) : (
+														<div className="blank-image">
+															<p>Drag and drop media, or Browse</p>
+														</div>
+													)}
 												</div>
 											</div>
 										)}
@@ -247,12 +266,18 @@ const ShotEdit = () => {
 							</div>
 						</div>
 					</div>
-					{sideAction === "image" && (
+					{(sideAction === "image" || sideAction === "video") && (
 						<div className="custom-toolbar">
 							<div className="fixed">
 								<p className="close"
 									onClick={() => { hanldeCloseAction() }}>Close</p>
-								<p className='title'><RxImage /> Image</p>
+								<p className='title'>
+									{sideAction === "image" ? (
+										<><RxImage /> Image</>
+									) : (
+										<><RxVideo /> Video</>
+									)}
+								</p>
 								<div className="media-group">
 									<p className="font-title image">Media</p>
 									<input type="file"
@@ -262,9 +287,17 @@ const ShotEdit = () => {
 										style={{ display: 'none' }} />
 									{contentBlocks && focusAction !== null && contentBlocks[focusAction].data !== '' ? (
 										<div className="border-image">
-											<img src={contentBlocks && focusAction !== null
-												? contentBlocks[focusAction]?.data : ""}
-												alt="" />
+											{sideAction === "image" ? (
+												<img className='media-change'
+													src={contentBlocks && focusAction !== null
+														? contentBlocks[focusAction]?.data : ""}
+													alt="" />
+											) : (
+												<video className='media-change'
+													src={contentBlocks && focusAction !== null
+														? contentBlocks[focusAction]?.data : ""}
+													loop={true} autoPlay={true} />
+											)}
 											<div className="chang-rem">
 												<button className="change img-btn" onClick={handleChangeClick}>Change</button>
 												<button className="remove img-btn" >Remove</button>
@@ -321,7 +354,7 @@ const ShotEdit = () => {
 										<RxImage />
 										<span>Image</span>
 									</div>
-									<div className="type-block video">
+									<div className="type-block video" onClick={() => { hanldeAddBlock("video") }}>
 										<RxVideo />
 										<span>Video</span>
 									</div>
