@@ -686,32 +686,43 @@
 }
 
 /* Style cho nút save/cancel nếu có */
-#profile-page .edit-actions {
+#profile-page .form-actions {
 	display: flex;
 	gap: 8px;
-	margin-top: 8px;
+	margin-top: 20px;
 }
 
-#profile-page .save-btn,
 #profile-page .cancel-btn {
 	padding: 8px 16px;
 	border-radius: 8px;
 	font-size: 14px;
 	font-weight: 500;
 	cursor: pointer;
-	margin-right: 10px;
-}
-
-#profile-page .save-btn {
-	background: #4a5568;
+	background: #f44336;
 	color: white;
 	border: none;
 }
 
-#profile-page .cancel-btn {
-	background: #2e94d8;
-	color: #ffffff;
-	border: 1px solid #e4e6e8;
+#profile-page .back-btn {
+	padding: 8px 16px;
+	border-radius: 8px;
+	font-size: 14px;
+	font-weight: 500;
+	cursor: pointer;
+	background: #ff9800;
+	color: white;
+	border: none;
+}
+
+#profile-page .submit-btn {
+	padding: 8px 16px;
+	border-radius: 8px;
+	font-size: 14px;
+	font-weight: 500;
+	cursor: pointer;
+	background: #4caf50;
+	color: white;
+	border: none;
 }
 
 /* Style cho Popup */
@@ -1019,12 +1030,7 @@
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background-color: rgba(
-		0,
-		0,
-		0,
-		0.6
-	); /* Slightly darker overlay for better focus */
+	background-color: rgba(0, 0, 0, 0.6);
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -1032,96 +1038,552 @@
 }
 
 #profile-page .popup-content {
-	position: relative;
-	background-color: white;
-	padding: 30px; /* Increased padding for more space */
-	border-radius: 12px; /* Slightly more rounded corners */
-	width: 600px; /* Increased width for a larger popup */
-	max-width: 90vw; /* Responsive width */
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Deeper shadow for a more pronounced effect */
-	transition: transform 0.3s ease, opacity 0.3s ease; /* Smooth transition for appearance */
-	transform: scale(1.05); /* Slightly larger scale for a pop effect */
-	opacity: 0;
-	animation: popupFadeIn 0.3s forwards; /* Animation for smooth entry */
-}
-
-@keyframes popupFadeIn {
-	from {
-		transform: scale(0.95);
-		opacity: 0;
-	}
-	to {
-		transform: scale(1);
-		opacity: 1;
-	}
+	background-color: #fff;
+	border-radius: 8px;
+	width: 100%;
+	max-width: 800px;
+	max-height: 90vh;
+	overflow-y: auto;
+	padding: 20px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 #profile-page .close-btn-add-post {
 	position: absolute;
-	top: 20px;
-	right: 30px;
+	top: 10px;
+	right: 10px;
 	background: none;
 	border: none;
-	font-size: 1.5rem;
+	font-size: 24px;
 	cursor: pointer;
-	color: #333; /* Ensure the button is visible */
-	z-index: 10; /* Ensure it appears above other content */
-	padding: 5px; /* Add some padding for better clickability */
-	transition: background-color 0.2s ease;
 }
 
-#profile-page .close-btn-add-post:hover {
-	background-color: #f0f0f0; /* Optional: add a hover effect */
-	border-radius: 50%; /* Make the hover effect circular */
+#profile-page .form-step h3 {
+	font-size: 0.9rem;
+	color: #718096;
+	margin-bottom: 5px;
+}
+
+#profile-page .form-step h4 {
+	font-size: 1.5rem;
+	color: #1a202c;
+	margin-bottom: 10px;
+	border-bottom: 1px solid #e2e8f0;
+	padding-bottom: 10px;
 }
 
 #profile-page .form-group {
-	margin-bottom: 20px; /* Increased margin for better spacing */
+	margin-bottom: 20px;
 }
 
 #profile-page .form-group label {
 	display: block;
-	margin-bottom: 8px; /* Slightly more space for clarity */
-	font-weight: bold; /* Bold labels for better readability */
+	margin-bottom: 8px;
+	font-weight: 500;
+	color: #4a5568;
 }
 
 #profile-page .form-group input,
 #profile-page .form-group textarea {
 	width: 100%;
-	padding: 10px; /* Increased padding for comfort */
+	padding: 12px;
 	box-sizing: border-box;
-	border: 1px solid #ccc;
-	border-radius: 6px; /* Slightly more rounded inputs */
+	border: 1px solid #e2e8f0;
+	border-radius: 8px;
 	transition: border-color 0.2s ease;
+	background-color: #f7fafc;
+}
+
+#profile-page .form-group input::placeholder,
+#profile-page .form-group textarea::placeholder {
+	color: #a0aec0;
 }
 
 #profile-page .form-group input:focus,
 #profile-page .form-group textarea:focus {
-	border-color: #007bff; /* Highlight border on focus */
-	outline: none; /* Remove default outline */
+	border-color: #3182ce;
+	outline: none;
+	background-color: #fff;
 }
 
-#profile-page .image-preview {
-	width: 100%;
-	height: auto;
-	max-height: 250px; /* Increased max height for better visibility */
+#profile-page .form-group small {
+	display: block;
+	margin-top: 5px;
+	color: #718096;
+}
+
+#profile-page .form-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+	margin-top: 20px;
+}
+
+#profile-page .cancel-btn,
+#profile-page .continue-btn {
+	padding: 10px 20px;
+	border-radius: 8px;
+	font-weight: bold;
+	cursor: pointer;
+	border: none;
+}
+
+#profile-page .cancel-btn {
+	background-color: #edf2f7;
+	color: #4a5568;
+}
+
+#profile-page .continue-btn {
+	background-color: #3182ce;
+	color: white;
+}
+
+#profile-page .continue-btn:hover {
+	background-color: #2b6cb0;
+}
+
+#profile-page .step-indicator {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 	margin-bottom: 20px;
-	border-radius: 6px;
+	position: relative;
+}
+
+#profile-page .step {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 20px;
+	border-radius: 20px;
+	border: 1px solid #ddd;
+	background-color: #f9f9f9;
+	transition: background-color 0.3s ease;
+	position: relative;
+	z-index: 1;
+}
+
+#profile-page .step.active {
+	border-color: #ff69b4;
+	background-color: #fff;
+}
+
+#profile-page .step-number {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	border-radius: 50%;
+	background-color: #fff;
+	border: 1px solid #ddd;
+	font-weight: bold;
+}
+
+#profile-page .step-label {
+	font-size: 14px;
+	color: #333;
+}
+
+#profile-page .step.active .step-number {
+	border-color: #ff69b4;
+	color: #ff69b4;
+}
+
+#profile-page .step-indicator::before {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 0;
+	right: 0;
+	height: 1px;
+	background-color: #ddd;
+	z-index: 0;
+}
+
+#profile-page .rich-text-editor {
+	border: 1px solid #e2e8f0;
+	border-radius: 8px;
+	overflow: hidden;
+	background-color: #f7fafc;
+	min-height: 270px;
+}
+
+#profile-page .toolbar {
+	display: flex;
+	align-items: center;
+	padding: 8px;
+	background-color: #fff;
+	border-bottom: 1px solid #e2e8f0;
+}
+
+#profile-page .toolbar button {
+	background: none;
+	border: none;
+	margin-right: 10px;
+	cursor: pointer;
+	font-size: 14px;
+	color: #4a5568;
+	transition: color 0.2s ease;
+}
+
+#profile-page .toolbar button:hover {
+	color: #3182ce;
+}
+
+#profile-page .editor {
+	width: 100%;
+	min-height: 150px;
+	padding: 12px;
+	border: none;
+	box-sizing: border-box;
+	background-color: #f7fafc;
+	resize: none;
+	outline: none;
+}
+
+#profile-page .editor:focus {
+	background-color: #fff;
+}
+
+#profile-page .company-information {
+	margin-bottom: 20px;
+	padding: 30px;
+	border: 1px solid #e2e8f0;
+	border-radius: 12px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+#profile-page .company-information h4 {
+	margin-bottom: 20px;
+	font-size: 1rem;
+	color: #333;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+#profile-page .form-group {
+	margin-bottom: 20px;
+}
+
+#profile-page .form-group label {
+	font-weight: 500;
+	color: #4a5568;
+	margin-bottom: 8px;
+	display: block;
+}
+
+#profile-page .form-group input[type="text"],
+#profile-page .form-group input[type="file"] {
+	width: 100%;
+	padding: 12px;
+	border: 1px solid #e2e8f0;
+	border-radius: 8px;
+	background-color: #fff;
+	transition: border-color 0.2s ease;
+}
+
+#profile-page .form-group input[type="text"]:focus,
+#profile-page .form-group input[type="file"]:focus {
+	border-color: #3182ce;
+	outline: none;
+}
+
+#profile-page .form-group small {
+	color: #718096;
+	margin-top: 5px;
+	display: block;
+}
+
+#profile-page .form-group .image-preview {
+	margin-top: 10px;
+	width: 144px;
+	height: 144px;
+	border-radius: 8px;
 	object-fit: cover;
 }
 
-#profile-page button[type="submit"] {
-	background-color: #007bff;
-	color: white;
-	padding: 12px 20px; /* Larger button for better usability */
-	border: none;
-	border-radius: 6px;
-	cursor: pointer;
-	font-weight: bold; /* Bold text for emphasis */
-	transition: background-color 0.2s ease, transform 0.2s ease;
+#profile-page .form-group input[type="file"] {
+	display: none;
 }
 
-#profile-page button[type="submit"]:hover {
-	background-color: #0056b3;
-	transform: translateY(-2px); /* Slight lift on hover */
+#profile-page .file-input-wrapper {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+#profile-page .file-label {
+	display: inline-block;
+	padding: 10px 20px;
+	border: 1px solid #e2e8f0;
+	border-radius: 20px;
+	background-color: #fff;
+	color: #333;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+}
+
+#profile-page .file-label:hover {
+	background-color: #f0f0f0;
+}
+
+#profile-page .form-group small {
+	color: #a0aec0;
+	margin-top: 5px;
+	display: block;
+	font-size: 12px;
+}
+
+#profile-page .step-indicator {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+	position: relative;
+}
+
+#profile-page .step {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 20px;
+	border-radius: 20px;
+	border: 1px solid #ddd;
+	background-color: #f9f9f9;
+	transition: background-color 0.3s ease;
+	position: relative;
+	z-index: 1;
+}
+
+#profile-page .step.active {
+	border-color: #ff69b4;
+	background-color: #fff;
+}
+
+#profile-page .step-number {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	border-radius: 50%;
+	background-color: #fff;
+	border: 1px solid #ddd;
+	font-weight: bold;
+}
+
+#profile-page .step-label {
+	font-size: 14px;
+	color: #333;
+}
+
+#profile-page .step.active .step-number {
+	border-color: #ff69b4;
+	color: #ff69b4;
+}
+
+#profile-page .step-indicator::before {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 0;
+	right: 0;
+	height: 1px;
+	background-color: #ddd;
+	z-index: 0;
+}
+
+#profile-page .popup-title {
+	text-align: center;
+	font-size: 1.5rem;
+	margin-bottom: 10px;
+}
+
+#profile-page .popup-description {
+	text-align: center;
+	font-size: 1rem;
+	color: #718096;
+	margin-bottom: 20px;
+}
+
+/* Styles cho Step 2 */
+#profile-page .step-2 .form-group {
+	margin-bottom: 16px;
+}
+
+#profile-page .step-2 .employment-type,
+#profile-page .step-2 .salary-type {
+	display: flex;
+	gap: 16px;
+}
+
+#profile-page .step-2 .employment-type label,
+#profile-page .step-2 .salary-type label {
+	display: flex;
+	align-items: center;
+	padding: 10px;
+	border: 2px solid #e2e8f0; /* Viền cho các lựa chọn */
+	border-radius: 8px;
+	cursor: pointer;
+	transition: border-color 0.3s ease;
+}
+
+#profile-page .step-2 .employment-type input[type="radio"],
+#profile-page .step-2 .salary-type input[type="radio"] {
+	margin-right: 8px; /* Khoảng cách giữa radio và label */
+}
+
+#profile-page .step-2 .employment-type input[type="radio"]:checked + label,
+#profile-page .step-2 .salary-type input[type="radio"]:checked + label {
+	border-color: #ff69b4; /* Màu viền khi được chọn */
+}
+
+#profile-page .step-2 .payment-rate {
+	display: flex;
+	align-items: center;
+	border: 2px solid #e2e8f0;
+	border-radius: 8px;
+	padding: 10px;
+	background-color: white;
+}
+
+#profile-page .step-2 .payment-rate span {
+	border-radius: 50%;
+	padding: 5px;
+	color: black;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#profile-page .step-2 .payment-rate input {
+	border: none;
+	outline: none;
+	flex: 1;
+	min-width: 80px;
+	font-size: 1.1rem;
+	color: black;
+	font-weight: bold;
+}
+
+#profile-page .step-2 .payment-rate span:last-child {
+	font-size: 1rem;
+	color: black;
+	font-weight: bold;
+	margin-left: 8px;
+	white-space: nowrap;
+}
+
+#profile-page .step-2 .employment-type {
+	display: flex;
+	justify-content: space-between;
+	gap: 16px;
+}
+
+#profile-page .step-2 .employment-option {
+	display: flex;
+	align-items: center;
+	padding: 10px 20px;
+	border: 2px solid transparent;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: border-color 0.3s ease, background-color 0.3s ease;
+	background-color: white;
+	color: #4a5568;
+	position: relative;
+	flex: 1;
+	text-align: center;
+}
+
+#profile-page .step-2 .employment-option input[type="radio"] {
+	display: none;
+}
+
+#profile-page .step-2 .employment-option input[type="radio"]:checked + .icon {
+	color: #ff69b4;
+}
+
+#profile-page .step-2 .employment-option input[type="radio"]:checked + span {
+	color: #ff69b4;
+	font-weight: bold;
+}
+
+#profile-page
+	.step-2
+	.employment-option
+	input[type="radio"]:checked
+	+ span::after {
+	content: "";
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 15px;
+	height: 15px;
+	border-radius: 50%;
+	background-color: #ff69b4;
+	opacity: 0.5;
+}
+
+#profile-page .step-2 .employment-option input[type="radio"]:checked ~ .icon {
+	border-color: #ff69b4;
+}
+
+#profile-page .step-2 .employment-option:hover {
+	border-color: #ff69b4;
+	background-color: rgba(255, 105, 180, 0.1);
+}
+
+#profile-page .step-2 .employment-option .icon {
+	margin-right: 8px;
+	color: #ccc;
+}
+
+#profile-page .step-2 .salary-type {
+	display: flex;
+	justify-content: space-between;
+	gap: 16px;
+}
+
+#profile-page .step-2 .salary-option:hover {
+	border-color: #ff69b4;
+	background-color: rgba(255, 105, 180, 0.1);
+}
+
+#profile-page .step-2 .salary-type label {
+	display: flex;
+	align-items: center;
+	padding: 10px 20px;
+	border: 2px solid #e2e8f0;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: border-color 0.3s ease, background-color 0.3s ease;
+	background-color: white;
+	color: #4a5568;
+	position: relative;
+	flex: 1;
+	text-align: center;
+}
+
+#profile-page .step-2 .salary-type input[type="radio"] {
+	display: none;
+}
+
+#profile-page .step-2 .salary-type input[type="radio"]:checked + span {
+	color: #ff69b4;
+	font-weight: bold;
+}
+
+#profile-page .step-2 .salary-type input[type="radio"]:checked + span::after {
+	content: "";
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 15px;
+	height: 15px;
+	border-radius: 50%;
+	background-color: #ff69b4;
+	opacity: 0.5;
 }
