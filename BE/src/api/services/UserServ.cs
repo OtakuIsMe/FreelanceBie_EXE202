@@ -46,6 +46,7 @@ namespace BE.src.api.services
 		{
 			try
 			{
+				Console.WriteLine(Utils.HashObject<string>(data.Password));
 				var user = await _userRepo.GetUserByEmailPassword(data.Email, Utils.HashObject<string>(data.Password));
 				if (user == null)
 				{
