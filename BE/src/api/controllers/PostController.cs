@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BE.src.api.controllers
 {
+	[ApiController]
+	[Route("post")]
 	public class PostController : ControllerBase
 	{
 		private readonly IPostServ _postServ;

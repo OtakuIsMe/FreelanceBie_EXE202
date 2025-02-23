@@ -23,10 +23,11 @@ function App() {
 					<Route path='/des-profile' element={<DesProfilePage />} />
 					<Route path='/job-detail' element={<JobDetail />} />
 					<Route path="/shot">
-						<Route index element={<ShotDetail />} />
 						<Route path="edit" element={<ShotEdit />} />
+						<Route path=':id' element={<ShotDetail />} />
 					</Route>
 				</Routes>
+
 			</AuthenProvider>
 		</BrowserRouter>
 	)

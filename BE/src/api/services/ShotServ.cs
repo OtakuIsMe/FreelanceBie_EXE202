@@ -6,11 +6,12 @@ using BE.src.api.repositories;
 using BE.src.api.shared.Type;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace BE.src.api.services
 {
 	public interface IShotServ
 	{
-		Task<IActionResult> AddShotData(ShotAddData data);
+		Task<IActionResult> AddShotData(ShotAddData data, Guid UserId);
 		Task<IActionResult> LikeShot(Guid userId, Guid shotId, bool state);
 		Task<IActionResult> ShotOwner(Guid userId);
 		Task<IActionResult> GetShotDetail(Guid? userId, string shotCode);
@@ -18,33 +19,54 @@ namespace BE.src.api.services
 	public class ShotServ : IShotServ
 	{
 		private readonly IShotRepo _shotRepo;
-		public ShotServ(IShotRepo shotRepo)
+		private readonly ISpecialtyRepo _specialtyRepo;
+		public ShotServ(IShotRepo shotRepo, ISpecialtyRepo specialtyRepo)
 		{
 			_shotRepo = shotRepo;
+			_specialtyRepo = specialtyRepo;
 		}
-		public async Task<IActionResult> AddShotData(ShotAddData data)
+		public async Task<IActionResult> AddShotData(ShotAddData data, Guid UserId)
 		{
 			try
 			{
+				List<Specialty> specialties = new();
+				foreach (string specialtyName in data.Specialties)
+				{
+					var specialty = await _specialtyRepo.GetSpecialtyByName(specialtyName);
+					if (specialty == null)
+					{
+						var newSpecialty = new Specialty
+						{
+							Name = specialtyName
+						};
+						await _specialtyRepo.AddSpecialty(newSpecialty);
+						specialties.Add(newSpecialty);
+					}
+					else
+					{
+						specialties.Add(specialty);
+					}
+				}
 				Shot newShot = new()
 				{
 					Title = data.Title,
-					UserId = data.UserId,
-					SpecialtyId = data.SpecialtyId,
+					UserId = UserId,
+					Specialties = specialties,
 					Html = data.Html,
-					Css = data.Css,
 					View = 0
 				};
 				List<ImageVideo> imageVideos = [];
-				foreach (var (file, index) in data.Images.Select((file, index) => (file, index)))
+				foreach (var (img, index) in data.Images.Select((file, index) => (file, index)))
 				{
-					var fileUrl = await Utils.GenerateAzureUrl(MediaTypeEnum.Image,
-										file, $"shot/{index}/{Utils.HashObject(newShot.Id)}");
+					var newImageUrl = await Utils.GenerateAzureUrl(MediaTypeEnum.Image,
+										img.File, $"shot/{Utils.HashObject(newShot.Id)}");
 					ImageVideo newImageVideo = new()
 					{
 						Type = MediaTypeEnum.Image,
-						Url = fileUrl
+						Url = newImageUrl,
+						IsMain = index == 0 ? true : false
 					};
+					newShot.Html = newShot.Html.Replace(img.Replace, newImageUrl);
 					imageVideos.Add(newImageVideo);
 				}
 				newShot.ImageVideos = imageVideos;
@@ -116,13 +138,17 @@ namespace BE.src.api.services
 				int countView = await _shotRepo.GetViewCount(s.Id);
 				ShotCard newShotCard = new()
 				{
-					Image = s.ImageVideos.First().Url,
+					Image = s.ImageVideos.FirstOrDefault(i => i.IsMain == true).Url,
 					CountView = countView,
 					CountLike = countLike,
+					Title = s.Title,
+					Id = s.Id,
+					Specialties = s.Specialties.Select(s => s.Name).ToList(),
+					DatePosted = s.CreateAt,
 					User = new UserShotCard()
 					{
 						Username = s.User.Username,
-						Image = s.User.ImageVideos.First().Url
+						Image = s.User.ImageVideos.FirstOrDefault()?.Url ?? "https://i.kym-cdn.com/photos/images/newsfeed/002/601/167/c81"
 					}
 				};
 				shotCards.Add(newShotCard);
@@ -147,7 +173,6 @@ namespace BE.src.api.services
 				{
 					Title = shot.Title,
 					Html = shot.Html,
-					Css = shot.Css,
 					Owner = new ShotOwner
 					{
 						Image = shot.User.ImageVideos.First().Url,

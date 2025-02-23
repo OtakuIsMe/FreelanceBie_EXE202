@@ -36,10 +36,69 @@ export class ApiGateway {
 		this.setAuthHeader();
 		try {
 			const response = await this.axiosInstance.get<T>(`user/getInfo`)
-			console.log(response.data)
 			return response.data;
 		} catch (error) {
 			return null;
+		}
+	}
+	public static async GetTagsByQuery<T>(query: string): Promise<T> {
+		this.setAuthHeader();
+		try {
+			const response = await this.axiosInstance.get<T>(`specialty/view-specialties?query=${query}`)
+			return response.data
+		} catch (error) {
+			console.log(error)
+			throw error
+		}
+	}
+	public static async PublishShot<T>(
+		Title: string,
+		Specialties: string[],
+		Html: string,
+		Images: string[]
+	): Promise<T> {
+		this.setAuthHeader();
+		try {
+			const formData = new FormData();
+			formData.append("title", Title);
+			formData.append("html", Html);
+			Specialties.map((Specialty, index) => {
+				formData.append(`specialties[${index}]`, Specialty);
+			})
+
+			await Promise.all(
+				Images.map(async (image, index) => {
+					let fileToUpload: File | string = image;
+					if (image.startsWith("blob:")) {
+						const blob = await fetch(image).then((res) => res.blob());
+						fileToUpload = new File([blob], `image-${index}.png`, { type: blob.type });
+					}
+					formData.append(`images[${index}].replace`, image);
+					if (fileToUpload instanceof File) {
+						formData.append(`images[${index}].file`, fileToUpload);
+					}
+				})
+			);
+
+			const response = await this.axiosInstance.post<T>(`shot/AddShotData`, formData, {
+				headers: {
+					"Content-Type": "multipart/form-data",
+				},
+			});
+			return response.data;
+		} catch (error) {
+			console.error("Error publishing shot:", error);
+			throw error;
+		}
+	}
+	public static async ShotOwner<T>(): Promise<T> {
+		this.setAuthHeader();
+		try {
+			const response = await this.axiosInstance.get<T>(`shot/ShotOwner`)
+			return response.data
+		} catch (error) {
+			console.log(error)
+			throw error
 		}
 	}
 }

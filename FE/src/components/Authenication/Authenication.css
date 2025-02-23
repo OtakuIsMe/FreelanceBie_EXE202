@@ -20,8 +20,8 @@
 }
 
 #login .login-form {
-	height: 800px;
-	width: 1270px;
+	height: 80vh;
+	width: 66vw;
 	display: flex;
 	background-color: white;
 	border-radius: 15px;

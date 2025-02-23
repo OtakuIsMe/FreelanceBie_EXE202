@@ -156,7 +156,8 @@ namespace BE.src.api.services
 					ImageVideo newImageVideo = new()
 					{
 						Type = MediaTypeEnum.Image,
-						Url = userAvatar
+						Url = userAvatar,
+						IsMain = false
 					};
 					imageVideos.Add(newImageVideo);
 				}
@@ -167,7 +168,8 @@ namespace BE.src.api.services
 					ImageVideo newImageVideo = new()
 					{
 						Type = MediaTypeEnum.Image,
-						Url = userBackground
+						Url = userBackground,
+						IsMain = false
 					};
 					imageVideos.Add(newImageVideo);
 				}

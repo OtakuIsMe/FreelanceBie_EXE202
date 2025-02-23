@@ -6,6 +6,10 @@ import 'react-quill/dist/quill.snow.css';
 import { RxText } from "react-icons/rx";
 import { RxImage } from "react-icons/rx";
 import { RxVideo } from "react-icons/rx";
+import Explore from '../../../../components/Cards/Explore/Explore';
+import type { Tag } from 'react-tag-input';
+import { WithContext as ReactTags } from 'react-tag-input';
+import { ApiGateway } from '../../../../services/api/ApiService';
 
 interface contentBlock {
 	type: string,
@@ -21,6 +25,11 @@ const ShotEdit = () => {
 	const [sideAction, setSideAction] = useState<string>("")
 	const [focusAction, setFocusAction] = useState<number | null>(null)
 	const [textFocus, setTextFocus] = useState<number>(-1)
+	const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false)
+	const [tags, setTags] = useState<Tag[]>([])
+	const [isSuggestion, setIsSuggestion] = useState<boolean>(false)
+	const [suggestions, setSuggestions] = useState<string[]>([])
+
 	const handleMediaClick = () => {
 		if (fileInputRef.current) {
 			fileInputRef.current.click();
@@ -36,6 +45,37 @@ const ShotEdit = () => {
 			container: ".custome-edior-tool",
 		},
 	};
+
+	const onTagUpdate = (index: number, newTag: Tag) => {
+		const updatedTags = [...tags];
+		updatedTags.splice(index, 1, newTag);
+		setTags(updatedTags);
+	};
+
+	const handleAddition = (tag: Tag) => {
+		setTags((prevTags) => {
+			return [...prevTags, tag];
+		});
+	};
+
+	const handleSuggestionClick = (suggestion: string) => {
+		handleAddition({ id: suggestion, text: suggestion, className: '' });
+		setIsSuggestion(false);
+		handleInputTagChange("");
+	};
+
+	const handleDelete = (index: number) => {
+		setTags(tags.filter((_, i) => i !== index));
+	};
+	const handleInputTagChange = async (value: string) => {
+		const data = await ApiGateway.GetTagsByQuery(value)
+		if (Array.isArray(data)) {
+			const names = data.map(item => item.name);
+			setSuggestions(names);
+		} else {
+			setSuggestions([]);
+		}
+	}
 
 	const handleAddFile = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.target.files && event.target.files.length > 0) {
@@ -114,7 +154,60 @@ const ShotEdit = () => {
 	}
 
 	const hanldeContinuteClick = () => {
-		window.location.href = '/profile?s=add'
+		setIsOpenPopup(true)
+	}
+
+	const handlePulish = async () => {
+		if (contentBlocks != null) {
+			const htmlContent = `
+				<div class="content-blocks-container">
+					${contentBlocks
+					.map((contentBlock, key) => {
+						if (contentBlock.type === "text") {
+							return `
+									<div class="content-block">
+										<div class="block-hover">
+											<div class="text-block">
+												${contentBlock.data}
+											</div>
+										</div>
+									</div>
+								`;
+						} else if (contentBlock.type === "image") {
+							return `
+									<div class="content-block ${key === 0 ? "first" : ""}">
+										<div class="block-hover">
+											<div class="image-block" style="width: ${contentBlock.isMinimize ? "752px" : "1024px"};">
+												<img src="${contentBlock.data}" alt="${contentBlock.AltText || ""}">
+											</div>
+										</div>
+									</div>
+								`;
+						} else if (contentBlock.type === "video") {
+							return `
+									<div class="content-block ${key === 0 ? "first" : ""}">
+										<div class="block-hover">
+											<div class="video-block" style="width: ${contentBlock.isMinimize ? "752px" : "1024px"};">
+												<video class="video-play" src="${contentBlock.data}" loop autoplay aria-label="${contentBlock.AltText || ""}"></video>
+											</div>
+										</div>
+									</div>
+								`;
+						}
+						return "";
+					})
+					.join("")}
+				</div>
+			`;
+			const Specialties = tags.map(tag => tag.text)
+			const Images = contentBlocks
+				.filter(item => item.type === "image")
+				.map(item => item.data);
+			const data = await ApiGateway.PublishShot(titleShot, Specialties, htmlContent, Images)
+			if (data) {
+				window.location.href = '/profile'
+			}
+		}
 	}
 
 	return (
@@ -170,7 +263,7 @@ const ShotEdit = () => {
 													}}>
 													{contentBlock.data !== '' ? (
 														<div className="image-block" style={contentBlock.isMinimize ? { width: '752px' } : { width: '1024px' }}>
-															<img src={contentBlock.data} alt="" />
+															<img src={contentBlock.data} alt={contentBlock.AltText} />
 														</div>
 													) : (
 														<div className="blank-image">
@@ -211,7 +304,7 @@ const ShotEdit = () => {
 													}}>
 													{contentBlock.data !== '' ? (
 														<div className="video-block" style={contentBlock.isMinimize ? { width: '752px' } : { width: '1024px' }}>
-															<video className='video-play' src={contentBlock.data} loop={true} autoPlay={true} />
+															<video aria-label={contentBlock.AltText} className='video-play' src={contentBlock.data} loop={true} autoPlay={true} />
 														</div>
 													) : (
 														<div className="blank-image">
@@ -370,6 +463,80 @@ const ShotEdit = () => {
 						</div>
 					)}
 				</>
+			)}
+			{isOpenPopup && (
+				<div className="background-pop-up">
+					<div className="form-pop-up">
+						<div className="title-container">
+							<p className="title">Final Touches</p>
+						</div>
+						<div className="content">
+							<div className="thumbnail">
+								<p className="title">Thumbnail preview</p>
+								<div className="explore-content">
+									{contentBlocks && (
+										<Explore username='Rick Roll' liked={0} viewed={0} img={contentBlocks[0].data} topic={[]} />
+									)}
+								</div>
+							</div>
+							<div className="settings">
+								<div className="setting-input">
+									<div className="tag-conainter">
+										<p className="tag-title">
+											Tags <span>(maximum 10)</span>
+										</p>
+										<div className="tags-input-container">
+											<ReactTags
+												tags={tags}
+												separators={["Enter"]}
+												onTagUpdate={onTagUpdate}
+												handleDelete={handleDelete}
+												handleAddition={handleAddition}
+												placeholder='Add tags...'
+												handleInputFocus={() => { setIsSuggestion(true) }}
+												handleInputBlur={() => { setTimeout(() => setIsSuggestion(false), 200); }}
+												handleInputChange={(value: string) => { handleInputTagChange(value) }}
+											/>
+											{isSuggestion && suggestions.length != 0 && (
+												<div
+													className="suggestions-popup"
+												>
+													{suggestions.map((suggestion, index) => {
+														return (
+															<div
+																className="suggestion"
+																key={index}
+																onClick={() => handleSuggestionClick(suggestion)}
+															>
+																{suggestion}
+															</div>
+														)
+													})}
+												</div>
+											)}
+										</div>
+										<p className="suggested">
+											Suggested: <span> design, illustration, ui, branding, logo, graphic design, vector, ux, typography, app</span>
+										</p>
+									</div>
+									<div className="feedback">
+										<p className="title">
+											Looking for feedback
+										</p>
+										<input className="switch" type="checkbox"></input>
+									</div>
+								</div>
+								<div className="btns-controller">
+									<button className="btn close" onClick={() => { setIsOpenPopup(false) }}>Close</button>
+									<div className="right-btns">
+										<button className="btn save">Save As Draft</button>
+										<button className="btn publish" onClick={handlePulish}>Publish Now</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 			)}
 		</div >
 	)

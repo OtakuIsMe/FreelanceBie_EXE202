@@ -48,7 +48,8 @@ namespace BE.src.api.services
 				ImageVideo newImageVideo = new()
 				{
 					Type = MediaTypeEnum.Image,
-					Url = fileUrl
+					Url = fileUrl,
+					IsMain = false
 				};
 				newPost.CompanyLogo = newImageVideo;
 

@@ -51,6 +51,7 @@ namespace BE.src.api.repositories
 										.Include(s => s.User)
 											.ThenInclude(u => u.ImageVideos)
 										.Include(s => s.ImageVideos)
+										.Include(s => s.Specialties)
 										.ToListAsync();
 		}
 		public async Task<int> GetLikeCount(Guid ShotId)

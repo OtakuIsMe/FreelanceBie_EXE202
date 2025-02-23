@@ -6,7 +6,7 @@ namespace BE.src.api.domains.Model
 	public class ImageVideo : BaseEntity
 	{
 		public required MediaTypeEnum Type { get; set; }
-
+		public required bool IsMain { get; set; }
 		public Guid? ShotId { get; set; }
 		public Shot Shot { get; set; } = null!;
 		public Guid? UserId { get; set; }

@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BE.src.api.controllers
 {
+	[ApiController]
+	[Route("shot")]
 	public class ShotController : ControllerBase
 	{
 		private readonly IShotServ _shotServ;
@@ -12,10 +14,12 @@ namespace BE.src.api.controllers
 		{
 			_shotServ = shotServ;
 		}
+		[Authorize(Policy = "Customer")]
 		[HttpPost("AddShotData")]
 		public async Task<IActionResult> AddShotData([FromForm] ShotAddData data)
 		{
-			return await _shotServ.AddShotData(data);
+			Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
+			return await _shotServ.AddShotData(data, userId);
 		}
 		[Authorize(Policy = "Customer")]
 		[HttpGet("LikeShot")]
