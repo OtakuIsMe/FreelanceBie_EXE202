@@ -19,7 +19,7 @@ namespace BE.src.api.repositories
 		Task<List<UserApply>> UserApplyByPost(Guid PostId);
 		Task<List<PostJob>> GetPosts(PostJobFilterDTO filter);
 		Task<PostJob?> GetLatestPosts();
-		Task<PostJob?> GetPostById(Guid id);
+		Task<PostJob?> GetPostById(Guid id, CancellationToken cancellationToken = default);
 	}
 	public class PostRepo : IPostRepo
 	{
@@ -125,13 +125,13 @@ namespace BE.src.api.repositories
 						 .FirstOrDefaultAsync();
 		}
 
-		public async Task<PostJob?> GetPostById(Guid id)
+		public async Task<PostJob?> GetPostById(Guid id, CancellationToken cancellationToken = default)
 		{
 			return await _context.PostJobs
 						 .Include(p => p.User)
 							 .ThenInclude(u => u.ImageVideos)
 						 .Include(p => p.Specialty)
-						 .FirstOrDefaultAsync(p => p.Id == id);
+						 .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
 		}
 	}
 }

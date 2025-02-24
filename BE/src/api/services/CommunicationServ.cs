@@ -6,6 +6,7 @@ using BE.src.api.domains.Model;
 using BE.src.api.repositories;
 using BE.src.api.shared.Type;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Asn1.Cms;
 
 namespace BE.src.api.services
 {
@@ -20,22 +21,33 @@ namespace BE.src.api.services
     {
         private readonly ICommunicationRepo _communicationRepo;
         private readonly IPostRepo _postRepo;
-        public CommunicationServ(ICommunicationRepo communicationRepo, IPostRepo postRepo)
+		private readonly ICacheService _cacheService;
+        public CommunicationServ(ICommunicationRepo communicationRepo, IPostRepo postRepo, ICacheService cacheService)
         {
             _communicationRepo = communicationRepo;
             _postRepo = postRepo;
+			_cacheService = cacheService;
         }
 
 		public async Task<IActionResult> GetAllCommunications(Guid userId)
 		{
 			try
             {
+				string key = $"communications:{userId}";
+
+				var cachedCommunications = await _cacheService.Get<List<Communication>>(key);
+				if (cachedCommunications != null)
+				   return SuccessResp.Ok(cachedCommunications);
+
                 var communications = await _communicationRepo.GetCommunications(userId);
                 if (communications == null)
                 {
                     return ErrorResp.NotFound("Communications not found");
                 }
-                return SuccessResp.Ok(communications);
+                
+				await _cacheService.Set(key, communications, TimeSpan.FromMinutes(10));
+
+				return SuccessResp.Ok(communications);
             }
             catch (System.Exception ex)
             {
@@ -91,6 +103,12 @@ namespace BE.src.api.services
 		{
 			try
             {
+				var key = $"messages:{communicationId}";
+
+				var cachedMessages = await _cacheService.Get<List<Message>>(key);
+				if (cachedMessages != null)
+				   return SuccessResp.Ok(cachedMessages);
+
                 var communication = await _communicationRepo.GetCommunicationById(communicationId);
                 if (communication == null)
                 {
@@ -98,10 +116,11 @@ namespace BE.src.api.services
                 }
 
                 var messages = await _communicationRepo.GetMessages(communicationId);
-                if (messages == null)
-                {
-                    return ErrorResp.NotFound("Messages not found");
-                }
+                if (messages == null || !messages.Any())
+            		return ErrorResp.NotFound("Messages not found");
+
+				await _cacheService.Set(key, messages, TimeSpan.FromMinutes(10));
+
                 return SuccessResp.Ok(messages);
             }
             catch (System.Exception ex)
@@ -127,7 +146,7 @@ namespace BE.src.api.services
                 }
 
                 var index = messages.Count;
-                var isZero = communication.ZeroId == userId ? true : false;
+                var isZero = communication.ZeroId == userId;
 
 				var messageContent = new Message
 				{
@@ -142,6 +161,9 @@ namespace BE.src.api.services
 				{
 					return ErrorResp.BadRequest("Failed to send message");
 				}
+
+				var key = $"messages:{communicationId}";
+				await _cacheService.Remove(key);
 
 				return SuccessResp.Created("Message sent successfully");
 			}

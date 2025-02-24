@@ -20,11 +20,13 @@ namespace BE.src.api.services
 	public class ShotServ : IShotServ
 	{
 		private readonly IShotRepo _shotRepo;
+		private readonly ICacheService _cacheService;
 		private readonly ISpecialtyRepo _specialtyRepo;
-		public ShotServ(IShotRepo shotRepo, ISpecialtyRepo specialtyRepo)
+		public ShotServ(IShotRepo shotRepo, ICacheService cacheService, ISpecialtyRepo specialtyRepo)
 		{
 			_shotRepo = shotRepo;
 			_specialtyRepo = specialtyRepo;
+			_cacheService = cacheService;
 		}
 		public async Task<IActionResult> AddShotData(ShotAddData data, Guid UserId)
 		{
@@ -76,6 +78,9 @@ namespace BE.src.api.services
 				{
 					return ErrorResp.BadRequest("Cant create shot");
 				}
+
+				await _cacheService.ClearWithPattern("shots");
+
 				return SuccessResp.Created("Add Shot Success");
 			}
 			catch (System.Exception ex)
@@ -116,6 +121,24 @@ namespace BE.src.api.services
 				return ErrorResp.BadRequest(ex.Message);
 			}
 		}
+
+		private string GenerateCacheKey(ShotSearchFilterDTO filter)
+		{
+			var keyParts = new List<string>();
+
+			if (!string.IsNullOrEmpty(filter.UserName)) keyParts.Add($"username:{filter.UserName}");
+			if (!string.IsNullOrEmpty(filter.UserEmail)) keyParts.Add($"useremail:{filter.UserEmail}");
+			if (!string.IsNullOrEmpty(filter.UserCity)) keyParts.Add($"usercity:{filter.UserCity}");
+			if (!string.IsNullOrEmpty(filter.UserEducation)) keyParts.Add($"usereducation:{filter.UserEducation}");
+			if (!string.IsNullOrEmpty(filter.SpecialtyName)) keyParts.Add($"specialtyname:{filter.SpecialtyName}");
+			if (!string.IsNullOrEmpty(filter.HtmlKeyword)) keyParts.Add($"htmlkeyword:{filter.HtmlKeyword}");
+			if (!string.IsNullOrEmpty(filter.CssKeyword)) keyParts.Add($"csskeyword:{filter.CssKeyword}");
+			if (filter.MinViews.HasValue) keyParts.Add($"minviews:{filter.MinViews}");
+			if (filter.MaxViews.HasValue) keyParts.Add($"maxviews:{filter.MaxViews}");
+
+			return $"shots{string.Join("|", keyParts)}";
+		}
+
 
 		public async Task<IActionResult> ShotOwner(Guid userId)
 		{
@@ -202,11 +225,20 @@ namespace BE.src.api.services
 		{
 			try
 			{
+				var cacheKey = GenerateCacheKey(filter);
+
+				var cacheShots = await _cacheService.Get<List<Shot>>(cacheKey);
+				if (cacheShots != null)
+					return SuccessResp.Ok(cacheShots);
+
 				var shots = await _shotRepo.GetShots(filter);
 				if (shots.Count == 0)
 				{
 					return ErrorResp.NotFound("No shot found");
 				}
+
+				await _cacheService.Set(cacheKey, shots, TimeSpan.FromMinutes(10));
+
 				return SuccessResp.Ok(shots);
 			}
 			catch (System.Exception ex)

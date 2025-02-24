@@ -135,3 +135,7 @@ _NCrunch*
 vs/
 Migrations/
 .env
+
+dump.rdb
+appendonly.aof
+data/

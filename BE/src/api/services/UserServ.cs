@@ -39,8 +39,10 @@ namespace BE.src.api.services
 		private readonly IMembershipRepo _membershipRepo;
 		private readonly IPostRepo _postRepo;
 		private readonly INotificationRepo _notificationRepo;
+		private readonly ICacheService _cacheService;
 		public UserServ(IUserRepo userRepo, EmailServ emailServ, ISocialProfileRepo socialProfileRepo,
-						IMembershipRepo membershipRepo, IPostRepo postRepo, INotificationRepo notificationRepo)
+						IMembershipRepo membershipRepo, IPostRepo postRepo, INotificationRepo notificationRepo,
+						ICacheService cacheService)
 		{
 			_userRepo = userRepo;
 			_emailServ = emailServ;
@@ -48,6 +50,7 @@ namespace BE.src.api.services
 			_membershipRepo = membershipRepo;
 			_postRepo = postRepo;
 			_notificationRepo = notificationRepo;
+			_cacheService = cacheService;
 		}
 
 		public async Task<IActionResult> Login(LoginRq data)
@@ -94,11 +97,20 @@ namespace BE.src.api.services
 		{
 			try
 			{
+				var cachedUsers = await _cacheService.Get<List<User>>("all-users");
+				if(cachedUsers != null)
+				{
+					return SuccessResp.Ok(cachedUsers);
+				}
+
 				var users = await _userRepo.GetUsers();
 				if (users.Count == 0)
 				{
 					return ErrorResp.NotFound("No users found");
 				}
+
+				await _cacheService.Set("all-users", users, TimeSpan.FromMinutes(10));
+
 				return SuccessResp.Ok(users);
 			}
 			catch (System.Exception ex)
@@ -237,6 +249,17 @@ namespace BE.src.api.services
 		{
 			try
 			{
+				var redisKey = $"follow:{Follower}:{Followed}";
+
+				var cachedFollowState = await _cacheService.Get<bool?>(redisKey);
+				if(cachedFollowState.HasValue)
+				{
+					if (cachedFollowState.Value == State)
+					{
+						return SuccessResp.Ok(State ? "Already following" : "Already unfollowed");
+					}
+				}
+
 				var follow = await _userRepo.GetFollow(Follower, Followed);
 				if (State)
 				{
@@ -248,6 +271,8 @@ namespace BE.src.api.services
 							FollowingId = Follower
 						};
 						await _userRepo.CreateFollow(newFollow);
+
+						await _cacheService.Set(redisKey, true, TimeSpan.FromDays(15));
 					}
 					return SuccessResp.Created("Follow Success");
 				}
@@ -256,6 +281,8 @@ namespace BE.src.api.services
 					if (follow != null)
 					{
 						await _userRepo.DeleteFollow(follow);
+
+						await _cacheService.Remove(redisKey);
 					}
 					return SuccessResp.Ok("Unfollow Success");
 				}
@@ -378,11 +405,20 @@ namespace BE.src.api.services
 		{
 			try
 			{
+				var cachedProfile = await _cacheService.Get<User>($"profile-{userId}");
+				if (cachedProfile != null)
+				{
+					return SuccessResp.Ok(cachedProfile);
+				}
+
 				var user = await _userRepo.ViewProfileUser(userId);
 				if (user == null)
 				{
 					return ErrorResp.NotFound("User not found");
 				}
+
+				await _cacheService.Set($"profile-{userId}", user, TimeSpan.FromMinutes(10));
+
 				return SuccessResp.Ok(user);
 			}
 			catch (System.Exception ex)
@@ -470,15 +506,40 @@ namespace BE.src.api.services
 			}
 		}
 
+		private string GenerateCacheKey(UserSearchingDTO searchDTO)
+		{
+			var keyParts = new List<string>();
+
+			if (!string.IsNullOrEmpty(searchDTO.Name)) keyParts.Add($"Name:{searchDTO.Name}");
+			if (!string.IsNullOrEmpty(searchDTO.Username)) keyParts.Add($"Username:{searchDTO.Username}");
+			if (!string.IsNullOrEmpty(searchDTO.Email)) keyParts.Add($"Email:{searchDTO.Email}");
+			if (!string.IsNullOrEmpty(searchDTO.Phone)) keyParts.Add($"Phone:{searchDTO.Phone}");
+			if (!string.IsNullOrEmpty(searchDTO.City)) keyParts.Add($"City:{searchDTO.City}");
+			if (!string.IsNullOrEmpty(searchDTO.Education)) keyParts.Add($"Education:{searchDTO.Education}");
+
+			return $"searching_designers{string.Join("|", keyParts)}";
+		}
+
 		public async Task<IActionResult> SearchingDesigners(UserSearchingDTO userSearchingDTO)
 		{
 			try
 			{
+				var searchKey = GenerateCacheKey(userSearchingDTO);
+
+				var cachedSearching = await _cacheService.Get<List<User>>(searchKey);
+				if (cachedSearching != null)
+				{
+					return SuccessResp.Ok(cachedSearching);
+				}
+
 				var users = await _userRepo.FindUsers(userSearchingDTO);
 				if (users.Count == 0)
 				{
 					return ErrorResp.NotFound("No users found");
 				}
+
+				await _cacheService.Set(searchKey, users, TimeSpan.FromMinutes(5));
+
 				return SuccessResp.Ok(users);
 			}
 			catch (System.Exception ex)

@@ -14,7 +14,7 @@ namespace BE.src.api.repositories
         Task<List<Message>> GetMessages(Guid communicationId);
         Task<bool> AddCommunication(Communication communication);
         Task<bool> AddMessage(Message message);
-        Task<Communication?> GetCommunicationById(Guid id);
+        Task<Communication?> GetCommunicationById(Guid id, CancellationToken cancellationToken = default);
     }
     public class CommunicationRepo : ICommunicationRepo
     {
@@ -36,9 +36,9 @@ namespace BE.src.api.repositories
             return await _context.SaveChangesAsync() > 0;
 		}
 
-		public async Task<Communication?> GetCommunicationById(Guid id)
+		public async Task<Communication?> GetCommunicationById(Guid id, CancellationToken cancellationToken = default)
 		{
-			return await _context.Communications.FirstOrDefaultAsync(x => x.Id == id);
+			return await _context.Communications.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 		}
 
 		public async Task<List<Communication>> GetCommunications(Guid userId)

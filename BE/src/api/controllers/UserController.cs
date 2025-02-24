@@ -11,7 +11,7 @@ namespace BE.src.api.controllers
 	{
 		private readonly IUserServ _userServ;
 		private readonly INotificationServ _notificationServ;
-		public UserController(IUserServ userServ, IRedisServ redisServ, INotificationServ notificationServ)
+		public UserController(IUserServ userServ, INotificationServ notificationServ)
 		{
 			_userServ = userServ;
 			_notificationServ = notificationServ;
