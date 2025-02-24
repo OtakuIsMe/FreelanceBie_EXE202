@@ -44,6 +44,7 @@ namespace BE.src.api.domains.Database
 		public DbSet<Message> Messages { get; set; } = null!;
 		public DbSet<SocialProfile> SocialProfiles { get; set; } = null!;
 		public DbSet<Notification> Notifications { get; set; } = null!;
+		public DbSet<Transaction> Transactions { get; set; } = null!;
 
 		protected override void OnModelCreating(ModelBuilder builder)
 		{
@@ -564,6 +565,31 @@ namespace BE.src.api.domains.Database
 					.WithMany(u => u.Notifications)
 					.HasForeignKey(n => n.UserId)
 					.OnDelete(DeleteBehavior.Cascade);
+			});
+
+			builder.Entity<Transaction>(entity =>
+			{
+				entity.HasKey(t => t.Id);
+
+				entity.HasOne(t => t.MemberUser)
+					.WithMany(mu => mu.Transactions)
+					.HasForeignKey(t => t.MemberUserId)
+					.OnDelete(DeleteBehavior.Restrict);
+
+				entity.Property(t => t.Total)
+					.IsRequired();
+
+				entity.Property(t => t.Status)
+					.IsRequired()
+					.HasMaxLength(20)
+					.HasConversion(
+						u => u.ToString(),
+						u => u.ToEnum<TransactionStatusEnum>()
+					);
+				
+				entity.Property(u => u.PaymentId)
+					.HasMaxLength(100)
+					.IsRequired();
 			});
 		}
 	}

@@ -71,6 +71,9 @@ builder.Services.AddScoped<IMembershipRepo, MembershipRepo>();
 builder.Services.AddScoped<INotificationRepo, NotificationRepo>();
 builder.Services.AddScoped<ISocialProfileRepo, SocialProfileRepo>();
 builder.Services.AddScoped<ISpecialtyRepo, SpecialtyRepo>();
+builder.Services.AddScoped<ITransactionRepo, TransactionRepo>();
+builder.Services.AddScoped<IPostRepo, PostRepo>();
+builder.Services.AddScoped<ICommunicationRepo, CommunicationRepo>();
 builder.Services.AddScoped<IShotRepo, ShotRepo>();
 
 builder.Services.AddScoped<IUserServ, UserServ>();
@@ -79,6 +82,9 @@ builder.Services.AddSingleton<IRedisServ, RedisServ>();
 builder.Services.AddSingleton<EmailServ>();
 builder.Services.AddScoped<INotificationServ, NotificationServ>();
 builder.Services.AddScoped<ISpecialtyServ, SpecialtyServ>();
+builder.Services.AddScoped<ITransactionServ, TransactionServ>();
+builder.Services.AddScoped<IPostServ, PostServ>();
+builder.Services.AddScoped<ICommunicationServ, CommunicationServ>();
 builder.Services.AddScoped<IShotServ, ShotServ>();
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisConnectionString));

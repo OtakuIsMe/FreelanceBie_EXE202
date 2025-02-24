@@ -15,6 +15,7 @@ namespace BE.src.api.services
 		Task<IActionResult> ApplyJob(Guid userId, Guid postId);
 		Task<IActionResult> PostJobDetail(Guid? userId, string postCode);
 		Task<IActionResult> HistoryHiring(Guid postId);
+		Task<IActionResult> GetPosts(PostJobFilterDTO filter);
 	}
 	public class PostServ : IPostServ
 	{
@@ -169,6 +170,23 @@ namespace BE.src.api.services
 					};
 				}
 				return SuccessResp.Ok(postDetail);
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+
+		public async Task<IActionResult> GetPosts(PostJobFilterDTO filter)
+		{
+			try
+			{
+				var posts = await _postRepo.GetPosts(filter);
+				if (posts.Count == 0)
+				{
+					return ErrorResp.NotFound("No post found");
+				}
+				return SuccessResp.Ok(posts);
 			}
 			catch (System.Exception ex)
 			{

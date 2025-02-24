@@ -50,5 +50,10 @@ namespace BE.src.api.controllers
 
 			return await _shotServ.GetShotDetail(userId, shotCode);
 		}
+		[HttpGet("search-filter-shots")]
+		public async Task<IActionResult> GetShots([FromQuery] ShotSearchFilterDTO filter)
+		{
+			return await _shotServ.GetShots(filter);
+		}
 	}
 }

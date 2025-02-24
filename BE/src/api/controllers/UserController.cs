@@ -69,24 +69,32 @@ namespace BE.src.api.controllers
 		{
 			return await _userServ.ChangePassword(data);
 		}
+		[Authorize(Policy = "Customer")]
 		[HttpGet("view-notifications")]
-		public async Task<IActionResult> ViewNotifications([FromQuery] Guid userId)
+		public async Task<IActionResult> ViewNotifications()
 		{
+			Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
 			return await _notificationServ.ViewNotifications(userId);
 		}
+		[Authorize(Policy = "Customer")]
 		[HttpGet("view-profile")]
-		public async Task<IActionResult> ViewProfile([FromQuery] Guid userId)
+		public async Task<IActionResult> ViewProfile()
 		{
+			Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
 			return await _userServ.ViewProfile(userId);
 		}
+		[Authorize(Policy = "Customer")]
 		[HttpPut("edit-social-links")]
-		public async Task<IActionResult> EditSocialLinkProfiles([FromQuery] Guid userId, [FromForm] UserEditSocialLinksDTO user)
+		public async Task<IActionResult> EditSocialLinkProfiles([FromForm] UserEditSocialLinksDTO user)
 		{
+			Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
 			return await _userServ.EditSocialLinkProfiles(userId, user);
 		}
+		[Authorize(Policy = "Customer")]
 		[HttpPut("edit-profile")]
-		public async Task<IActionResult> EditProfile([FromQuery] Guid userId, [FromForm] UserEditProfileDTO user)
+		public async Task<IActionResult> EditProfile([FromForm] UserEditProfileDTO user)
 		{
+			Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
 			return await _userServ.EditProfile(userId, user);
 		}
 		[HttpGet("search-designers")]
@@ -100,6 +108,13 @@ namespace BE.src.api.controllers
 		{
 			Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
 			return await _userServ.GetUserById(userId);
+		}
+		[Authorize(Policy = "Customer")]
+		[HttpGet("nofitications-membership")]
+		public async Task<IActionResult> NofiticationsMembership()
+		{
+			Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
+			return await _userServ.CheckNotificationWhenPost(userId);
 		}
 	}
 }

@@ -48,5 +48,10 @@ namespace BE.src.api.controllers
 		// {
 		// 	return await _postServ.
 		// }
+		[HttpGet("filter-posts")]
+		public async Task<IActionResult> GetPosts([FromQuery] PostJobFilterDTO filter)
+		{
+			return await _postServ.GetPosts(filter);
+		}
 	}
 }
