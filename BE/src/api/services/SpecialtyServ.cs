@@ -20,9 +20,11 @@ namespace BE.src.api.services
 	public class SpecialtyServ : ISpecialtyServ
 	{
         private readonly ISpecialtyRepo _specialtyRepo;
-        public SpecialtyServ(ISpecialtyRepo specialtyRepo)
+        private readonly ICacheService _cacheService;
+        public SpecialtyServ(ISpecialtyRepo specialtyRepo, ICacheService cacheService)
         {
             _specialtyRepo = specialtyRepo;
+            _cacheService = cacheService;
         }
 
 		public async Task<IActionResult> AddSpecialty(SpecialtyCreateDTO specialty)
@@ -39,6 +41,9 @@ namespace BE.src.api.services
                 {
                     return ErrorResp.BadRequest("Failed to add specialty");
                 }
+
+                await _cacheService.ClearWithPattern("specialties");
+
                 return SuccessResp.Created("Specialty added successfully");
             }
             catch (System.Exception ex)
@@ -93,11 +98,19 @@ namespace BE.src.api.services
 		{
 			try
             {
+                var key = "specialties";
+                var cacheSpecialties = await _cacheService.Get<List<Specialty>>(key);
+                if(cacheSpecialties != null)
+                    return SuccessResp.Ok(cacheSpecialties);
+
                 var specialties = await _specialtyRepo.GetSpecialties();
                 if (specialties.Count == 0)
                 {
                     return ErrorResp.BadRequest("No specialties found");
                 }
+
+                await _cacheService.Set(key, specialties, TimeSpan.FromMinutes(10));
+
                 return SuccessResp.Ok(specialties);
             }
             catch (System.Exception ex)

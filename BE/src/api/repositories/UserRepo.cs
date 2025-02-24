@@ -15,13 +15,13 @@ namespace BE.src.api.repositories
 		Task<Follow?> GetFollow(Guid Follower, Guid Followed);
 		Task<bool> DeleteFollow(Follow follow);
 		Task<bool> CreateFollow(Follow follow);
-		Task<Save?> GetUserSave(Guid userId);
+		Task<Save?> GetUserSave(Guid userId, CancellationToken cancellationToken = default);
 		Task<bool> CreateSave(Save save);
 		Task<bool> UpdateSave(Save save);
 		Task<bool> DeleteSave(Save save);
 		Task<bool> ChangePassword(string email, string newPassword);
-		Task<User?> ViewProfileUser(Guid userId);
-		Task<User?> GetUserById(Guid userId);
+		Task<User?> ViewProfileUser(Guid userId, CancellationToken cancellationToken = default);
+		Task<User?> GetUserById(Guid userId, CancellationToken cancellationToken = default);
 		Task<bool> EditProfile(User user);
 		Task<List<User>> FindUsers(UserSearchingDTO userSearchingDTO);
 	}
@@ -77,9 +77,9 @@ namespace BE.src.api.repositories
 			return await _context.SaveChangesAsync() > 0;
 		}
 
-		public async Task<Save?> GetUserSave(Guid userId)
+		public async Task<Save?> GetUserSave(Guid userId, CancellationToken cancellationToken = default)
 		{
-			return await _context.Saves.FirstOrDefaultAsync(s => s.UserId == userId);
+			return await _context.Saves.FirstOrDefaultAsync(s => s.UserId == userId, cancellationToken);
 		}
 
 		public async Task<bool> CreateSave(Save save)
@@ -110,32 +110,28 @@ namespace BE.src.api.repositories
 			return await _context.SaveChangesAsync() > 0;
 		}
 
-		public async Task<User?> ViewProfileUser(Guid userId)
+		public async Task<User?> ViewProfileUser(Guid userId, CancellationToken cancellationToken = default)
 		{
 			return await _context.Users
 								.Include(x => x.ImageVideos)
 								.Include(x => x.Notifications)
-								.Include(x => x.SocialProfiles)
 								.Include(x => x.Comments)
 								.Include(x => x.Likes)
-									.ThenInclude(x => x.User)
-										.ThenInclude(x => x.ImageVideos)
-								.Include(x => x.Likes)
-									.ThenInclude(x => x.User)
-										.ThenInclude(x => x.Shots)
-											.ThenInclude(x => x.ImageVideos)
-								.Include(x => x.Saves)
-									.ThenInclude(x => x.Shot)
-										.ThenInclude(x => x.ImageVideos)
-								.Include(x => x.Saves)
-									.ThenInclude(x => x.User)
-										.ThenInclude(x => x.ImageVideos)
+									// .ThenInclude(x => x.User)
+									// 	.ThenInclude(x => x.ImageVideos)
+								// .Include(x => x.Likes)
+								// 	.ThenInclude(x => x.User)
+								// 		.ThenInclude(x => x.Shots)
+								// 			.ThenInclude(x => x.ImageVideos)
+								// .Include(x => x.Saves)
+								// 	.ThenInclude(x => x.User)
+								// 		.ThenInclude(x => x.ImageVideos)
 								.Include(x => x.Saves)
 									.ThenInclude(x => x.Post)
 								.Include(x => x.Saves)
 									.ThenInclude(x => x.Shot)
 										.ThenInclude(x => x.ImageVideos)
-								.FirstOrDefaultAsync(x => x.Id == userId);
+								.FirstOrDefaultAsync(x => x.Id == userId, cancellationToken);
 		}
 
 		public async Task<bool> EditProfile(User user)
@@ -145,9 +141,9 @@ namespace BE.src.api.repositories
 			return true;
 		}
 
-		public async Task<User?> GetUserById(Guid userId)
+		public async Task<User?> GetUserById(Guid userId, CancellationToken cancellationToken = default)
 		{
-			return await _context.Users.Include(x => x.ImageVideos).FirstOrDefaultAsync(x => x.Id == userId);
+			return await _context.Users.Include(x => x.ImageVideos).FirstOrDefaultAsync(x => x.Id == userId, cancellationToken);
 		}
 
 		public async Task<List<User>> FindUsers(UserSearchingDTO userSearchingDTO)

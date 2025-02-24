@@ -20,10 +20,12 @@ namespace BE.src.api.services
     {
         private readonly ITransactionRepo _transactionRepo;
         private readonly IMembershipRepo _membershipRepo;
-        public TransactionServ(ITransactionRepo transactionRepo, IMembershipRepo membershipRepo)
+        private readonly ICacheService _cacheService;
+        public TransactionServ(ITransactionRepo transactionRepo, IMembershipRepo membershipRepo, ICacheService cacheService)
         {
             _transactionRepo = transactionRepo;
             _membershipRepo = membershipRepo;
+            _cacheService = cacheService;
         }
 
         private APIContext GetAPIContext()
@@ -180,11 +182,20 @@ namespace BE.src.api.services
 		{
 			try
             {
+                var key = $"transactions:{userId}";
+
+                var cacheTransactions = await _cacheService.Get<List<MyTransaction>>(key);
+                if (cacheTransactions != null)
+                    return SuccessResp.Ok(cacheTransactions);
+
                 var transactions = await _transactionRepo.GetTransactions(userId);
                 if(transactions.Count == 0)
                 {
                     return ErrorResp.NotFound("No transaction found");
                 }
+
+                await _cacheService.Set(key, transactions, TimeSpan.FromMinutes(10));
+
                 return SuccessResp.Ok(transactions);
             }
             catch (System.Exception ex)

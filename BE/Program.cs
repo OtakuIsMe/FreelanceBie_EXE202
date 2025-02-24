@@ -10,6 +10,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using StackExchange.Redis;
 using DotNetEnv;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -54,7 +56,6 @@ builder.Services.AddScoped<ICommunicationRepo, CommunicationRepo>();
 
 builder.Services.AddScoped<IUserServ, UserServ>();
 builder.Services.AddScoped<IMembershipServ, MembershipServ>();
-builder.Services.AddSingleton<IRedisServ, RedisServ>();
 builder.Services.AddSingleton<EmailServ>();
 builder.Services.AddScoped<INotificationServ, NotificationServ>();
 builder.Services.AddScoped<ISpecialtyServ, SpecialtyServ>();
@@ -63,6 +64,9 @@ builder.Services.AddScoped<IPostServ, PostServ>();
 builder.Services.AddScoped<ICommunicationServ, CommunicationServ>();
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisConnectionString));
+
+builder.Services.AddScoped<ICacheService, CacheServ>();
+
 builder.Services.AddDbContext<FLBDbContext>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -95,6 +99,23 @@ builder.Services.AddSwaggerGen(c =>
 			});
 		});
 
+builder.Services.AddRateLimiter(_ => _
+    .AddFixedWindowLimiter(policyName: "fixed", options =>
+    {
+        options.PermitLimit = 4;
+        options.Window = TimeSpan.FromSeconds(12);
+        options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        options.QueueLimit = 2;
+    }));
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+	options.ListenAnyIP(5000);
+    options.ListenAnyIP(5147);
+    options.ListenAnyIP(5148);
+    options.ListenAnyIP(5149);
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -110,5 +131,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapGet("/", () => "Hello from ASP.NET Core!");
 
 app.Run();

@@ -7,7 +7,7 @@ namespace BE.src.api.repositories
     public interface ITransactionRepo
     {
         Task<bool> CreateTransaction(Transaction transaction);
-        Task<List<Transaction>> GetTransactions(Guid userId);
+        Task<List<Transaction>> GetTransactions(Guid userId, CancellationToken cancellationToken = default);
     }
     public class TransactionRepo : ITransactionRepo
     {
@@ -23,13 +23,13 @@ namespace BE.src.api.repositories
             return await _context.SaveChangesAsync() > 0;
 		}
 
-		public async Task<List<Transaction>> GetTransactions(Guid userId)
+		public async Task<List<Transaction>> GetTransactions(Guid userId, CancellationToken cancellationToken = default)
 		{
 			return await _context.Transactions.Where(t => t.MemberUser.UserId == userId)
                                                 .Include(t => t.MemberUser)
                                                     .ThenInclude(mu => mu.User)
                                                        .ThenInclude(u => u.ImageVideos)
-                                                .ToListAsync();
+                                                .ToListAsync(cancellationToken);
 		}
 	}
 }
