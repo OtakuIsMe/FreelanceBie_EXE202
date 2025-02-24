@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 
 export class ApiGateway {
-	public static readonly API_Base: string = 'http://localhost:5147/';
+	public static readonly API_Base: string = 'http://localhost:5000/';
 	private static axiosInstance: AxiosInstance = axios.create({
 		baseURL: ApiGateway.API_Base,
 		headers: {
