@@ -80,6 +80,7 @@ const ShotDetail = () => {
 						</div>
 					</div>
 				</div>
+				<div className="shot-content" dangerouslySetInnerHTML={{ __html: design.html }}></div>
 			</div>
 		</div>
 	)
