@@ -65,7 +65,7 @@ const ShotDetail = () => {
 						<img src={design?.owner.logo} alt="" />
 						<div className="name-status">
 							<p className="name">{design?.owner.name}</p>
-							<p className="status">{design?.owner.status ? "Available for work" : "Unailable for work"}</p>
+							<p className={`status ${design?.owner?.status ? "active" : ""}`}>{design?.owner.status ? "Available for work" : "Unailable for work"}</p>
 						</div>
 					</div>
 					<div className="contact-btns">
