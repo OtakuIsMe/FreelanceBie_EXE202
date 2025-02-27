@@ -81,6 +81,24 @@ const ShotDetail = () => {
 					</div>
 				</div>
 				<div className="shot-content" dangerouslySetInnerHTML={{ __html: design.html }}></div>
+				<div className="user-endtouch">
+					<div className="user-icon-container">
+						<div className="user-icon">
+							<img src={design?.owner.logo} alt="" />
+						</div>
+					</div>
+					<p className="username">{design?.owner.name}</p>
+					<p className="slogan">{design?.slogan}</p>
+					<div className="in-touch button">
+						Get in touch
+					</div>
+				</div>
+				<div className="more-by-user">
+					<div className="title-profile">
+						<p className="title">More by {design?.owner.name}</p>
+						<a href="" className='profile'>View profile</a>
+					</div>
+				</div>
 			</div>
 		</div>
 	)

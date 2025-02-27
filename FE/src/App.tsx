@@ -10,6 +10,7 @@ import ShotEdit from './pages/User/Shot/Edit/ShotEdit'
 import ShotDetail from './pages/User/Shot/Detail/ShotDetail'
 import JobDetail from './pages/User/JobDetail/JobDetail'
 import Modal from './hooks/Modal'
+import { useEffect } from 'react'
 
 function App() {
 	return (

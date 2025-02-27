@@ -14,7 +14,7 @@
 	left: 0;
 	width: 100%;
 	height: calc(100% - 40px);
-	border-radius: 15px;
+	border-radius: 15px 15px 0 0;
 }
 
 #modal-overlay>.close-btn {
