@@ -16,41 +16,43 @@ import Header from '../../../components/Header/Header.tsx'
 import Specialities from '../../../components/Cards/Specialities/Specialities.tsx'
 import Explore from '../../../components/Cards/Explore/Explore.tsx'
 import Footer from '../../../components/Footer/Footer.tsx'
+import { Link, useLocation } from "react-router-dom";
 
 export default function Home() {
+	const location = useLocation();
 
 	const spec = [
-		{type: 'Animation', image: Animation},
-		{type: 'Branding', image: Branding},
-		{type: 'Illustration', image: Illustration},
-		{type: 'Mobile', image: Mobile},
-		{type: 'Print', image: Print},
-		{type: 'ProductDesign', image: ProductDesign},
-		{type: 'Typography', image: Typography},
-		{type: 'WebDesign', image: WebDesign},
+		{ type: 'Animation', image: Animation },
+		{ type: 'Branding', image: Branding },
+		{ type: 'Illustration', image: Illustration },
+		{ type: 'Mobile', image: Mobile },
+		{ type: 'Print', image: Print },
+		{ type: 'ProductDesign', image: ProductDesign },
+		{ type: 'Typography', image: Typography },
+		{ type: 'WebDesign', image: WebDesign },
 	]
 
-const exp = [
-	{username: 'Otaku', liked: 61, viewed: 126, img: D1, topic: ['Web design']},
-	{username: 'Otaku', liked: 61, viewed: 126, img: D2, topic: ['Web design']},
-	{username: 'Otaku', liked: 61, viewed: 126, img: D3, topic: ['Web design']},
-	{username: 'Otaku', liked: 61, viewed: 126, img: D4, topic: ['Web design']},
-	{username: 'Otaku', liked: 61, viewed: 126, img: D5, topic: ['Web design']},
-	{username: 'Otaku', liked: 61, viewed: 126, img: D1, topic: ['Web design']},
-	{username: 'Otaku', liked: 61, viewed: 126, img: D2, topic: ['Web design']},
-	{username: 'Otaku', liked: 61, viewed: 126, img: D3, topic: ['Web design']},
-	{username: 'Otaku', liked: 61, viewed: 126, img: D4, topic: ['Web design']},
-	{username: 'Otaku', liked: 61, viewed: 126, img: D5, topic: ['Web design']},
-]
+	const exp = [
+		{ username: 'Otaku', liked: 61, viewed: 126, img: D1, topic: ['Web design'] },
+		{ username: 'Otaku', liked: 61, viewed: 126, img: D2, topic: ['Web design'] },
+		{ username: 'Otaku', liked: 61, viewed: 126, img: D3, topic: ['Web design'] },
+		{ username: 'Otaku', liked: 61, viewed: 126, img: D4, topic: ['Web design'] },
+		{ username: 'Otaku', liked: 61, viewed: 126, img: D5, topic: ['Web design'] },
+		{ username: 'Otaku', liked: 61, viewed: 126, img: D1, topic: ['Web design'] },
+		{ username: 'Otaku', liked: 61, viewed: 126, img: D2, topic: ['Web design'] },
+		{ username: 'Otaku', liked: 61, viewed: 126, img: D3, topic: ['Web design'] },
+		{ username: 'Otaku', liked: 61, viewed: 126, img: D4, topic: ['Web design'] },
+		{ username: 'Otaku', liked: 61, viewed: 126, img: D5, topic: ['Web design'] },
+	]
 
 	return (
 		<div id="home">
-			<Header/>
+			<Header />
 			<div className="page-content">
 				<div className="banner section">
 					<div className="content">
 						<div className="title">
-							Find <span>Designers</span> Who Bring <br/> Your Vision To Life
+							Find <span>Designers</span> Who Bring <br /> Your Vision To Life
 						</div>
 						<p>
 							Get inspired with other designers
@@ -62,7 +64,7 @@ const exp = [
 					<p className='title'>Specialties</p>
 					<div className="spec-container">
 						{spec.map((spec, index) =>
-							<Specialities type={spec.type} img={spec.image}/>
+							<Specialities type={spec.type} img={spec.image} />
 						)}
 					</div>
 				</div>
@@ -70,12 +72,18 @@ const exp = [
 					<p className='title'>Explore inspiring designs</p>
 					<div className="exp-container">
 						{exp.map((exp, index) =>
-							<Explore username={exp.username} liked={exp.liked} viewed={exp.viewed} img={exp.img} topic={exp.topic} />
+							<Link
+								key={index}
+								to={`/shot/${index}`}
+								state={{ background: location }}
+							>
+								<Explore username={exp.username} liked={exp.liked} viewed={exp.viewed} img={exp.img} topic={exp.topic} />
+							</Link>
 						)}
 					</div>
 				</div>
 			</div>
-			<Footer/>
+			<Footer />
 		</div>
 	)
 }

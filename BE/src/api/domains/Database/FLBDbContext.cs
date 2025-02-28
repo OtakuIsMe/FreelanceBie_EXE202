@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using DotNetEnv;
 using BE.src.api.helpers;
 using BE.src.api.domains.Enum;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
 namespace BE.src.api.domains.Database
 {
@@ -18,10 +19,9 @@ namespace BE.src.api.domains.Database
 		}
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			optionsBuilder.EnableSensitiveDataLogging();
 			if (!optionsBuilder.IsConfigured)
 			{
-				optionsBuilder.UseMySql(_connectionString,
+				optionsBuilder.UseLazyLoadingProxies(false).UseMySql(_connectionString,
 							new MySqlServerVersion(new Version(8, 0, 27)));
 			}
 		}
@@ -44,6 +44,7 @@ namespace BE.src.api.domains.Database
 		public DbSet<Message> Messages { get; set; } = null!;
 		public DbSet<SocialProfile> SocialProfiles { get; set; } = null!;
 		public DbSet<Notification> Notifications { get; set; } = null!;
+		public DbSet<Transaction> Transactions { get; set; } = null!;
 
 		protected override void OnModelCreating(ModelBuilder builder)
 		{
@@ -132,6 +133,9 @@ namespace BE.src.api.domains.Database
 				entity.Property(iv => iv.UserId)
 					.IsRequired(false);
 
+				entity.Property(iv => iv.IsMain)
+					.IsRequired();
+
 				entity.Property(iv => iv.Type)
 					.IsRequired()
 					.HasMaxLength(20)
@@ -141,7 +145,7 @@ namespace BE.src.api.domains.Database
 					);
 
 				entity.Property(iv => iv.Url)
-					.HasMaxLength(100)
+					.HasMaxLength(200)
 					.IsRequired();
 
 				entity.HasOne(iv => iv.Shot)
@@ -191,6 +195,25 @@ namespace BE.src.api.domains.Database
 				entity.Property(m => m.Description)
 					.HasMaxLength(1000)
 					.IsRequired();
+
+				entity.HasData(
+					new Membership
+					{
+						Id = new Guid("e9b2d7f6-3c1a-4e5d-8b9c-a7f3d4e2c5b8"),
+						Name = "Normal",
+						ExpireTime = 90,
+						Price = 2.99f,
+						Description = "Hey"
+					},
+					new Membership
+					{
+						Id = new Guid("5c8d3a6f-7e4b-4d2a-b1c9-e3f7d5b4a2c8"),
+						Name = "Premium",
+						ExpireTime = 90,
+						Price = 5.99f,
+						Description = "Hey"
+					}
+				);
 			});
 
 			builder.Entity<MembershipUser>(entity =>
@@ -206,6 +229,14 @@ namespace BE.src.api.domains.Database
 					.WithMany(m => m.MembershipUsers)
 					.HasForeignKey(mu => mu.MembershipId)
 					.OnDelete(DeleteBehavior.Restrict);
+
+				entity.HasData(
+					new MembershipUser
+					{
+						UserId = new Guid("a1f5e3b7-3c9b-4d45-982d-9a6f9e1c2b0a"),
+						MembershipId = new Guid("5c8d3a6f-7e4b-4d2a-b1c9-e3f7d5b4a2c8"),
+					}
+				);
 			});
 
 			builder.Entity<Message>(entity =>
@@ -321,10 +352,6 @@ namespace BE.src.api.domains.Database
 					.IsRequired()
 					.HasColumnType("LONGTEXT");
 
-				entity.Property(s => s.Css)
-					.IsRequired()
-					.HasColumnType("LONGTEXT");
-
 				entity.Property(s => s.View)
 					.IsRequired();
 
@@ -333,10 +360,8 @@ namespace BE.src.api.domains.Database
 					.HasForeignKey(s => s.UserId)
 					.OnDelete(DeleteBehavior.Restrict);
 
-				entity.HasOne(s => s.Specialty)
-					.WithMany(s => s.Shots)
-					.HasForeignKey(s => s.SpecialtyId)
-					.OnDelete(DeleteBehavior.Restrict);
+				entity.HasMany(s => s.Specialties)
+					.WithMany(s => s.Shots);
 			});
 
 			builder.Entity<SocialProfile>(entity =>
@@ -359,6 +384,14 @@ namespace BE.src.api.domains.Database
 					.WithMany(u => u.SocialProfiles)
 					.HasForeignKey(sp => sp.UserId)
 					.OnDelete(DeleteBehavior.Restrict);
+				entity.HasData(
+					new SocialProfile
+					{
+						Linked = "https://www.facebook.com/nguyen.manh.duy.179947/",
+						Type = TypeSocialEnum.Facebook,
+						UserId = new Guid("a1f5e3b7-3c9b-4d45-982d-9a6f9e1c2b0a"),
+					}
+				);
 			});
 
 			builder.Entity<Specialty>(entity =>
@@ -368,6 +401,47 @@ namespace BE.src.api.domains.Database
 				entity.Property(s => s.Name)
 					.IsRequired()
 					.HasMaxLength(50);
+				entity.HasData(
+				new Specialty
+				{
+					Name = "Design"
+				},
+				new Specialty
+				{
+					Name = "Illustration"
+				},
+				new Specialty
+				{
+					Name = "UI"
+				},
+				new Specialty
+				{
+					Name = "Branding"
+				},
+				new Specialty
+				{
+					Name = "Logo"
+				},
+				new Specialty
+				{
+					Name = "Graphic Design"
+				},
+				new Specialty
+				{
+					Name = "Vector"
+				},
+				new Specialty
+				{
+					Name = "UX"
+				},
+				new Specialty
+				{
+					Name = "Typography"
+				},
+				new Specialty
+				{
+					Name = "App"
+				});
 			});
 
 			builder.Entity<User>(entity =>
@@ -420,6 +494,36 @@ namespace BE.src.api.domains.Database
 				entity.Property(u => u.Slogan)
 					.HasMaxLength(200)
 					.IsRequired(false);
+
+				entity.HasData(
+				new User
+				{
+					Id = new Guid("a1f5e3b7-3c9b-4d45-982d-9a6f9e1c2b0a"),
+					Email = "duynmse173649@fpt.edu.vn",
+					Password = "391552c099c101b131feaf24c5795a6a15bc8ec82015424e0d2b4274a369a0bf",
+					Username = "OtakuIsMe",
+					Role = RoleEnum.Customer,
+					Name = "Nguyễn Mạnh Duy"
+				},
+				new User
+				{
+					Id = new Guid("2f4e7d8c-5b1a-4f63-8129-dc3b67f4a9e8"),
+					Email = "nguyenmanhduy6@gmail.com",
+					Password = "391552c099c101b131feaf24c5795a6a15bc8ec82015424e0d2b4274a369a0bf",
+					Username = "DarkLord",
+					Role = RoleEnum.Admin,
+					Name = "Nguyễn Mạnh Duy"
+				},
+				new User
+				{
+					Id = new Guid("8d6c4a3b-7f2e-4d5a-b9c1-e7f5a3d2b1c4"),
+					Email = "datldpse173640@gmail.com",
+					Password = "391552c099c101b131feaf24c5795a6a15bc8ec82015424e0d2b4274a369a0bf",
+					Username = "Pi26",
+					Role = RoleEnum.Staff,
+					Name = "Lê Đăng Phúc Đạt"
+				}
+			);
 			});
 
 			builder.Entity<UserApply>(entity =>
@@ -461,6 +565,31 @@ namespace BE.src.api.domains.Database
 					.WithMany(u => u.Notifications)
 					.HasForeignKey(n => n.UserId)
 					.OnDelete(DeleteBehavior.Cascade);
+			});
+
+			builder.Entity<Transaction>(entity =>
+			{
+				entity.HasKey(t => t.Id);
+
+				entity.HasOne(t => t.MemberUser)
+					.WithMany(mu => mu.Transactions)
+					.HasForeignKey(t => t.MemberUserId)
+					.OnDelete(DeleteBehavior.Restrict);
+
+				entity.Property(t => t.Total)
+					.IsRequired();
+
+				entity.Property(t => t.Status)
+					.IsRequired()
+					.HasMaxLength(20)
+					.HasConversion(
+						u => u.ToString(),
+						u => u.ToEnum<TransactionStatusEnum>()
+					);
+				
+				entity.Property(u => u.PaymentId)
+					.HasMaxLength(100)
+					.IsRequired();
 			});
 		}
 	}

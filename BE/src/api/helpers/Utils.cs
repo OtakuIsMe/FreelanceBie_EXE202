@@ -58,5 +58,25 @@ namespace BE.src.api.helpers
 
 			return blobClient.Uri.ToString();
 		}
+		public async static Task<string> GenerateAzureUrl(MediaTypeEnum type, string imageUrl, string objectName)
+		{
+			string containerName = (type == MediaTypeEnum.Image) ? MyAzure.containerImage : MyAzure.containerVideo;
+
+			BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+			await containerClient.CreateIfNotExistsAsync();
+
+			string objectNameType = objectName + ".png";
+			BlobClient blobClient = containerClient.GetBlobClient(objectNameType);
+
+			using (HttpClient httpClient = new HttpClient())
+			{
+				using (Stream imageStream = await httpClient.GetStreamAsync(imageUrl))
+				{
+					await blobClient.UploadAsync(imageStream, overwrite: true);
+				}
+			}
+
+			return blobClient.Uri.ToString();
+		}
 	}
 }

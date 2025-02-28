@@ -8,11 +8,7 @@ namespace BE.src.api.domains.Model
 		public required Guid UserId { get; set; }
 		public User User { get; set; } = null!;
 
-		public required Guid SpecialtyId { get; set; }
-		public Specialty Specialty { get; set; } = null!;
-
 		public required string Html { get; set; }
-		public required string Css { get; set; }
 		public required int View { get; set; }
 
 		public ICollection<Comment> Comments { get; set; } = null!;
@@ -20,5 +16,6 @@ namespace BE.src.api.domains.Model
 		public ICollection<Save> Saves { get; set; } = null!;
 		public ICollection<Like> Likes { get; set; } = null!;
 		public ICollection<ViewAnalyst> ViewAnalysts { get; set; } = null!;
+		public ICollection<Specialty> Specialties { get; set; } = null!;
 	}
 }

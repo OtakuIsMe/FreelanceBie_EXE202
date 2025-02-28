@@ -1,0 +1,28 @@
+version: "3.8"
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: server
+        ports:
+            - "5147:5147"
+        environment:
+            - ASPNETCORE_URLS=http://+:5147
+            - ASPNETCORE_ENVIRONMENT=Development
+            - APP_VERSION=24.08.08
+        networks:
+            - backend
+        depends_on:
+            - redis
+
+    redis:
+        image: redis
+        ports:
+            - "6379:6379"
+        networks:
+            - backend
+
+networks:
+    backend:
+        driver: bridge

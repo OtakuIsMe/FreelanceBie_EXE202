@@ -17,9 +17,11 @@ namespace BE.src.api.services
 	public class MembershipServ : IMembershipServ
 	{
         private readonly IMembershipRepo _membershipRepo;
-        public MembershipServ(IMembershipRepo membershipRepo)
+        private readonly ICacheService _cacheService;
+        public MembershipServ(IMembershipRepo membershipRepo, ICacheService cacheService)
         {
             _membershipRepo = membershipRepo;
+            _cacheService = cacheService;
         }
 		public async Task<IActionResult> CreateMembership(MembershipCreateDTO membership)
 		{
@@ -69,11 +71,21 @@ namespace BE.src.api.services
 			
             try
             {
+                var key = "memberships";
+                var cachedMemberships = await _cacheService.Get<List<Membership>>(key);
+                if (cachedMemberships != null)
+                {
+                    return SuccessResp.Ok(cachedMemberships);
+                }
+
                 var memberships = await _membershipRepo.GetMemberships();
                 if (memberships.Count == 0)
                 {
                     return ErrorResp.NotFound("No membership found");
                 }
+
+                await _cacheService.Set(key, memberships, TimeSpan.FromMinutes(10));
+
                 return SuccessResp.Ok(memberships);
             }
             catch (System.Exception ex)

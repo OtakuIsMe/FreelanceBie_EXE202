@@ -15,15 +15,18 @@ namespace BE.src.api.services
 		Task<IActionResult> ApplyJob(Guid userId, Guid postId);
 		Task<IActionResult> PostJobDetail(Guid? userId, string postCode);
 		Task<IActionResult> HistoryHiring(Guid postId);
+		Task<IActionResult> GetPosts(PostJobFilterDTO filter);
 	}
 	public class PostServ : IPostServ
 	{
 		private readonly IPostRepo _postRepo;
+		private readonly ICacheService _cacheService;
 		private readonly INotificationRepo _notificationRepo;
-		public PostServ(IPostRepo postRepo, INotificationRepo notificationRepo)
+		public PostServ(IPostRepo postRepo, ICacheService cacheService, INotificationRepo notificationRepo)
 		{
 			_postRepo = postRepo;
 			_notificationRepo = notificationRepo;
+			_cacheService = cacheService;
 		}
 
 		public async Task<IActionResult> AddPostData(Guid userId, PostAddData data)
@@ -48,7 +51,8 @@ namespace BE.src.api.services
 				ImageVideo newImageVideo = new()
 				{
 					Type = MediaTypeEnum.Image,
-					Url = fileUrl
+					Url = fileUrl,
+					IsMain = false
 				};
 				newPost.CompanyLogo = newImageVideo;
 
@@ -75,6 +79,9 @@ namespace BE.src.api.services
 				{
 					return ErrorResp.BadRequest("Cant create post");
 				}
+
+				await _cacheService.ClearWithPattern("posts");
+
 				return SuccessResp.Created("Add Post Success");
 			}
 			catch (System.Exception ex)
@@ -173,6 +180,52 @@ namespace BE.src.api.services
 			{
 				return ErrorResp.BadRequest(ex.Message);
 			}
+		}
+
+		public async Task<IActionResult> GetPosts(PostJobFilterDTO filter)
+		{
+			try
+			{
+				var cacheKey = GenerateCacheKey(filter);
+
+				var cachedPosts = await _cacheService.Get<List<PostJob>>(cacheKey);
+				if (cachedPosts != null)
+					return SuccessResp.Ok(cachedPosts);
+
+				var posts = await _postRepo.GetPosts(filter);
+				if (posts.Count == 0)
+				{
+					return ErrorResp.NotFound("No post found");
+				}
+
+				await _cacheService.Set(cacheKey, posts, TimeSpan.FromMinutes(10));
+
+				return SuccessResp.Ok(posts);
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+
+		private string GenerateCacheKey(PostJobFilterDTO filter)
+		{
+			var keyParts = new List<string>();
+
+			if (!string.IsNullOrEmpty(filter.Title)) keyParts.Add($"Title:{filter.Title}");
+			if (filter.WorkType.HasValue) keyParts.Add($"WorkType:{filter.WorkType}");
+			if (!string.IsNullOrEmpty(filter.WorkLocation)) keyParts.Add($"WorkLocation:{filter.WorkLocation}");
+			if (!string.IsNullOrEmpty(filter.CompanyName)) keyParts.Add($"Company:{filter.CompanyName}");
+			if (filter.EmploymentType.HasValue) keyParts.Add($"EmploymentType:{filter.EmploymentType}");
+			if (filter.MinExperience.HasValue) keyParts.Add($"MinExp:{filter.MinExperience}");
+			if (filter.MaxExperience.HasValue) keyParts.Add($"MaxExp:{filter.MaxExperience}");
+			if (!string.IsNullOrEmpty(filter.UserName)) keyParts.Add($"UserName:{filter.UserName}");
+			if (!string.IsNullOrEmpty(filter.UserEmail)) keyParts.Add($"UserEmail:{filter.UserEmail}");
+			if (!string.IsNullOrEmpty(filter.UserCity)) keyParts.Add($"UserCity:{filter.UserCity}");
+			if (!string.IsNullOrEmpty(filter.UserEducation)) keyParts.Add($"Education:{filter.UserEducation}");
+			if (!string.IsNullOrEmpty(filter.SpecialtyName)) keyParts.Add($"Specialty:{filter.SpecialtyName}");
+
+			return $"posts{string.Join("|", keyParts)}";
 		}
 	}
 }

@@ -1,0 +1,38 @@
+#Shot-Detail {
+	padding: 64px 120px;
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	overflow-y: scroll;
+}
+
+#Shot-Detail p {
+	font-family: "Mona Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+#Shot-Detail .shot-container {
+	display: flex;
+	flex-direction: column;
+	max-width: 1024px;
+	width: 100%;
+}
+
+#Shot-Detail .shot-container .title-shot {
+	font-size: 24px;
+	font-weight: 600;
+	margin-bottom: 25px;
+}
+
+#Shot-Detail .user-contact {
+	display: flex;
+	width: 100%;
+	justify-content: space-between;
+	height: 48px;
+}
+
+#Shot-Detail .user-status img {
+	width: 48px;
+	height: 48px;
+	object-fit: cover;
+	object-position: center;
+}

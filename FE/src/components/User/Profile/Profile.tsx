@@ -5,6 +5,7 @@ import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 import avatarImg from '../../../assets/avatar.jpg'
 import { FiEdit2 } from 'react-icons/fi';
 import { useSearchParams } from "react-router-dom";
+import { ApiGateway } from '../../../services/api/ApiService';
 
 interface ProfileData {
 	name: string;
@@ -34,7 +35,6 @@ interface WorkPost {
 	id: string;
 	title: string;
 	image: string;
-	description: string;
 	category: string;
 	views: number;
 	likes: number;
@@ -61,24 +61,6 @@ interface EditableProfile {
 }
 
 export default function Profile() {
-	const [searchParams] = useSearchParams();
-	const sParam = searchParams.get("s");
-
-	useEffect(() => {
-		if (sParam === 'add') {
-			const newPost: WorkPost = {
-				id: (workPosts.length + 1).toString(),
-				title: "Crypto Trading Mobile App",
-				image: "/src/assets/shot.webp",
-				description: "This crypto trading app UI delivers a seamless, high-performance experience for both beginners and professional traders.",
-				category: "Mobile App",
-				views: 0,
-				likes: 0,
-				datePosted: new Date().toISOString().split("T")[0],
-			};
-			setWorkPosts([...workPosts, newPost]);
-		}
-	}, [sParam])
 
 	const [profile, setProfile] = useState<ProfileData>({
 		name: "Rick Roll",
@@ -178,58 +160,7 @@ export default function Profile() {
 		}
 	]);
 
-	const [workPosts, setWorkPosts] = useState<WorkPost[]>([
-		{
-			id: '1',
-			title: 'Mobile Banking App Design',
-			image: '/src/assets/Post Like.jpg',
-			description: 'A modern banking app designed with user experience in mind',
-			category: 'Mobile App',
-			views: 1234,
-			likes: 423,
-			datePosted: '2024-03-15'
-		},
-		{
-			id: '2',
-			title: 'E-commerce Website Redesign',
-			image: '/src/assets/Post Like.jpg',
-			description: 'Complete redesign of an e-commerce platform',
-			category: 'Web Design',
-			views: 892,
-			likes: 345,
-			datePosted: '2024-03-10'
-		},
-		{
-			id: '3',
-			title: 'Food Delivery App UI Kit',
-			image: '/src/assets/Post Like.jpg',
-			description: 'UI kit for food delivery applications',
-			category: 'UI Kit',
-			views: 2156,
-			likes: 567,
-			datePosted: '2024-03-05'
-		},
-		{
-			id: '4',
-			title: 'Social Media Dashboard',
-			image: '/src/assets/Post Like.jpg',
-			description: 'Analytics dashboard for social media management',
-			category: 'Dashboard',
-			views: 1567,
-			likes: 289,
-			datePosted: '2024-02-28'
-		},
-		{
-			id: '5',
-			title: 'Travel App Interface',
-			image: '/src/assets/Post Like.jpg',
-			description: 'Modern travel application interface design',
-			category: 'Mobile App',
-			views: 1890,
-			likes: 456,
-			datePosted: '2024-02-20'
-		}
-	]);
+	const [workPosts, setWorkPosts] = useState<WorkPost[]>([]);
 
 	const [activeTab, setActiveTab] = useState<string>('work');
 	const [editValue, setEditValue] = useState('');
@@ -440,6 +371,46 @@ export default function Profile() {
 
 	const [imagePreview, setImagePreview] = useState<string | null>(null);
 
+	useEffect(() => {
+		fetchShotOwner()
+	}, [])
+
+	const fetchShotOwner = async () => {
+		const data = await ApiGateway.ShotOwner<{
+			id: string;
+			image: string;
+			title: string;
+			countView: number;
+			countLike: number;
+			user: {
+				username: string;
+				image: string;
+			};
+			specialties: string[];
+			datePosted: string;
+		}[]>();
+		console.log(data)
+		if (Array.isArray(data)) {
+			const formattedData: WorkPost[] = data.map((item) => ({
+				id: item.id,
+				title: item.title,
+				image: item.image,
+				views: item.countView,
+				likes: item.countLike,
+				category: item.specialties[0],
+				datePosted: new Date(item.datePosted).toLocaleDateString("en-GB", {
+					day: "2-digit",
+					month: "2-digit",
+					year: "numeric",
+				})
+			}));
+			console.log(formattedData)
+			setWorkPosts(formattedData);
+		} else {
+			console.error("Unexpected response format:", data);
+		}
+	}
+
 	return (
 		<div id="profile-page">
 			<header className="profile-header">
@@ -543,11 +514,10 @@ export default function Profile() {
 										<div className="post-info">
 											<span className="category">{post.category}</span>
 											<h3>{post.title}</h3>
-											<p className="description">{post.description}</p>
 											<div className="post-meta">
 												<span className="views">👁 {post.views}</span>
 												<span className="likes">♥ {post.likes}</span>
-												<span className="date">{new Date(post.datePosted).toLocaleDateString()}</span>
+												<span className="date">{post.datePosted}</span>
 											</div>
 										</div>
 									</div>
@@ -825,7 +795,6 @@ export function DesProfile() {
 			id: '1',
 			title: 'Mobile Banking App Design',
 			image: '/src/assets/Post Like.jpg',
-			description: 'A modern banking app designed with user experience in mind',
 			category: 'Mobile App',
 			views: 1234,
 			likes: 423,
@@ -835,7 +804,6 @@ export function DesProfile() {
 			id: '2',
 			title: 'E-commerce Website Redesign',
 			image: '/src/assets/Post Like.jpg',
-			description: 'Complete redesign of an e-commerce platform',
 			category: 'Web Design',
 			views: 892,
 			likes: 345,
@@ -845,7 +813,6 @@ export function DesProfile() {
 			id: '3',
 			title: 'Food Delivery App UI Kit',
 			image: '/src/assets/Post Like.jpg',
-			description: 'UI kit for food delivery applications',
 			category: 'UI Kit',
 			views: 2156,
 			likes: 567,
@@ -855,7 +822,6 @@ export function DesProfile() {
 			id: '4',
 			title: 'Social Media Dashboard',
 			image: '/src/assets/Post Like.jpg',
-			description: 'Analytics dashboard for social media management',
 			category: 'Dashboard',
 			views: 1567,
 			likes: 289,
@@ -865,7 +831,6 @@ export function DesProfile() {
 			id: '5',
 			title: 'Travel App Interface',
 			image: '/src/assets/Post Like.jpg',
-			description: 'Modern travel application interface design',
 			category: 'Mobile App',
 			views: 1890,
 			likes: 456,
@@ -1196,7 +1161,6 @@ export function DesProfile() {
 										<div className="post-info">
 											<span className="category">{post.category}</span>
 											<h3>{post.title}</h3>
-											<p className="description">{post.description}</p>
 											<div className="post-meta">
 												<span className="views">👁 {post.views}</span>
 												<span className="likes">♥ {post.likes}</span>
