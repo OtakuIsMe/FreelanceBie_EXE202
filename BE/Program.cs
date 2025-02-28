@@ -16,6 +16,7 @@ var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 var redisConnectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION")
 	?? throw new InvalidOperationException("Connection string not found in environment variables.");
+var apiKey = Environment.GetEnvironmentVariable("PAYOS_API_KEY");
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 			.AddJwtBearer(options =>
@@ -69,6 +70,7 @@ builder.Services.AddScoped<INotificationServ, NotificationServ>();
 builder.Services.AddScoped<ISpecialtyServ, SpecialtyServ>();
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisConnectionString));
+builder.Services.AddSingleton<string>(apiKey);
 builder.Services.AddDbContext<FLBDbContext>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
