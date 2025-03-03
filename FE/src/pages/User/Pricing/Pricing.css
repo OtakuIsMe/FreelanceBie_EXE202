@@ -1,0 +1,106 @@
+#pricing .pricing-container {
+    text-align: center;
+    padding: 40px;
+    background-color: #f8f9fc;
+}
+
+#pricing .pricing-header {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+#pricing .pricing-subheader {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+#pricing .pricing-plans {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+#pricing .plan {
+    background: #fff;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: start;
+    width: 300px;
+}
+
+#pricing .plan.enterprise {
+    background: #ffeafa;
+}
+
+#pricing .plan h4 {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#pricing .plan h2 {
+    font-size: 36px;
+    margin: 10px 0;
+}
+
+#pricing .plan h2 span {
+    font-size: 24px;
+}
+
+#pricing .plan hr {
+    color: #777;
+}
+
+#pricing .plan p {
+    color: #777;
+}
+
+#pricing ul {
+    list-style: none;
+    padding: 0;
+}
+
+#pricing li {
+    margin: 5px 0;
+}
+
+#pricing .disabled {
+    color: #ccc;
+}
+
+#pricing .benefit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#pricing .choose-button {
+    width: 100%;
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#pricing .choose-button.free {
+    background: #dedede;
+    cursor: pointer;
+}
+
+#pricing .choose-button.free:hover {
+    background: #ccc;
+}
+
+#pricing .choose-button.enterprise {
+    background: #000;
+    color: #fff;
+}
+
+#pricing .choose-button.enterprise:hover {
+    background: #2c2c2c;
+}

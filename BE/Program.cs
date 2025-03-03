@@ -23,6 +23,13 @@ var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 var redisConnectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION")
 	?? throw new InvalidOperationException("Connection string not found in environment variables.");
+var apiKey = Environment.GetEnvironmentVariable("PAYOS_API_KEY");
+
+builder.Services.AddControllers();
+builder.Services.AddControllersWithViews()
+	.AddNewtonsoftJson(options =>
+	options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
 
 builder.Services.AddControllers();
 builder.Services.AddControllersWithViews()
@@ -92,6 +99,7 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Conn
 
 builder.Services.AddScoped<ICacheService, CacheServ>();
 
+builder.Services.AddSingleton<string>(apiKey);
 builder.Services.AddDbContext<FLBDbContext>();
 
 builder.Services.AddEndpointsApiExplorer();
