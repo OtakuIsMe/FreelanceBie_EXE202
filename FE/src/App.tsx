@@ -13,6 +13,7 @@ import Pricing from './pages/User/Pricing/Pricing'
 import CheckOut from './pages/User/Checkout/CheckOut'
 import Modal from './hooks/Modal'
 import { useEffect } from 'react'
+import PostJob from './pages/User/PostJob/PostJob'
 
 function App() {
 	return (
@@ -38,13 +39,14 @@ function MainRoutes() {
 				<Route path='/Profile' element={<ProfilePage />} />
 				<Route path='/des-profile' element={<DesProfilePage />} />
 				<Route path='/job-detail' element={<JobDetail />} />
+				<Route path="/post-job" element={<PostJob />} />
 				<Route path="/shot">
 					<Route path="edit" element={<ShotEdit />} />
 				</Route>
 				<Route path='/pro'>
-						<Route index element={<Pricing />} />
-						<Route path="check-out" element={<CheckOut />} />
-					</Route>
+					<Route index element={<Pricing />} />
+					<Route path="check-out" element={<CheckOut />} />
+				</Route>
 			</Routes>
 			{background ? (
 				<Modal onClose={() => navigate(-1)}>
