@@ -574,26 +574,45 @@ namespace BE.src.api.services
 		{
 			try
 			{
-				var memberUser = await _membershipRepo.GetMembershipUserRegistered(userId);
-				if (memberUser == null)
+				var cachedMemberUser = await _cacheService.Get<string>($"member-user-{userId}");
+				if (cachedMemberUser is null)
 				{
-					return ErrorResp.NotFound("User not registered yet");
+					var memberUser = await _membershipRepo.GetMembershipUserRegistered(userId);
+					if (memberUser is null)
+					{
+						return ErrorResp.NotFound("User not registered yet");
+					}
+
+					cachedMemberUser = memberUser.MembershipId.ToString();
+					await _cacheService.Set($"member-user-{userId}", cachedMemberUser, TimeSpan.FromMinutes(5));
 				}
 
-				var membership = await _membershipRepo.GetMembershipById(memberUser.MembershipId);
-				if (membership == null)
+				var cachedMembership = await _cacheService.Get<bool?>($"membership-{cachedMemberUser}");
+				if (cachedMembership is null)
 				{
-					return ErrorResp.NotFound("Membership not found");
+					var membership = await _membershipRepo.GetMembershipById(Guid.Parse(cachedMemberUser));
+					if (membership is null)
+					{
+						return ErrorResp.NotFound("Membership not found");
+					}
+
+					await _cacheService.Set($"membership-{cachedMemberUser}", true, TimeSpan.FromMinutes(5));
 				}
 
-				var post = await _postRepo.GetLatestPosts();
-				if (post == null)
+				var cachedPost = await _cacheService.Get<PostJob>("latest-post");
+				if (cachedPost is null)
 				{
-					return ErrorResp.NotFound("No recent posts available");
+					var post = await _postRepo.GetLatestPosts();
+					if (post is null)
+					{
+						return ErrorResp.NotFound("No recent posts available");
+					}
+
+					cachedPost = post;
+					await _cacheService.Set("latest-post", post, TimeSpan.FromMinutes(5));
 				}
 
-				var eventMessage = new PostCreatedEvent(userId, post.Id, post.Title, DateTime.Now);
-
+				var eventMessage = new PostCreatedEvent(userId, cachedPost.Id, cachedPost.Title, DateTime.Now);
 				_eventBus.Publish(Queue.PostNotificationQueue, eventMessage);
 
 				return SuccessResp.Ok("Notification sent successfully");

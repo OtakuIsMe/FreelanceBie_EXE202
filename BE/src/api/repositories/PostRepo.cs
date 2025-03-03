@@ -122,6 +122,7 @@ namespace BE.src.api.repositories
 						 .Include(p => p.User)
 							 .ThenInclude(u => u.ImageVideos)
 						 .OrderByDescending(p => p.CreateAt)
+						 .AsNoTracking()
 						 .FirstOrDefaultAsync();
 		}
 
