@@ -39,7 +39,7 @@ namespace BE.src.api.controllers
 
 		[AllowAnonymous]
 		[HttpGet("ShotDetail")]
-		public async Task<IActionResult> Shot([FromQuery] string shotCode)
+		public async Task<IActionResult> Shot([FromQuery] Guid shotCode)
 		{
 			Guid? userId = null;
 
@@ -54,6 +54,18 @@ namespace BE.src.api.controllers
 		public async Task<IActionResult> GetShots([FromQuery] ShotSearchFilterDTO filter)
 		{
 			return await _shotServ.GetShots(filter);
+		}
+
+		[HttpGet("other-shots")]
+		public async Task<IActionResult> OtherShots([FromQuery] Guid ShotId)
+		{
+			return await _shotServ.OtherShots(ShotId);
+		}
+
+		[HttpGet("shot-random")]
+		public async Task<IActionResult> ShotRandom([FromQuery] int item)
+		{
+			return await _shotServ.ShotRandom(item);
 		}
 	}
 }

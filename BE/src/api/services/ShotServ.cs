@@ -14,8 +14,10 @@ namespace BE.src.api.services
 		Task<IActionResult> AddShotData(ShotAddData data, Guid UserId);
 		Task<IActionResult> LikeShot(Guid userId, Guid shotId, bool state);
 		Task<IActionResult> ShotOwner(Guid userId);
-		Task<IActionResult> GetShotDetail(Guid? userId, string shotCode);
+		Task<IActionResult> GetShotDetail(Guid? userId, Guid shotCode);
 		Task<IActionResult> GetShots(ShotSearchFilterDTO filter);
+		Task<IActionResult> OtherShots(Guid shotId);
+		Task<IActionResult> ShotRandom(int item);
 	}
 	public class ShotServ : IShotServ
 	{
@@ -62,7 +64,7 @@ namespace BE.src.api.services
 				foreach (var (img, index) in data.Images.Select((file, index) => (file, index)))
 				{
 					var newImageUrl = await Utils.GenerateAzureUrl(MediaTypeEnum.Image,
-										img.File, $"shot/{Utils.HashObject(newShot.Id)}");
+										img.File, $"shot/{Utils.HashObject(newShot.Id)}/{index}");
 					ImageVideo newImageVideo = new()
 					{
 						Type = MediaTypeEnum.Image,
@@ -180,7 +182,7 @@ namespace BE.src.api.services
 			return shotCards;
 		}
 
-		public async Task<IActionResult> GetShotDetail(Guid? userId, string shotCode)
+		public async Task<IActionResult> GetShotDetail(Guid? userId, Guid shotCode)
 		{
 			try
 			{
@@ -239,6 +241,39 @@ namespace BE.src.api.services
 
 				await _cacheService.Set(cacheKey, shots, TimeSpan.FromMinutes(10));
 
+				return SuccessResp.Ok(shots);
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+
+		public async Task<IActionResult> OtherShots(Guid shotId)
+		{
+			try
+			{
+				Shot? shot = await _shotRepo.GetShotById(shotId);
+				if (shot == null)
+				{
+					return ErrorResp.BadRequest("Cant found shot");
+				}
+				List<Shot> shotOwner = await _shotRepo.GetShotsByUser(shot.UserId);
+				shotOwner = shotOwner.Where(s => s.Id != shot.Id).ToList();
+				var otherShots = shotOwner.Take(4).ToList();
+				return SuccessResp.Ok(otherShots);
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+
+		public async Task<IActionResult> ShotRandom(int item)
+		{
+			try
+			{
+				var shots = await _shotRepo.GetShotRandom(item);
 				return SuccessResp.Ok(shots);
 			}
 			catch (System.Exception ex)

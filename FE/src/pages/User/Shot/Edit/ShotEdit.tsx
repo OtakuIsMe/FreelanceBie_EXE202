@@ -1,6 +1,6 @@
 import './ShotEdit.css'
 import image from '../../../../assets/image.png'
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { RxText } from "react-icons/rx";
@@ -45,6 +45,21 @@ const ShotEdit = () => {
 			container: ".custome-edior-tool",
 		},
 	};
+
+	const deleteContentBlock = (key: number) => {
+		setContentBlocks((prevContentBlocks) => {
+			setSideAction("");
+			setFocusAction(null);
+			if (prevContentBlocks) {
+				return prevContentBlocks.filter((_, index) => index !== key);
+			}
+			return prevContentBlocks;
+		});
+	};
+
+	useEffect(() => {
+		console.log(sideAction); // This will log the updated value of sideAction after it changes
+	}, [sideAction]);
 
 	const onTagUpdate = (index: number, newTag: Tag) => {
 		const updatedTags = [...tags];
@@ -252,69 +267,102 @@ const ShotEdit = () => {
 						<div className="content-blocks-container">
 							{contentBlocks?.map((contentBlock, key) => {
 								return (
-									<>
+									<div className={`content-block ${key == 0 ? 'first' : ''}`} key={key}>
 										{contentBlock.type == "image" && (
-											<div className={`content-block ${key == 0 ? 'first' : ''}`} key={key}>
-												<div
-													className={`block-hover ${key === focusAction ? 'focus-block' : ''}`}
-													onClick={() => {
-														setFocusAction(key)
-														setSideAction("image")
-													}}>
-													{contentBlock.data !== '' ? (
-														<div className="image-block" style={contentBlock.isMinimize ? { width: '752px' } : { width: '1024px' }}>
-															<img src={contentBlock.data} alt={contentBlock.AltText} />
+											<div
+												className={`block-hover ${key === focusAction ? 'focus-block' : ''}`}
+												onClick={() => {
+													setFocusAction(key)
+													setSideAction("image")
+												}}>
+												{contentBlock.data !== '' ? (
+													<div className="image-block" style={contentBlock.isMinimize ? { width: '752px' } : { width: '1024px' }}>
+														<img src={contentBlock.data} alt={contentBlock.AltText} />
+													</div>
+												) : (
+													<div className="blank-image">
+														<p>Drag and drop media, or Browse</p>
+													</div>
+												)}
+												{key === focusAction && (
+													<div className='edit-form'>
+														<div className='icon-container up'>
+															<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m19 12l-7-7l-7 7m7-7v14" /></svg>
 														</div>
-													) : (
-														<div className="blank-image">
-															<p>Drag and drop media, or Browse</p>
+														<div className='icon-container down'>
+															<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m5 12l7 7m0 0l7-7m-7 7V5" /></svg>
 														</div>
-													)}
-												</div>
+														<div className='icon-container trash' onClick={() => deleteContentBlock(key)}>
+															<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M18 19a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V7H4V4h4.5l1-1h4l1 1H19v3h-1zM6 7v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2V7zm12-1V5h-4l-1-1h-3L9 5H5v1zM8 9h1v10H8zm6 0h1v10h-1z" /></svg>
+														</div>
+													</div>
+												)}
 											</div>
 										)}
 										{contentBlock.type == "text" && (
-											<div className="content-block" key={key}>
-												<div
-													className={`block-hover ${key === focusAction ? 'focus-block' : ''}`}
-													onClick={() => {
-														setFocusAction(key)
-														setSideAction("text")
-													}}>
-													<div className={`text-block ${textFocus === key ? 'focus' : ''}`}>
-														<ReactQuill
-															theme="snow"
-															value={contentBlock.data}
-															onChange={(e) => handleDataChange(e, key)}
-															modules={modules}
-															onFocus={() => { setTextFocus(key) }}
-															onBlur={() => { setTextFocus(-1) }}
-														/>
-													</div>
+											<div
+												className={`block-hover ${key === focusAction ? 'focus-block' : ''}`}
+												onClick={() => {
+													setFocusAction(key)
+													setSideAction("text")
+												}}>
+												<div className={`text-block ${textFocus === key ? 'focus' : ''}`}>
+													<ReactQuill
+														theme="snow"
+														value={contentBlock.data}
+														onChange={(e) => handleDataChange(e, key)}
+														modules={modules}
+														onFocus={() => { setTextFocus(key) }}
+														onBlur={() => { setTextFocus(-1) }}
+													/>
 												</div>
+												{key === focusAction && (
+													<div className='edit-form'>
+														<div className='icon-container up'>
+															<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m19 12l-7-7l-7 7m7-7v14" /></svg>
+														</div>
+														<div className='icon-container down'>
+															<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m5 12l7 7m0 0l7-7m-7 7V5" /></svg>
+														</div>
+														<div className='icon-container trash' onClick={() => deleteContentBlock(key)}>
+															<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M18 19a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V7H4V4h4.5l1-1h4l1 1H19v3h-1zM6 7v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2V7zm12-1V5h-4l-1-1h-3L9 5H5v1zM8 9h1v10H8zm6 0h1v10h-1z" /></svg>
+														</div>
+													</div>
+												)}
 											</div>
 										)}
 										{contentBlock.type == "video" && (
-											<div className="content-block" key={key}>
-												<div
-													className={`block-hover ${key === focusAction ? 'focus-block' : ''}`}
-													onClick={() => {
-														setFocusAction(key)
-														setSideAction("video")
-													}}>
-													{contentBlock.data !== '' ? (
-														<div className="video-block" style={contentBlock.isMinimize ? { width: '752px' } : { width: '1024px' }}>
-															<video aria-label={contentBlock.AltText} className='video-play' src={contentBlock.data} loop={true} autoPlay={true} />
+											<div
+												className={`block-hover ${key === focusAction ? 'focus-block' : ''}`}
+												onClick={() => {
+													setFocusAction(key)
+													setSideAction("video")
+												}}>
+												{contentBlock.data !== '' ? (
+													<div className="video-block" style={contentBlock.isMinimize ? { width: '752px' } : { width: '1024px' }}>
+														<video aria-label={contentBlock.AltText} className='video-play' src={contentBlock.data} loop={true} autoPlay={true} />
+													</div>
+												) : (
+													<div className="blank-image">
+														<p>Drag and drop media, or Browse</p>
+													</div>
+												)}
+												{key === focusAction && (
+													<div className='edit-form'>
+														<div className='icon-container up'>
+															<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m19 12l-7-7l-7 7m7-7v14" /></svg>
 														</div>
-													) : (
-														<div className="blank-image">
-															<p>Drag and drop media, or Browse</p>
+														<div className='icon-container down'>
+															<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m5 12l7 7m0 0l7-7m-7 7V5" /></svg>
 														</div>
-													)}
-												</div>
+														<div className='icon-container trash' onClick={() => deleteContentBlock(key)}>
+															<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M18 19a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V7H4V4h4.5l1-1h4l1 1H19v3h-1zM6 7v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2V7zm12-1V5h-4l-1-1h-3L9 5H5v1zM8 9h1v10H8zm6 0h1v10h-1z" /></svg>
+														</div>
+													</div>
+												)}
 											</div>
 										)}
-									</>
+									</div>
 								)
 							})}
 						</div>
@@ -378,7 +426,7 @@ const ShotEdit = () => {
 										ref={fileInputSideRef}
 										onChange={(e) => handleChangeImage(e)}
 										style={{ display: 'none' }} />
-									{contentBlocks && focusAction !== null && contentBlocks[focusAction].data !== '' ? (
+									{contentBlocks && focusAction !== null && contentBlocks[focusAction] && contentBlocks[focusAction].data !== '' ? (
 										<div className="border-image">
 											{sideAction === "image" ? (
 												<img className='media-change'
@@ -475,7 +523,7 @@ const ShotEdit = () => {
 								<p className="title">Thumbnail preview</p>
 								<div className="explore-content">
 									{contentBlocks && (
-										<Explore username='Rick Roll' liked={0} viewed={0} img={contentBlocks[0].data} topic={[]} />
+										<Explore username='Rick Roll' liked={0} viewed={0} img={contentBlocks[0].data} />
 									)}
 								</div>
 							</div>

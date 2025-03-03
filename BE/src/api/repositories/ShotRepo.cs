@@ -15,10 +15,12 @@ namespace BE.src.api.repositories
 		Task<List<Shot>> GetShotsByUser(Guid userId);
 		Task<int> GetLikeCount(Guid ShotId);
 		Task<int> GetViewCount(Guid ShotId);
-		Task<Shot?> GetShotByShotCode(string shotCode);
+		Task<Shot?> GetShotByShotCode(Guid shotCode);
 		Task<bool> IsLikedShot(Guid UserId, Guid ShotId);
 		Task<bool> IsSaved(Guid UserId, Guid ShotId);
 		Task<List<Shot>> GetShots(ShotSearchFilterDTO filter);
+		Task<Shot?> GetShotById(Guid id);
+		Task<List<ShotView>> GetShotRandom(int index);
 	}
 	public class ShotRepo : IShotRepo
 	{
@@ -52,8 +54,9 @@ namespace BE.src.api.repositories
 			return await _context.Shots.Where(s => s.UserId == userId)
 										.Include(s => s.User)
 											.ThenInclude(u => u.ImageVideos)
-										.Include(s => s.ImageVideos)
+										.Include(s => s.ImageVideos.Where(i => i.IsMain == true))
 										.Include(s => s.Specialties)
+										.AsNoTracking()
 										.ToListAsync();
 		}
 		public async Task<int> GetLikeCount(Guid ShotId)
@@ -66,12 +69,12 @@ namespace BE.src.api.repositories
 											.SumAsync(va => va.View);
 		}
 
-		public async Task<Shot?> GetShotByShotCode(string shotCode)
+		public async Task<Shot?> GetShotByShotCode(Guid shotCode)
 		{
 			return await _context.Shots
 						.Include(s => s.User)
 							.ThenInclude(u => u.ImageVideos)
-						.FirstOrDefaultAsync(s => Utils.HashObject<Guid>(s.Id) == shotCode);
+						.FirstOrDefaultAsync(s => s.Id == shotCode);
 		}
 
 		public async Task<bool> IsLikedShot(Guid UserId, Guid ShotId)
@@ -126,6 +129,50 @@ namespace BE.src.api.repositories
 				query = query.Where(s => s.View <= filter.MaxViews);
 
 			return await query.ToListAsync();
+		}
+
+		public async Task<Shot?> GetShotById(Guid id)
+		{
+			return await _context.Shots.FirstOrDefaultAsync(s => s.Id == id);
+		}
+
+		public async Task<List<ShotView>> GetShotRandom(int index)
+		{
+			var randomShotIds = await _context.Shots
+				.OrderBy(x => EF.Functions.Random())
+				.Take(index)
+				.Select(s => s.Id)
+				.ToListAsync();
+			var shots = await _context.Shots
+				.Where(s => randomShotIds.Contains(s.Id))
+				.Include(s => s.User)
+				.Include(s => s.ImageVideos.Where(i => i.IsMain))
+				.Select(s => new
+				{
+					Shot = s,
+					ImageUrl = s.ImageVideos.FirstOrDefault(i => i.IsMain).Url
+				})
+				.ToListAsync();
+			var result = new List<ShotView>();
+
+			foreach (var item in shots)
+			{
+				result.Add(new ShotView
+				{
+					Id = item.Shot.Id,
+					Title = item.Shot.Title,
+					User = new UserShotCard
+					{
+						Username = item.Shot.User.Username,
+						Image = item.ImageUrl
+					},
+					CountLike = await GetLikeCount(item.Shot.Id),
+					CountView = await GetViewCount(item.Shot.Id),
+					Image = item.ImageUrl
+				});
+			}
+
+			return result;
 		}
 	}
 }

@@ -98,11 +98,6 @@ namespace BE.src.api.services
 		{
 			try
 			{
-				var key = "specialties";
-				var cacheSpecialties = await _cacheService.Get<List<Specialty>>(key);
-				if (cacheSpecialties != null)
-					return SuccessResp.Ok(cacheSpecialties);
-
 				List<Specialty> specialties = null!;
 				if (string.IsNullOrEmpty(query))
 				{
@@ -112,8 +107,6 @@ namespace BE.src.api.services
 				{
 					specialties = await _specialtyRepo.GetSpecialtiesByQuery(query);
 				}
-
-				await _cacheService.Set(key, specialties, TimeSpan.FromMinutes(10));
 
 				return SuccessResp.Ok(specialties);
 			}

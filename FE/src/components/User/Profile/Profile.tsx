@@ -389,7 +389,6 @@ export default function Profile() {
 			specialties: string[];
 			datePosted: string;
 		}[]>();
-		console.log(data)
 		if (Array.isArray(data)) {
 			const formattedData: WorkPost[] = data.map((item) => ({
 				id: item.id,

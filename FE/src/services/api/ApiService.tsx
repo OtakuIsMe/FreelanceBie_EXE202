@@ -101,4 +101,36 @@ export class ApiGateway {
 			throw error
 		}
 	}
+	public static async ShotDetail<T>(shotCode: string): Promise<T> {
+		this.setAuthHeader();
+		try {
+			const response = await this.axiosInstance.get<T>(`shot/ShotDetail?shotCode=${shotCode}`)
+			return response.data
+		} catch (error) {
+			console.log(error)
+			throw error
+		}
+	}
+
+	public static async ShotOther<T>(shotCode: string): Promise<T> {
+		this.setAuthHeader();
+		try {
+			const response = await this.axiosInstance.get<T>(`shot/other-shots?ShotId=${shotCode}`)
+			return response.data
+		} catch (error) {
+			console.log(error)
+			throw error
+		}
+	}
+
+	public static async ShotRandom<T>(item: number): Promise<T> {
+		this.setAuthHeader();
+		try {
+			const response = await this.axiosInstance.get<T>(`shot/shot-random?item=${item}`)
+			return response.data
+		} catch (error) {
+			console.log(error)
+			throw error
+		}
+	}
 }

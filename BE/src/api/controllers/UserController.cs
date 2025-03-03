@@ -24,8 +24,6 @@ namespace BE.src.api.controllers
 		[HttpGet("Login")]
 		public async Task<IActionResult> Login([FromQuery] LoginRq data)
 		{
-			Console.WriteLine(data.Email);
-			Console.WriteLine(data.Password);
 			return await _userServ.Login(data);
 		}
 		[HttpPost("register")]

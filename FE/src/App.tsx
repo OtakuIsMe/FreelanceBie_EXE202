@@ -40,12 +40,16 @@ function MainRoutes() {
 					<Route path="edit" element={<ShotEdit />} />
 				</Route>
 			</Routes>
-			{background && (
+			{background ? (
 				<Modal onClose={() => navigate(-1)}>
 					<Routes>
 						<Route path="/shot/:id" element={<ShotDetail />} />
 					</Routes>
 				</Modal>
+			) : (
+				<Routes>
+					<Route path="/shot/:id" element={<ShotDetail />} />
+				</Routes>
 			)}
 		</AuthenProvider>
 	)

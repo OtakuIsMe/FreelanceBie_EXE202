@@ -24,6 +24,8 @@ namespace BE.src.api.repositories
 		Task<User?> GetUserById(Guid userId, CancellationToken cancellationToken = default);
 		Task<bool> EditProfile(User user);
 		Task<List<User>> FindUsers(UserSearchingDTO userSearchingDTO);
+		Task<bool> AddImageVideo(ImageVideo img);
+		Task<bool> UpdateImageVideo(ImageVideo img);
 	}
 	public class UserRepo : IUserRepo
 	{
@@ -117,15 +119,6 @@ namespace BE.src.api.repositories
 								.Include(x => x.Notifications)
 								.Include(x => x.Comments)
 								.Include(x => x.Likes)
-									// .ThenInclude(x => x.User)
-									// 	.ThenInclude(x => x.ImageVideos)
-								// .Include(x => x.Likes)
-								// 	.ThenInclude(x => x.User)
-								// 		.ThenInclude(x => x.Shots)
-								// 			.ThenInclude(x => x.ImageVideos)
-								// .Include(x => x.Saves)
-								// 	.ThenInclude(x => x.User)
-								// 		.ThenInclude(x => x.ImageVideos)
 								.Include(x => x.Saves)
 									.ThenInclude(x => x.Post)
 								.Include(x => x.Saves)
@@ -139,6 +132,18 @@ namespace BE.src.api.repositories
 			_context.Users.Update(user);
 			await _context.SaveChangesAsync();
 			return true;
+		}
+
+		public async Task<bool> AddImageVideo(ImageVideo img)
+		{
+			_context.ImageVideos.Add(img);
+			return await _context.SaveChangesAsync() > 0;
+		}
+
+		public async Task<bool> UpdateImageVideo(ImageVideo img)
+		{
+			_context.ImageVideos.Update(img);
+			return await _context.SaveChangesAsync() > 0;
 		}
 
 		public async Task<User?> GetUserById(Guid userId, CancellationToken cancellationToken = default)

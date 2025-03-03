@@ -583,11 +583,17 @@
 }
 
 #Shot-edit .ql-editor h1 {
-	font-size: 48px;
+	font-size: 32px;
 }
 
 #Shot-edit .ql-editor h2 {
-	font-size: 32px;
+	font-size: 24px;
+}
+
+#Shot-edit .ql-editor a {
+	color: black;
+	box-shadow: 0 2px 0 #fff, 0 4px 0 #ea64d9;
+	text-decoration: none;
 }
 
 #Shot-edit .video-block video {
@@ -859,4 +865,52 @@
 #Shot-edit .suggestion:hover {
 	background-color: rgb(190, 190, 190);
 	color: black;
+}
+
+
+#Shot-edit .edit-form {
+	position: absolute;
+	left: calc(100% + 37px);
+	top: -16px;
+	width: fit-content;
+	height: fit-content;
+	background-color: white;
+	padding: 14px 10px;
+	border-radius: 999px;
+	box-shadow: 0 10px 35px rgba(0, 0, 0, .1);
+}
+
+#Shot-edit .edit-form .icon-container {
+	margin: 8px 0;
+	cursor: pointer;
+}
+
+#Shot-edit .edit-form .icon-container svg {
+	width: 19px;
+	height: 19px;
+}
+
+#Shot-edit .edit-form .icon-container.up {
+	margin-top: 0;
+}
+
+#Shot-edit .edit-form .icon-container.trash {
+	margin-bottom: 0;
+	position: relative;
+	display: flex;
+	justify-content: center;
+	margin-top: 17px;
+}
+
+#Shot-edit .edit-form .icon-container.trash svg {
+	color: red;
+}
+
+#Shot-edit .edit-form .icon-container.trash::before {
+	position: absolute;
+	width: 70%;
+	height: 1px;
+	content: '';
+	background-color: black;
+	top: -10px;
 }

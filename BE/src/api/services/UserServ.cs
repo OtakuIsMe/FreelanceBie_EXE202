@@ -87,7 +87,7 @@ namespace BE.src.api.services
 				issuer: JWT.Issuer,
 				audience: JWT.Audience,
 				claims: claims,
-				expires: DateTime.Now.AddHours(1),
+				expires: DateTime.Now.AddHours(3),
 				signingCredentials: creds
 			);
 
@@ -98,7 +98,7 @@ namespace BE.src.api.services
 			try
 			{
 				var cachedUsers = await _cacheService.Get<List<User>>("all-users");
-				if(cachedUsers != null)
+				if (cachedUsers != null)
 				{
 					return SuccessResp.Ok(cachedUsers);
 				}
@@ -252,7 +252,7 @@ namespace BE.src.api.services
 				var redisKey = $"follow:{Follower}:{Followed}";
 
 				var cachedFollowState = await _cacheService.Get<bool?>(redisKey);
-				if(cachedFollowState.HasValue)
+				if (cachedFollowState.HasValue)
 				{
 					if (cachedFollowState.Value == State)
 					{
@@ -483,6 +483,28 @@ namespace BE.src.api.services
 				userObj.City = user.City ?? userObj.City;
 				userObj.Education = user.Education ?? userObj.Education;
 				userObj.Description = user.Description ?? userObj.Description;
+
+				if (user.Image != null)
+				{
+					var imageUrl = await Utils.GenerateAzureUrl(MediaTypeEnum.Image, user.Image, $"user/{Utils.HashObject(userObj.Id)}");
+					if (userObj.ImageVideos == null || userObj.ImageVideos.Count == 0)
+					{
+						var image = new ImageVideo
+						{
+							Type = MediaTypeEnum.Image,
+							Url = imageUrl,
+							IsMain = false,
+							UserId = userId
+						};
+						await _userRepo.AddImageVideo(image);
+					}
+					else
+					{
+						var userImage = userObj.ImageVideos.First();
+						userImage.Url = imageUrl;
+						await _userRepo.UpdateImageVideo(userImage);
+					}
+				}
 
 				if (!string.IsNullOrEmpty(user.DOB))
 				{
