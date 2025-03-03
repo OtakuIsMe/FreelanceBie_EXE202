@@ -1,27 +1,28 @@
+# Only for test on docker desktop !!! WARNING !!!
+# This file is only for testing on docker desktop, it is not used in the production environment.
 version: "3.8"
 services:
-    app:
-        build:
-            context: .
-            dockerfile: Dockerfile
-        container_name: server
+    rabbitmq:
+        image: "rabbitmq:3-management"
+        container_name: "rabbitmq"
         ports:
-            - "5147:5147"
+            - "5672:5672"
+            - "15672:15672"
         environment:
-            - ASPNETCORE_URLS=http://+:5147
-            - ASPNETCORE_ENVIRONMENT=Development
-            - APP_VERSION=24.08.08
+            RABBITMQ_DEFAULT_USER: "${RABBITMQ_USER}"
+            RABBITMQ_DEFAULT_PASS: "${RABBITMQ_PASS}"
         networks:
             - backend
-        depends_on:
-            - redis
 
     redis:
-        image: redis
+        image: "redis"
         ports:
             - "6379:6379"
         networks:
             - backend
+        environment:
+            - REDIS_HOST=redis
+            - REDIS_PORT=6379
 
 networks:
     backend:

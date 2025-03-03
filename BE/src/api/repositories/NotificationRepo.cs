@@ -11,6 +11,7 @@ namespace BE.src.api.repositories
 		Task<Notification?> GetNotificationByPostId(Guid PostId);
 		Task<bool> UpdateNotification(Notification notification);
 		Task<bool> AddNotification(Notification notification);
+		Task<bool> CountExistingNotification(Guid PostId, Guid UserId);
 	}
 
 	public class NotificationRepo : INotificationRepo
@@ -39,12 +40,17 @@ namespace BE.src.api.repositories
 		}
 		public async Task<Notification?> GetNotificationByPostId(Guid PostId)
 		{
-			return await _context.Notifications.FirstOrDefaultAsync(n => n.PostId == PostId);
+			return await _context.Notifications.Include(notify => notify.Post).FirstOrDefaultAsync(n => n.PostId == PostId);
 		}
 		public async Task<bool> UpdateNotification(Notification notification)
 		{
 			_context.Notifications.Update(notification);
 			return await _context.SaveChangesAsync() > 0;
+		}
+
+		public async Task<bool> CountExistingNotification(Guid PostId, Guid UserId)
+		{
+			return await _context.Notifications.AnyAsync(x => x.PostId == PostId && x.UserId == UserId);
 		}
 	}
 }

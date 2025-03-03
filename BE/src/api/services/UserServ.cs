@@ -1,8 +1,10 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using BE.src.api.domains.DTOs.Post;
 using BE.src.api.domains.DTOs.User;
 using BE.src.api.domains.Enum;
+using BE.src.api.domains.eventbus.Producers;
 using BE.src.api.domains.Model;
 using BE.src.api.helpers;
 using BE.src.api.repositories;
@@ -10,6 +12,7 @@ using BE.src.api.shared.Constant;
 using BE.src.api.shared.Type;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Queue = BE.src.api.shared.Constant.EventBus;
 
 namespace BE.src.api.services
 {
@@ -40,9 +43,10 @@ namespace BE.src.api.services
 		private readonly IPostRepo _postRepo;
 		private readonly INotificationRepo _notificationRepo;
 		private readonly ICacheService _cacheService;
+		private readonly IEventBusRabbitMQProducer _eventBus;
 		public UserServ(IUserRepo userRepo, EmailServ emailServ, ISocialProfileRepo socialProfileRepo,
 						IMembershipRepo membershipRepo, IPostRepo postRepo, INotificationRepo notificationRepo,
-						ICacheService cacheService)
+						ICacheService cacheService, IEventBusRabbitMQProducer eventBus)
 		{
 			_userRepo = userRepo;
 			_emailServ = emailServ;
@@ -51,6 +55,7 @@ namespace BE.src.api.services
 			_postRepo = postRepo;
 			_notificationRepo = notificationRepo;
 			_cacheService = cacheService;
+			_eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
 		}
 
 		public async Task<IActionResult> Login(LoginRq data)
@@ -587,19 +592,9 @@ namespace BE.src.api.services
 					return ErrorResp.NotFound("No recent posts available");
 				}
 
-				var newNotification = new Notification
-				{
-					Message = $"A new post titled '{post.Title}' has been published. Check it out!",
-					UserId = userId,
-					CreateAt = DateTime.Now,
-					UpdateAt = DateTime.Now
-				};
+				var eventMessage = new PostCreatedEvent(userId, post.Id, post.Title, DateTime.Now);
 
-				var result = await _notificationRepo.AddNotification(newNotification);
-				if (!result)
-				{
-					return ErrorResp.BadRequest("Failed to send notification");
-				}
+				_eventBus.Publish(Queue.PostNotificationQueue, eventMessage);
 
 				return SuccessResp.Ok("Notification sent successfully");
 			}

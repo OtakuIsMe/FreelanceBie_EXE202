@@ -17,12 +17,24 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
+using Azure.Storage.Blobs;
+using RabbitMQ.Client;
+using BE.src.api.domains.eventbus;
+using BE.src.api.domains.eventbus.Producers;
+using BE.src.api.domains.eventbus.Consumers;
 
 Env.Load();
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 var redisConnectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION")
-	?? throw new InvalidOperationException("Connection string not found in environment variables.");
+	?? throw new InvalidOperationException("Redis connection string not found in environment variables.");
+
+var connectionString = Environment.GetEnvironmentVariable("DEFAULT_CONNECTION")
+	?? throw new InvalidOperationException("Database connection string not found in environment variables.");
+
+var blogcConnectionString = Environment.GetEnvironmentVariable("AZURE_KEY")
+	?? throw new InvalidOperationException("Azure blog connection string not found in environment variables.");
 
 builder.Services.AddControllers();
 builder.Services.AddControllersWithViews()
@@ -88,11 +100,20 @@ builder.Services.AddScoped<IPostServ, PostServ>();
 builder.Services.AddScoped<ICommunicationServ, CommunicationServ>();
 builder.Services.AddScoped<IShotServ, ShotServ>();
 
+builder.Services.AddSingleton(_ => {
+	Console.WriteLine($"AZURE_KEY (after Env.Load()): {blogcConnectionString}");
+	return new BlobServiceClient(blogcConnectionString ?? throw new InvalidOperationException("Azure connection string not found."));
+});
+
+Console.WriteLine($"Redis connection string: {redisConnectionString}");
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisConnectionString));
 
 builder.Services.AddScoped<ICacheService, CacheServ>();
 
-builder.Services.AddDbContext<FLBDbContext>();
+builder.Services.AddDbContext<FLBDbContext>(options => {
+	Console.WriteLine($"Using ConnectionString: {connectionString}");
+	options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -141,6 +162,20 @@ builder.WebHost.ConfigureKestrel(options =>
 	options.ListenAnyIP(5149);
 });
 
+builder.Services.AddSingleton<IConnectionFactory>(sp =>
+{
+    return new ConnectionFactory()
+    {
+        HostName = BE.src.api.shared.Constant.Azure.RabbitMQHost,
+        Port = int.Parse(BE.src.api.shared.Constant.Azure.RabbitMQPort),
+        UserName = BE.src.api.shared.Constant.Azure.RabbitMQUsername,
+        Password = BE.src.api.shared.Constant.Azure.RabbitMQPassword
+    };
+});
+builder.Services.AddSingleton<IRabbitMQConnection, RabbitMQConnection>();
+builder.Services.AddSingleton<IEventBusRabbitMQProducer, EventBusRabbitMQProducer>();
+builder.Services.AddHostedService<PostNotificationConsumer>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -159,6 +194,10 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapGet("/", () => "Hello from ASP.NET Core!");
+app.MapGet("/", async context =>
+{
+    context.Response.Redirect("/swagger/index.html");
+    await Task.CompletedTask;
+});
 
 app.Run();
