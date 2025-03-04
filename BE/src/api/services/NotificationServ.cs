@@ -32,7 +32,7 @@ namespace BE.src.api.services
 
                 var notifications = await _notificationRepo.GetNotificationsByUserId(userId);
                 if(notifications.Count == 0)
-                    return ErrorResp.NotFound("Notifications not found");
+                    throw new ApplicationException("Notifications not found");
 
                 await _cacheService.Set($"notifications-{userId}", notifications, TimeSpan.FromMinutes(10));
 
@@ -40,7 +40,7 @@ namespace BE.src.api.services
             }
             catch (System.Exception ex)
             {
-                return ErrorResp.BadRequest(ex.Message);
+                throw new ApplicationException(ex.Message);
             }
 		}
 	}

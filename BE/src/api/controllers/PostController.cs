@@ -6,18 +6,21 @@ using Microsoft.AspNetCore.Mvc;
 namespace BE.src.api.controllers
 {
 	[ApiController]
-	[Route("post")]
+	[Route("api/v1/post")]
 	public class PostController : ControllerBase
 	{
 		private readonly IPostServ _postServ;
-		public PostController(IPostServ postServ)
+		private readonly ILogger<PostController> _logger;
+		public PostController(IPostServ postServ, ILogger<PostController> logger)
 		{
 			_postServ = postServ;
+			_logger = logger;
 		}
 		[Authorize(Policy = "Customer")]
 		[HttpPost("PostingJob")]
 		public async Task<IActionResult> AddPostData([FromForm] PostAddData data)
 		{
+			_logger.LogInformation("AddPostData");
 			Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
 			return await _postServ.AddPostData(userId, data);
 		}
@@ -25,6 +28,7 @@ namespace BE.src.api.controllers
 		[HttpGet("ApplyJob")]
 		public async Task<IActionResult> ApplyJob([FromQuery] Guid postId)
 		{
+			_logger.LogInformation("ApplyJob");
 			Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
 			return await _postServ.ApplyJob(userId, postId);
 		}
@@ -33,6 +37,7 @@ namespace BE.src.api.controllers
 		[HttpGet("PostJobDetail")]
 		public async Task<IActionResult> PostJobDetail([FromQuery] string postCode)
 		{
+			_logger.LogInformation("PostJobDetail");
 			Guid? userId = null;
 
 			if (User?.Identity?.IsAuthenticated == true)
@@ -51,6 +56,7 @@ namespace BE.src.api.controllers
 		[HttpGet("filter-posts")]
 		public async Task<IActionResult> GetPosts([FromQuery] PostJobFilterDTO filter)
 		{
+			_logger.LogInformation("GetPosts");
 			return await _postServ.GetPosts(filter);
 		}
 	}

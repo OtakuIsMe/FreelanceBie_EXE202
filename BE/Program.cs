@@ -23,18 +23,44 @@ using RabbitMQ.Client;
 using BE.src.api.domains.eventbus;
 using BE.src.api.domains.eventbus.Producers;
 using BE.src.api.domains.eventbus.Consumers;
+using BE.src.api.shared.Type;
+using System.Diagnostics;
+using Microsoft.AspNetCore.Http.Features;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using OpenTelemetry;
+using Serilog;
 
 Env.Load();
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
-var redisConnectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION")
-	?? throw new InvalidOperationException("Redis connection string not found in environment variables.");
+
+builder.Services.AddProblemDetails(o =>
+{
+    o.CustomizeProblemDetails = context =>
+    {
+        context.ProblemDetails.Instance = $"{context.HttpContext.Request.Method} {context.HttpContext.Request.Path}";
+        context.ProblemDetails.Extensions.TryAdd("requestId", context.HttpContext.TraceIdentifier);
+
+        Activity? activity = context.HttpContext.Features.Get<IHttpActivityFeature>()?.Activity;
+        
+        if (activity?.Id != null)
+        {
+            context.ProblemDetails.Extensions.TryAdd("traceId", activity.Id);
+        }
+    };
+});
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
+var redisConnection = BE.src.api.shared.Constant.Azure.RedisConnectionString;
 
 var connectionString = Environment.GetEnvironmentVariable("DEFAULT_CONNECTION")
-	?? throw new InvalidOperationException("Database connection string not found in environment variables.");
+	?? throw new ApplicationException("MySQL connection string not found in environment variables.");
 
-var blogcConnectionString = Environment.GetEnvironmentVariable("AZURE_KEY")
-	?? throw new InvalidOperationException("Azure blog connection string not found in environment variables.");
+var blogcConnectionString = BE.src.api.shared.Constant.Azure.ConnectionString;
+
+var jwtSecretKey = BE.src.api.shared.Constant.JWT.SecretKey;
 
 builder.Services.AddControllers();
 builder.Services.AddControllersWithViews()
@@ -55,7 +81,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 					ValidateIssuerSigningKey = true,
 					ValidIssuer = JWT.Issuer,
 					ValidAudience = JWT.Audience,
-					IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JWT.SecretKey))
+					IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey))
 				};
 			});
 
@@ -80,6 +106,8 @@ builder.Services.AddCors(options =>
 					  });
 });
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<IMembershipRepo, MembershipRepo>();
 builder.Services.AddScoped<INotificationRepo, NotificationRepo>();
@@ -99,14 +127,16 @@ builder.Services.AddScoped<ITransactionServ, TransactionServ>();
 builder.Services.AddScoped<IPostServ, PostServ>();
 builder.Services.AddScoped<ICommunicationServ, CommunicationServ>();
 builder.Services.AddScoped<IShotServ, ShotServ>();
+builder.Services.AddScoped<IAuthServ, AuthServ>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddSingleton(_ => {
 	Console.WriteLine($"AZURE_KEY (after Env.Load()): {blogcConnectionString}");
-	return new BlobServiceClient(blogcConnectionString ?? throw new InvalidOperationException("Azure connection string not found."));
+	return new BlobServiceClient(blogcConnectionString ?? throw new ApplicationException("Azure connection string not found."));
 });
 
-Console.WriteLine($"Redis connection string: {redisConnectionString}");
-builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisConnectionString));
+Console.WriteLine($"Redis connection string: {redisConnection}");
+builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisConnection));
 
 builder.Services.AddScoped<ICacheService, CacheServ>();
 
@@ -176,6 +206,35 @@ builder.Services.AddSingleton<IRabbitMQConnection, RabbitMQConnection>();
 builder.Services.AddSingleton<IEventBusRabbitMQProducer, EventBusRabbitMQProducer>();
 builder.Services.AddHostedService<PostNotificationConsumer>();
 
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Seq("http://localhost:5341")
+    .CreateLogger();
+
+builder.Host.UseSerilog((context, loggerConfig) => {
+	loggerConfig.ReadFrom.Configuration(context.Configuration);
+});
+
+builder.Logging.AddOpenTelemetry(logging =>
+{
+    logging.IncludeFormattedMessage = true;
+    logging.IncludeScopes = true;
+});
+
+builder.Services.AddOpenTelemetry()
+    .ConfigureResource(resource => resource.AddService("BE"))
+    .WithTracing(tracing =>
+    {
+        tracing
+            .AddHttpClientInstrumentation()
+            .AddAspNetCoreInstrumentation()
+            .AddEntityFrameworkCoreInstrumentation()
+            .AddSqlClientInstrumentation(options =>
+            {
+                options.SetDbStatementForText = true;
+            });
+    })
+    .UseOtlpExporter();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -187,6 +246,11 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors(MyAllowSpecificOrigins);
+
+app.UseSerilogRequestLogging();
+
+app.UseExceptionHandler();
+app.UseStatusCodePages();
 
 app.UseAuthentication();
 

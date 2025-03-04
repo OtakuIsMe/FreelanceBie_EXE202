@@ -45,7 +45,7 @@ namespace BE.src.api.services
             }
             catch (Exception ex)
             {
-                throw new Exception($"PayPal API initialization failed: {ex.Message}", ex);
+                throw new ApplicationException($"PayPal API initialization failed: {ex.Message}", ex);
             }
         }
 
@@ -89,7 +89,7 @@ namespace BE.src.api.services
                 var membership = await _membershipRepo.GetMembershipById(membershipId);
                 if (membership == null)
                 {
-                    return ErrorResp.NotFound("Membership not found");
+                    throw new ApplicationException("Membership not found");
                 }
 
                 string return_url = $"http://localhost:5147/transaction/payment-membership-success?membershipId={membershipId}&userId={userId}";
@@ -100,7 +100,7 @@ namespace BE.src.api.services
             }
             catch (System.Exception ex)
             {
-                return ErrorResp.BadRequest(ex.Message);
+                throw new ApplicationException(ex.Message);
             }
 		}
 
@@ -111,13 +111,13 @@ namespace BE.src.api.services
                 if (membershipId == Guid.Empty || userId == Guid.Empty || 
                     string.IsNullOrEmpty(paymentId) || string.IsNullOrEmpty(PayerID))
                 {
-                    return ErrorResp.BadRequest("Invalid input parameters.");
+                    throw new ApplicationException("Invalid input parameters.");
                 }
 
                 var membership = await _membershipRepo.GetMembershipById(membershipId);
                 if (membership == null)
                 {
-                    return ErrorResp.NotFound("Cant find membership");
+                    throw new ApplicationException("Cant find membership");
                 }
 
                 var paymentExecution = new PaymentExecution { payer_id = PayerID };
@@ -126,7 +126,7 @@ namespace BE.src.api.services
 
                 if (executedPayment.state.ToLower() != "approved")
                 {
-                    return ErrorResp.BadRequest("Payment was not approved.");
+                    throw new ApplicationException("Payment was not approved.");
                 }
 
                 var membershipUser = await _membershipRepo.GetMembershipUserRegistered(userId);
@@ -152,7 +152,7 @@ namespace BE.src.api.services
 
                 if (!operationResult)
                 {
-                    return ErrorResp.BadRequest("Failed to process membership user.");
+                    throw new ApplicationException("Failed to process membership user.");
                 }
 
                 var transaction = new MyTransaction
@@ -167,14 +167,14 @@ namespace BE.src.api.services
                 var isTransactionCreated = await _transactionRepo.CreateTransaction(transaction);
                 if (!isTransactionCreated)
                 {
-                    return ErrorResp.BadRequest("Failed to create transaction.");
+                    throw new ApplicationException("Failed to create transaction.");
                 }
 
                 return SuccessResp.Ok(new { Redirect = Environment.GetEnvironmentVariable("FRONTEND_REDIRECT_URL") ?? "http://localhost:5173/" });                   
             }
             catch (System.Exception ex)
             {
-                return ErrorResp.BadRequest(ex.Message);
+                throw new ApplicationException(ex.Message);
             }
 		}
 
@@ -191,7 +191,7 @@ namespace BE.src.api.services
                 var transactions = await _transactionRepo.GetTransactions(userId);
                 if(transactions.Count == 0)
                 {
-                    return ErrorResp.NotFound("No transaction found");
+                    throw new ApplicationException("No transaction found");
                 }
 
                 await _cacheService.Set(key, transactions, TimeSpan.FromMinutes(10));
@@ -200,7 +200,7 @@ namespace BE.src.api.services
             }
             catch (System.Exception ex)
             {
-                return ErrorResp.BadRequest(ex.Message);
+                throw new ApplicationException(ex.Message);
             }
 		}
 	}

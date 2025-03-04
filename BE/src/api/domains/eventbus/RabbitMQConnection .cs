@@ -16,7 +16,7 @@ namespace BE.src.api.domains.eventbus
         private bool _disposed;
         public RabbitMQConnection (IConnectionFactory connectionFactory)
         {
-            _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
+            _connectionFactory = connectionFactory ?? throw new ApplicationException(nameof(connectionFactory));
             if(!IsConnected)
             {
                 TryConnect();
@@ -58,7 +58,7 @@ namespace BE.src.api.domains.eventbus
         {
             if (!IsConnected)
             {
-                throw new InvalidOperationException("No RabbitMQ connections are available to perform this action");
+                throw new ApplicationException("No RabbitMQ connections are available to perform this action");
             }
             return _connection.CreateModel();
         }

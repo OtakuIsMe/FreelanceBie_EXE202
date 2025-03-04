@@ -42,7 +42,7 @@ namespace BE.src.api.services
                 var communications = await _communicationRepo.GetCommunications(userId);
                 if (communications == null)
                 {
-                    return ErrorResp.NotFound("Communications not found");
+                    throw new ApplicationException("Communications not found");
                 }
                 
 				await _cacheService.Set(key, communications, TimeSpan.FromMinutes(10));
@@ -51,7 +51,7 @@ namespace BE.src.api.services
             }
             catch (System.Exception ex)
             {
-                return ErrorResp.BadRequest(ex.Message);
+                throw new ApplicationException(ex.Message);
             }
 		}
 
@@ -62,7 +62,7 @@ namespace BE.src.api.services
 				var post = await _postRepo.GetPostById(postId);
 				if (post == null)
 				{
-					return ErrorResp.NotFound("Post not found");
+					throw new ApplicationException("Post not found");
 				}
 
 				var communication = new Communication
@@ -82,20 +82,20 @@ namespace BE.src.api.services
 				var result = await _communicationRepo.AddCommunication(communication);
 				if (!result)
 				{
-					return ErrorResp.BadRequest("Failed to send communication request");
+					throw new ApplicationException("Failed to send communication request");
 				}
 
 				var resultMessage = await _communicationRepo.AddMessage(messageContent);
 				if (!resultMessage)
 				{
-					return ErrorResp.BadRequest("Failed to send message");
+					throw new ApplicationException("Failed to send message");
 				}
 
 				return SuccessResp.Created("Create Communication successfully");
 			}
 			catch (System.Exception ex)
 			{
-				return ErrorResp.BadRequest(ex.Message);
+				throw new ApplicationException(ex.Message);
 			}
 		}
 
@@ -112,12 +112,12 @@ namespace BE.src.api.services
                 var communication = await _communicationRepo.GetCommunicationById(communicationId);
                 if (communication == null)
                 {
-                    return ErrorResp.NotFound("Communication not found");
+                    throw new ApplicationException("Communication not found");
                 }
 
                 var messages = await _communicationRepo.GetMessages(communicationId);
                 if (messages == null || !messages.Any())
-            		return ErrorResp.NotFound("Messages not found");
+            		throw new ApplicationException("Messages not found");
 
 				await _cacheService.Set(key, messages, TimeSpan.FromMinutes(10));
 
@@ -125,7 +125,7 @@ namespace BE.src.api.services
             }
             catch (System.Exception ex)
             {
-                return ErrorResp.BadRequest(ex.Message);
+                throw new ApplicationException(ex.Message);
             }
 		}
 
@@ -136,13 +136,13 @@ namespace BE.src.api.services
 				var communication = await _communicationRepo.GetCommunicationById(communicationId);
 				if (communication == null)
 				{
-					return ErrorResp.NotFound("Communication not found");
+					throw new ApplicationException("Communication not found");
 				}
 
                 var messages = await _communicationRepo.GetMessages(communicationId);
                 if (messages == null)
                 {
-                    return ErrorResp.NotFound("Messages not found");
+                    throw new ApplicationException("Messages not found");
                 }
 
                 var index = messages.Count;
@@ -159,7 +159,7 @@ namespace BE.src.api.services
 				var result = await _communicationRepo.AddMessage(messageContent);
 				if (!result)
 				{
-					return ErrorResp.BadRequest("Failed to send message");
+					throw new ApplicationException("Failed to send message");
 				}
 
 				var key = $"messages:{communicationId}";
@@ -169,7 +169,7 @@ namespace BE.src.api.services
 			}
 			catch (System.Exception ex)
 			{
-				return ErrorResp.BadRequest(ex.Message);
+				throw new ApplicationException(ex.Message);
 			}
 		}
     }

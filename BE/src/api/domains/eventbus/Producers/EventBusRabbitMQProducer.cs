@@ -15,7 +15,7 @@ namespace BE.src.api.domains.eventbus.Producers
 
         public EventBusRabbitMQProducer(IRabbitMQConnection connection)
         {
-            _connection = connection ?? throw new ArgumentNullException(nameof(connection));
+            _connection = connection ?? throw new ApplicationException(nameof(connection));
         }
 
         public void Publish<T>(string queueName, T eventMessage)
