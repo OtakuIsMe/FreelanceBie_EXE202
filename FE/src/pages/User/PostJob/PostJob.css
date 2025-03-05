@@ -23,20 +23,23 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	min-width: 1000px;
+	max-width: 1000px;
+	width: 80%;
 }
 
 #post-job .form-step {
 	width: 100%;
 }
 
-#post-job .form-step h3 {
+#post-job .form-step .step-1 h3,
+#post-job .form-step .step-2 h3 {
 	font-size: 0.9rem;
 	color: #718096;
 	margin-bottom: 5px;
 }
 
-#post-job .form-step h4 {
+#post-job .form-step .step-1 h4,
+#post-job .form-step .step-2 h4 {
 	font-size: 1.5rem;
 	color: #1a202c;
 	margin-bottom: 20px;
@@ -63,7 +66,7 @@
 	border: 1px solid #e2e8f0;
 	border-radius: 8px;
 	transition: border-color 0.2s ease;
-	background-color: #f7fafc;
+	background-color: #ffffff;
 }
 
 #post-job .form-group input::placeholder,
@@ -270,6 +273,10 @@
 	border-radius: 8px;
 	background-color: #fff;
 	transition: border-color 0.2s ease;
+}
+
+#post-job .form-group input[type="number"] {
+	appearance: textfield;
 }
 
 #post-job .form-group input[type="text"]:focus,
@@ -514,6 +521,7 @@
 #post-job .step-2 .employment-option:has(input[type="radio"]:checked) {
 	border-color: #ff69b4;
 	background-color: rgba(255, 105, 180, 0.1);
+	color: #ff69b4;
 }
 
 #post-job .step-2 .employment-option .icon {

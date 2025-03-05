@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './PostJob.css'
 import { FaDollarSign } from 'react-icons/fa'
 import Header from '../../../components/Header/Header';
 import ReactQuill from 'react-quill';
+import JobInfo from '../../../components/JobInfo/JobInfo';
 
 interface postData {
 	title: string;
@@ -12,10 +13,11 @@ interface postData {
 	companyName: string;
 	employmentType: number;
 	experience: number;
-	specialtyId: string;
+	specialty: string;
 	companyLogo: File | null;
 	files: File[] | null;
 	companyLink: string;
+	payment: number;
 }
 
 const PostJob: React.FC = () => {
@@ -29,27 +31,17 @@ const PostJob: React.FC = () => {
 			companyName: '',
 			employmentType: 0,
 			experience: 0,
-			specialtyId: '',
+			specialty: '',
 			companyLogo: null,
 			files: null,
-			companyLink: ''
+			companyLink: '',
+			payment: 0
 		}
 	)
 
 	useEffect(() => {
 		console.log(data)
 	}, [data])
-
-	// const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-	// 	const file = event.target.files?.[0];
-	// 	if (file) {
-	// 		const reader = new FileReader();
-	// 		reader.onloadend = () => {
-	// 			setImagePreview(reader.result as string);
-	// 		};
-	// 		reader.readAsDataURL(file);
-	// 	}
-	// };
 
 	const handleNextStep = () => {
 		setCurrentStep(prevStep => Math.min(prevStep + 1, 3));
@@ -63,6 +55,15 @@ const PostJob: React.FC = () => {
 		setData((prevData) => ({
 			...prevData,
 			[e.target.name]: e.target.value
+		}));
+	};
+
+	const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = e.target;
+
+		setData((prevData) => ({
+			...prevData,
+			[name]: value === '' ? null : Number(value)
 		}));
 	};
 
@@ -132,7 +133,7 @@ const PostJob: React.FC = () => {
 					</div>
 					<div className="form-step">
 						{currentStep === 1 && (
-							<>
+							<div className="step-1">
 								<h3 className='step-label'>Step 1</h3>
 								<h4 className='job-detail-label'>Job Details</h4>
 								<form>
@@ -177,7 +178,7 @@ const PostJob: React.FC = () => {
 										</div>
 									</div>
 								</form>
-							</>
+							</div>
 						)}
 						{currentStep === 2 && (
 							<div className="step-2">
@@ -219,25 +220,44 @@ const PostJob: React.FC = () => {
 
 									<div className="form-group">
 										<label>What type of design are you looking for?</label>
-										<input type="text" placeholder="e.g. UI/UX Design" />
+										<input type="text" name="specialty" placeholder="e.g. UI/UX Design"
+											value={data.specialty}
+											onChange={handleOnChange} />
 									</div>
 
 									<div className="form-group">
 										<label>Work type</label>
 										<div className="work-type">
 											<label className="work-option">
-												<input type="radio" name="salaryType" value="Remote" />
+												<input type="radio" name="salaryType"
+													value="Remote"
+													checked={data.workType === 0}
+													onChange={handleOnChangeWorkType} />
 												<span>Remote</span>
 											</label>
 											<label className="work-option">
-												<input type="radio" name="salaryType" value="Onsite" />
+												<input type="radio" name="salaryType"
+													value="Onsite"
+													checked={data.workType === 1}
+													onChange={handleOnChangeWorkType} />
 												<span>Onsite</span>
 											</label>
 											<label className="work-option">
-												<input type="radio" name="salaryType" value="Hybrid" />
+												<input type="radio" name="salaryType"
+													value="Hybrid"
+													checked={data.workType === 2}
+													onChange={handleOnChangeWorkType} />
 												<span>Hybrid</span>
 											</label>
 										</div>
+									</div>
+
+									<div className="form-group">
+										<label>Experience require</label>
+										<input type="number" placeholder="2"
+											name="experience"
+											value={data.experience === 0 ? '' : data.experience}
+											onChange={handleNumberChange} />
 									</div>
 
 									<div className="form-group">
@@ -246,7 +266,10 @@ const PostJob: React.FC = () => {
 											<span>
 												<FaDollarSign />
 											</span>
-											<input type="number" placeholder="10" />
+											<input type="number" placeholder="10"
+												name="payment"
+												value={data.payment === 0 ? '' : data.payment}
+												onChange={handleNumberChange} />
 											<span>/hour</span>
 										</div>
 									</div>
@@ -257,6 +280,18 @@ const PostJob: React.FC = () => {
 							<>
 								<h3>Step 3</h3>
 								<h4>Confirm & Complete</h4>
+								<JobInfo
+									title={data.title}
+									description={data.description}
+									workType={data.workType}
+									workLocation={data.workLocation}
+									companyName={data.companyName}
+									companyLogo={data.companyLogo}
+									specialty={data.specialty}
+									experience={data.experience}
+									employmentType={data.employmentType}
+									files={data.files}
+								/>
 							</>
 						)}
 					</div>
