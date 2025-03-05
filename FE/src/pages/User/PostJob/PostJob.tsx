@@ -1,27 +1,55 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import './PostJob.css'
 import { FaDollarSign } from 'react-icons/fa'
 import Header from '../../../components/Header/Header';
+import ReactQuill from 'react-quill';
+
+interface postData {
+	title: string;
+	description: string;
+	workType: number;
+	workLocation: string;
+	companyName: string;
+	employmentType: number;
+	experience: number;
+	specialtyId: string;
+	companyLogo: File | null;
+	files: File[] | null;
+	companyLink: string;
+}
 
 const PostJob: React.FC = () => {
 	const [currentStep, setCurrentStep] = useState(1);
-	const quillRef = useRef<HTMLDivElement | null>(null);
-	const [imagePreview, setImagePreview] = useState<string | null>(null);
-	const [jobTitle] = useState('');
-	const [jobDescription] = useState('');
-	const [companyName] = useState('');
-	const [companyLogo] = useState('');
-
-	const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const file = event.target.files?.[0];
-		if (file) {
-			const reader = new FileReader();
-			reader.onloadend = () => {
-				setImagePreview(reader.result as string);
-			};
-			reader.readAsDataURL(file);
+	const [data, setData] = useState<postData>(
+		{
+			title: '',
+			description: '',
+			workType: 0,
+			workLocation: '',
+			companyName: '',
+			employmentType: 0,
+			experience: 0,
+			specialtyId: '',
+			companyLogo: null,
+			files: null,
+			companyLink: ''
 		}
-	};
+	)
+
+	useEffect(() => {
+		console.log(data)
+	}, [data])
+
+	// const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+	// 	const file = event.target.files?.[0];
+	// 	if (file) {
+	// 		const reader = new FileReader();
+	// 		reader.onloadend = () => {
+	// 			setImagePreview(reader.result as string);
+	// 		};
+	// 		reader.readAsDataURL(file);
+	// 	}
+	// };
 
 	const handleNextStep = () => {
 		setCurrentStep(prevStep => Math.min(prevStep + 1, 3));
@@ -29,6 +57,56 @@ const PostJob: React.FC = () => {
 
 	const handlePreviousStep = () => {
 		setCurrentStep(prevStep => Math.max(prevStep - 1, 1));
+	};
+
+	const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setData((prevData) => ({
+			...prevData,
+			[e.target.name]: e.target.value
+		}));
+	};
+
+	const handleOnChangeDescription = (value: string) => {
+		setData((prevData) => ({
+			...prevData,
+			description: value
+		}));
+	};
+
+	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
+		if (file) {
+			setData((prev) => ({
+				...prev,
+				companyLogo: file,
+			}));
+		}
+	};
+
+	const handleOnChangeEmploymentType = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const employmentTypeMap: Record<string, number> = {
+			fullTime: 0,
+			partTime: 1,
+			contract: 2
+		};
+
+		setData((prevData) => ({
+			...prevData,
+			employmentType: employmentTypeMap[e.target.value] ?? 0
+		}));
+	};
+
+	const handleOnChangeWorkType = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const workTypeMap: Record<string, number> = {
+			Remote: 0,
+			Onsite: 1,
+			Hybrid: 2
+		};
+
+		setData((prevData) => ({
+			...prevData,
+			workType: workTypeMap[e.target.value] ?? 0
+		}));
 	};
 
 	return (
@@ -60,36 +138,42 @@ const PostJob: React.FC = () => {
 								<form>
 									<div className="form-group">
 										<label htmlFor="title">Job Title</label>
-										<input type="text" id="title" name="title" placeholder="e.g. Senior Product Designer" />
+										<input type="text" id="title" name="title" placeholder="e.g. Senior Product Designer"
+											value={data.title}
+											onChange={handleOnChange} />
 									</div>
 									<div className="form-group">
 										<label>Add your job description</label>
-										<div className="rich-text-editor">
-											<div ref={quillRef} />
-										</div>
+										<ReactQuill value={data.description} onChange={handleOnChangeDescription} />
 									</div>
 									<div className="form-group">
-										<label htmlFor="workplace">Workplace Type</label>
-										<input type="text" id="workplace" name="workplace" placeholder='e.g. "New York City" or' />
+										<label htmlFor="workplace">Workplace</label>
+										<input type="text" id="workLocation" name="workLocation" placeholder='e.g. "New York City" or'
+											value={data.workLocation}
+											onChange={handleOnChange} />
 									</div>
 									<div className="company-information">
 										<h4>Company Information</h4>
 										<div className="form-group">
 											<label htmlFor="companyName">What's your company name?</label>
-											<input type="text" id="companyName" name="companyName" placeholder='e.g. "FreelanceBie" or ...' />
+											<input type="text" id="companyName" name="companyName" placeholder='e.g. "FreelanceBie" or ...'
+												value={data.companyName}
+												onChange={handleOnChange} />
 										</div>
 										<div className="form-group">
 											<label htmlFor="companyLogo">Your company logo</label>
 											<div className="file-input-wrapper">
 												<label htmlFor="companyLogo" className="file-label">Choose image</label>
-												<input type="file" id="companyLogo" name="companyLogo" onChange={handleImageChange} />
+												<input type="file" id="companyLogo" name="companyLogo" onChange={handleFileChange} />
 											</div>
 											<small>Recommended dimensions: 144x144px</small>
-											{imagePreview && <img src={imagePreview} alt="Company Logo Preview" className="image-preview" />}
+											{data.companyLogo && <img src={URL.createObjectURL(data.companyLogo)} alt="Company Logo Preview" className="image-preview" />}
 										</div>
 										<div className="form-group">
 											<label htmlFor="companyWebsite">Your company website</label>
-											<input type="text" id="companyWebsite" name="companyWebsite" placeholder="e.g. https://domain.com" />
+											<input type="text" id="companyLink" name="companyLink" placeholder="e.g. https://domain.com"
+												value={data.companyLink}
+												onChange={handleOnChange} />
 										</div>
 									</div>
 								</form>
@@ -104,15 +188,30 @@ const PostJob: React.FC = () => {
 										<label>Employment type</label>
 										<div className="employment-type">
 											<label className="employment-option">
-												<input type="radio" name="employmentType" value="fullTime" />
+												<input
+													type="radio"
+													name="employmentType"
+													value="fullTime"
+													checked={data.employmentType === 0}
+													onChange={handleOnChangeEmploymentType} />
 												<span className="icon"><i className="fas fa-briefcase"></i></span> Full Time
 											</label>
 											<label className="employment-option">
-												<input type="radio" name="employmentType" value="partTime" />
+												<input
+													type="radio"
+													name="employmentType"
+													value="partTime"
+													checked={data.employmentType === 1}
+													onChange={handleOnChangeEmploymentType} />
 												<span className="icon"><i className="fas fa-clipboard"></i></span> Part Time
 											</label>
 											<label className="employment-option">
-												<input type="radio" name="employmentType" value="contract" />
+												<input
+													type="radio"
+													name="employmentType"
+													value="contract"
+													checked={data.employmentType === 2}
+													onChange={handleOnChangeEmploymentType} />
 												<span className="icon"><i className="fas fa-hourglass"></i></span> Contract
 											</label>
 										</div>
@@ -124,15 +223,19 @@ const PostJob: React.FC = () => {
 									</div>
 
 									<div className="form-group">
-										<label>Salary type</label>
-										<div className="salary-type">
-											<label className="salary-option">
-												<input type="radio" name="salaryType" value="hourly" />
-												<span>Hourly</span>
+										<label>Work type</label>
+										<div className="work-type">
+											<label className="work-option">
+												<input type="radio" name="salaryType" value="Remote" />
+												<span>Remote</span>
 											</label>
-											<label className="salary-option">
-												<input type="radio" name="salaryType" value="monthly" />
-												<span>Monthly</span>
+											<label className="work-option">
+												<input type="radio" name="salaryType" value="Onsite" />
+												<span>Onsite</span>
+											</label>
+											<label className="work-option">
+												<input type="radio" name="salaryType" value="Hybrid" />
+												<span>Hybrid</span>
 											</label>
 										</div>
 									</div>
@@ -154,20 +257,6 @@ const PostJob: React.FC = () => {
 							<>
 								<h3>Step 3</h3>
 								<h4>Confirm & Complete</h4>
-								{/* Display job title and job description from Step 1 */}
-								<div>
-									<h5>Job Title:</h5>
-									<p>{jobTitle}</p>
-									<h5>Job Description:</h5>
-									<p>{jobDescription}</p>
-								</div>
-								{/* Display company name and company logo from Step 2 */}
-								<div>
-									<h5>Company Name:</h5>
-									<p>{companyName}</p>
-									<h5>Company Logo:</h5>
-									<img src={companyLogo} alt="Company Logo" />
-								</div>
 							</>
 						)}
 					</div>

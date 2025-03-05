@@ -186,12 +186,19 @@
 	z-index: 0;
 }
 
-#post-job .rich-text-editor {
+#post-job .quill {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
 	border: 1px solid #e2e8f0;
 	border-radius: 8px;
 	overflow: hidden;
 	background-color: #f7fafc;
 	min-height: 270px;
+}
+
+#post-job .quill .ql-container {
+	flex: 1;
 }
 
 #post-job .toolbar {
@@ -387,13 +394,13 @@
 }
 
 #post-job .step-2 .employment-type,
-#post-job .step-2 .salary-type {
+#post-job .step-2 .work-type {
 	display: flex;
 	gap: 16px;
 }
 
 #post-job .step-2 .employment-type label,
-#post-job .step-2 .salary-type label {
+#post-job .step-2 .work-type label {
 	display: flex;
 	align-items: center;
 	padding: 10px;
@@ -405,13 +412,13 @@
 }
 
 #post-job .step-2 .employment-type input[type="radio"],
-#post-job .step-2 .salary-type input[type="radio"] {
+#post-job .step-2 .work-type input[type="radio"] {
 	margin-right: 8px;
 	/* Khoảng cách giữa radio và label */
 }
 
 #post-job .step-2 .employment-type input[type="radio"]:checked+label,
-#post-job .step-2 .salary-type input[type="radio"]:checked+label {
+#post-job .step-2 .work-type input[type="radio"]:checked+label {
 	border-color: #ff69b4;
 	/* Màu viền khi được chọn */
 }
@@ -514,19 +521,19 @@
 	color: #ccc;
 }
 
-#post-job .step-2 .salary-type {
+#post-job .step-2 .work-type {
 	display: flex;
 	justify-content: space-between;
 	gap: 16px;
 }
 
-#post-job .step-2 .salary-option:hover,
-#post-job .step-2 .salary-option:has(input[type="radio"]:checked) {
+#post-job .step-2 .work-option:hover,
+#post-job .step-2 .work-option:has(input[type="radio"]:checked) {
 	border-color: #ff69b4;
 	background-color: rgba(255, 105, 180, 0.1);
 }
 
-#post-job .step-2 .salary-type label {
+#post-job .step-2 .work-type label {
 	display: flex;
 	align-items: center;
 	padding: 10px 20px;
@@ -541,16 +548,16 @@
 	text-align: center;
 }
 
-#post-job .step-2 .salary-type input[type="radio"] {
+#post-job .step-2 .work-type input[type="radio"] {
 	display: none;
 }
 
-#post-job .step-2 .salary-type input[type="radio"]:checked+span {
+#post-job .step-2 .work-type input[type="radio"]:checked+span {
 	color: #ff69b4;
 	font-weight: bold;
 }
 
-#post-job .step-2 .salary-type input[type="radio"]:checked+span::after {
+#post-job .step-2 .work-type input[type="radio"]:checked+span::after {
 	content: "";
 	position: absolute;
 	right: 10px;
