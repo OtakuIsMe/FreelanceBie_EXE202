@@ -14,6 +14,7 @@ import Footer from '../../../components/Footer/Footer.tsx'
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from 'react'
 import { ApiGateway } from '../../../services/api/ApiService.tsx'
+import CheckOut from '../../../components/CheckOut/CheckOut.tsx'
 
 interface ShotView {
 	id: string;
@@ -52,6 +53,7 @@ export default function Home() {
 
 	return (
 		<div id="home">
+			<CheckOut />
 			<Header />
 			<div className="page-content">
 				<div className="banner section">
