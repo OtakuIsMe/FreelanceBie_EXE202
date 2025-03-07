@@ -1,58 +1,172 @@
 #check-out {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    z-index: 9999;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100vh;
+	z-index: 9999;
+}
+
+#check-out span,
+#check-out p {
+	font-family: "Mona Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 #check-out .overlay {
-    width: 100%;
-    height: 100%;
-    background-color: rgba(26, 26, 26, 0.404);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(26, 26, 26, 0.404);
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 #check-out .background-form {
-    width: 80%;
-    max-width: 600px;
-    height: 500px;
-    background-color: white;
-    border-radius: 20px;
-    padding: 20px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+	width: 80%;
+	max-width: 700px;
+	height: auto;
+	background-color: white;
+	border-radius: 20px;
+	padding: 20px;
+	box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 #check-out .title-select-method {
-    display: flex;
-    justify-content: space-between;
+	display: flex;
+	justify-content: space-between;
 }
 
-.tab-container {
-    display: flex;
-    width: fit-content;
-    padding: 4px;
-    background-color: #f8f8f8;
-    border-radius: 10px;
+#check-out .title-select-method .title {
+	font-size: 20px;
 }
 
-.tab-button {
-    padding: 4px 8px;
-    border: none;
-    cursor: pointer;
-    font-size: 12px;
-    background-color: transparent;
-    width: fit-content;
-    border-radius: 8px;
-    color: #878787;
+#check-out .tab-container {
+	display: flex;
+	width: fit-content;
+	padding: 4px;
+	background-color: #f8f8f8;
+	border-radius: 10px;
 }
 
-.tab-button.active {
-    background: white;
-    color: black;
-    font-weight: 500;
-    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.185);
+#check-out .tab-button {
+	padding: 4px 8px;
+	border: none;
+	cursor: pointer;
+	font-size: 14px;
+	background-color: transparent;
+	width: fit-content;
+	border-radius: 8px;
+	color: #878787;
+}
+
+#check-out .tab-button.active {
+	background: white;
+	color: black;
+	font-weight: 500;
+	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.185);
+}
+
+#check-out .card-input-container {
+	display: flex;
+	gap: 30px;
+	margin-top: 50px;
+}
+
+#check-out .card-input-container .rccs {
+	margin: 0;
+}
+
+#check-out .card-container {
+	margin-top: 20px;
+}
+
+#check-out .credit-card-info--form {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+#check-out .input_label {
+	font-size: 12px;
+	color: #8b8e98;
+	font-weight: 600;
+}
+
+#check-out .input_container {
+	width: 100%;
+	height: fit-content;
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+
+#check-out .split {
+	display: grid;
+	grid-template-columns: 4fr 2fr;
+	gap: 15px;
+}
+
+#check-out .input_field {
+	width: auto;
+	height: 40px;
+	padding: 0 0 0 16px;
+	border-radius: 9px;
+	outline: none;
+	background-color: #f2f2f2;
+	border: 1px solid #e5e5e500;
+	transition: all 0.3s cubic-bezier(0.15, 0.83, 0.66, 1);
+}
+
+
+#check-out .input_field:focus {
+	border: 1px solid transparent;
+	box-shadow: 0px 0px 0px 1px #242424;
+	background-color: transparent;
+}
+
+#check-out .input_field::-webkit-outer-spin-button,
+#check-out .input_field::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+#check-out .input_field[type="number"] {
+	-moz-appearance: textfield;
+}
+
+#check-out .price-container {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 30px;
+}
+
+#check-out .price-container .title {
+	color: #8b8e98;
+	font-size: 12px;
+}
+
+#check-out .price-container .price-num {
+	font-weight: 600;
+	font-size: 20px;
+}
+
+#check-out .payment-btn {
+	font-size: 17px;
+	padding: 0.5em 2em;
+	border: transparent;
+	box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+	background: dodgerblue;
+	color: white;
+	border-radius: 4px;
+	cursor: pointer;
+	margin-bottom: 30px;
+}
+
+#check-out .payment-btn:hover {
+	background: rgb(2, 0, 36);
+	background: linear-gradient(90deg, rgba(30, 144, 255, 1) 0%, rgba(0, 212, 255, 1) 100%);
+}
+
+#check-out .payment-btn:active {
+	transform: translate(0em, 0.2em);
 }
