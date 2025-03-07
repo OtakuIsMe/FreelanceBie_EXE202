@@ -2,6 +2,9 @@ import React from 'react'
 import './JobInfo.css'
 import Tag from '../Cards/Tag/Tag';
 
+import PDF from '../../assets/pdf.png'
+import DOCX from '../../assets/docx.png'
+
 interface JobInfoProps {
 	title: string;
 	description: string;
@@ -14,6 +17,8 @@ interface JobInfoProps {
 	employmentType: number;
 	files: File[] | null;
 }
+
+
 
 const JobInfo: React.FC<JobInfoProps> = (props) => {
 
@@ -49,14 +54,32 @@ const JobInfo: React.FC<JobInfoProps> = (props) => {
 			</div>
 
 			<div className="job-description" dangerouslySetInnerHTML={{ __html: props.description || "" }}></div>
-
-			<div className="attachments">
-				<p className="tittle">Attachments</p>
-				<div className="attachment-files">
-					<span>📄 Jobs_Requirements.pdf</span>
-					<span>📄 Company_Benefits.pdf</span>
+			{props.files && props.files.length > 0 && (
+				<div className="attachments">
+					<p className="title">Attachments</p>
+					<div className="attachment-files">
+						<div className="file-list">
+							{props.files.map((file, index) => (
+								<div key={index} className="file-preview">
+									<div className='img-info'>
+										<img
+											src={file.type === "application/pdf" ? PDF : DOCX}
+											alt="File Type"
+											className="file-icon"
+										/>
+										<div className="file-info">
+											<a href={URL.createObjectURL(file)} target="_blank" rel="noopener noreferrer">
+												{file.name}
+											</a>
+											<span>{(file.size / 1024).toFixed(2)} KB</span>
+										</div>
+									</div>
+								</div>
+							))}
+						</div>
+					</div>
 				</div>
-			</div>
+			)}
 		</div>
 	)
 }

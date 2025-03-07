@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import './PostJob.css'
 import { FaDollarSign } from 'react-icons/fa'
 import Header from '../../../components/Header/Header';
 import ReactQuill from 'react-quill';
 import JobInfo from '../../../components/JobInfo/JobInfo';
+import PDF from '../../../assets/pdf.png'
+import DOCX from '../../../assets/docx.png'
 
 interface postData {
 	title: string;
@@ -22,6 +24,7 @@ interface postData {
 
 const PostJob: React.FC = () => {
 	const [currentStep, setCurrentStep] = useState(1);
+	const fileInputRef = useRef<HTMLInputElement | null>(null);
 	const [data, setData] = useState<postData>(
 		{
 			title: '',
@@ -38,6 +41,38 @@ const PostJob: React.FC = () => {
 			payment: 0
 		}
 	)
+	const handleFilesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const files = event.target.files;
+		if (files) {
+			const validFiles = Array.from(files).filter(
+				(file) =>
+					file.type === "application/pdf" ||
+					file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+			);
+
+			setData((prevData) => ({
+				...prevData,
+				files: validFiles,
+			}));
+
+			if (validFiles.length === 0) {
+				alert("Only PDF and DOCX files are allowed.");
+			}
+		}
+	};
+
+	const handleButtonClick = () => {
+		if (fileInputRef.current) {
+			fileInputRef.current.click();
+		}
+	};
+
+	const handleRemoveFile = (index: number) => {
+		setData((prevData) => ({
+			...prevData,
+			files: prevData.files ? prevData.files.filter((_, i) => i !== index) : null,
+		}));
+	};
 
 	useEffect(() => {
 		console.log(data)
@@ -271,6 +306,66 @@ const PostJob: React.FC = () => {
 												value={data.payment === 0 ? '' : data.payment}
 												onChange={handleNumberChange} />
 											<span>/hour</span>
+										</div>
+									</div>
+									<div className="form-group">
+										<label>Attachments</label>
+										<div className="input-attachments">
+											<input type="file" name="" id=""
+												ref={fileInputRef} style={{ display: 'none' }}
+												onChange={handleFilesChange}
+												multiple
+												accept=".pdf, .docx" />
+											<div className='btn-file' onClick={handleButtonClick}>
+												<svg
+													aria-hidden="true"
+													stroke="currentColor"
+													stroke-width="2"
+													viewBox="0 0 24 24"
+													fill="none"
+													xmlns="http://www.w3.org/2000/svg"
+												>
+													<path
+														stroke-width="2"
+														stroke="#fffffff"
+														d="M13.5 3H12H8C6.34315 3 5 4.34315 5 6V18C5 19.6569 6.34315 21 8 21H11M13.5 3L19 8.625M13.5 3V7.625C13.5 8.17728 13.9477 8.625 14.5 8.625H19M19 8.625V11.8125"
+														stroke-linejoin="round"
+														stroke-linecap="round"
+													></path>
+													<path
+														stroke-linejoin="round"
+														stroke-linecap="round"
+														stroke-width="2"
+														stroke="#fffffff"
+														d="M17 15V18M17 21V18M17 18H14M17 18H20"
+													></path>
+												</svg>
+												ADD FILE
+											</div>
+											{data.files && data.files.length > 0 && (
+												<div className="file-list">
+													{data.files.map((file, index) => (
+														<div key={index} className="file-preview">
+															<div className='img-info'>
+																<img
+																	src={file.type === "application/pdf" ? PDF : DOCX}
+																	alt="File Type"
+																	className="file-icon"
+																/>
+																<div className="file-info">
+																	<a href={URL.createObjectURL(file)} target="_blank" rel="noopener noreferrer">
+																		{file.name}
+																	</a>
+																	<span>{(file.size / 1024).toFixed(2)} KB</span>
+																</div>
+															</div>
+															<div className="delete-btn" onClick={() => handleRemoveFile(index)}>
+																<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28"><path fill="currentColor" d="M11.5 6h5a2.5 2.5 0 0 0-5 0M10 6a4 4 0 0 1 8 0h6.25a.75.75 0 0 1 0 1.5h-1.31l-1.217 14.603A4.25 4.25 0 0 1 17.488 26h-6.976a4.25 4.25 0 0 1-4.235-3.897L5.06 7.5H3.75a.75.75 0 0 1 0-1.5zM7.772 21.978a2.75 2.75 0 0 0 2.74 2.522h6.976a2.75 2.75 0 0 0 2.74-2.522L21.436 7.5H6.565zM11.75 11a.75.75 0 0 1 .75.75v8.5a.75.75 0 0 1-1.5 0v-8.5a.75.75 0 0 1 .75-.75m5.25.75a.75.75 0 0 0-1.5 0v8.5a.75.75 0 0 0 1.5 0z" /></svg>
+															</div>
+														</div>
+													))}
+												</div>
+											)}
 										</div>
 									</div>
 								</form>
