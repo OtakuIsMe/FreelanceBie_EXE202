@@ -58,6 +58,27 @@ services:
     #         - REDIS_HOST=${REDIS_HOST}
     #         - REDIS_PORT=${REDIS_PORT}
 
+    # elasticsearch:
+    #     image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+    #     container_name: be-elasticsearch
+    #     environment:
+    #         - discovery.type=single-node
+    #         - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    #     ports:
+    #         - 9200:9200
+    #     networks:
+    #         - backend
+
+    # kibana:
+    #     image: docker.elastic.co/kibana/kibana:7.10.2
+    #     container_name: be-kibana
+    #     environment:
+    #         - ELASTICSEARCH_HOSTS=http://be-elasticsearch:9200
+    #     ports:
+    #         - 5601:5601
+    #     networks:
+    #         - backend
+
 networks:
     backend:
         driver: bridge

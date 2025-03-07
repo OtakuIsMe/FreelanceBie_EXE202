@@ -1,5 +1,7 @@
 using BE.src.api.domains.Database;
+using BE.src.api.domains.DTOs.ElasticSearch;
 using BE.src.api.domains.DTOs.User;
+using BE.src.api.domains.Enum;
 using BE.src.api.domains.Model;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,6 +31,7 @@ namespace BE.src.api.repositories
 		Task<bool> UpdateNewRefreshToken(RefreshToken refreshToken);
 		Task<bool> RevokeRefreshToken(Guid userId);
 		Task<List<RefreshToken>> GetRefreshTokens(Guid userId);
+		Task<List<User>> GetOnlyCustomers();
 	}
 	public class UserRepo : IUserRepo
 	{
@@ -152,7 +155,7 @@ namespace BE.src.api.repositories
 
 		public async Task<List<User>> FindUsers(UserSearchingDTO userSearchingDTO)
 		{
-			return await _context.Users.Where(x =>
+			return await _context.Users.Where(x => x.Role == RoleEnum.Customer &&
 				(string.IsNullOrEmpty(userSearchingDTO.Name) || x.Name.ToLower().Contains(userSearchingDTO.Name.ToLower())) &&
 				(string.IsNullOrEmpty(userSearchingDTO.Username) || x.Username.ToLower().Contains(userSearchingDTO.Username.ToLower())) &&
 				(string.IsNullOrEmpty(userSearchingDTO.Email) || x.Email.ToLower().Contains(userSearchingDTO.Email.ToLower())) &&
@@ -193,6 +196,14 @@ namespace BE.src.api.repositories
 		public async Task<List<RefreshToken>> GetRefreshTokens(Guid userId)
 		{
 			return await _context.RefreshTokens.Where(rft => rft.UserId == userId).ToListAsync();
+		}
+
+		public async Task<List<User>> GetOnlyCustomers()
+		{
+			return await _context.Users
+								.Where(user => user.Role == RoleEnum.Customer)
+								.Include(x => x.ImageVideos)
+								.ToListAsync();
 		}
 	}
 }

@@ -30,6 +30,9 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using OpenTelemetry;
 using Serilog;
+using Nest;
+using BE.src.api.domains.Model;
+using BE.src.api.domains.DTOs.ElasticSearch;
 
 Env.Load();
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -50,6 +53,15 @@ builder.Services.AddProblemDetails(o =>
         }
     };
 });
+
+var elasticPort = ElasticSearch.Port;
+var elasticIndex = ElasticSearch.Index;
+
+var settings = new ConnectionSettings(new Uri(elasticPort))
+    .DefaultIndex(elasticIndex);
+
+var elasticClient = new ElasticClient(settings);
+builder.Services.AddSingleton<IElasticClient>(elasticClient);
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
@@ -209,6 +221,10 @@ builder.Services.AddSingleton<IConnectionFactory>(sp =>
 builder.Services.AddSingleton<IRabbitMQConnection, RabbitMQConnection>();
 builder.Services.AddSingleton<IEventBusRabbitMQProducer, EventBusRabbitMQProducer>();
 builder.Services.AddHostedService<PostNotificationConsumer>();
+
+builder.Services.AddScoped<IElasticSeachServ<User>, ElasticSeachServ<User>>();
+builder.Services.AddScoped<IElasticSeachServ<PostJob>, ElasticSeachServ<PostJob>>();
+// builder.Services.AddHostedService<ElasticsearchBackgroundService>();
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Seq("http://localhost:5341")
