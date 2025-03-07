@@ -119,7 +119,6 @@ namespace BE.src.api.repositories
 		{
 			return await _context.Users
 								.Include(x => x.ImageVideos)
-								.Include(x => x.Notifications)
 								.Include(x => x.Comments)
 								.Include(x => x.Likes)
 									// .ThenInclude(x => x.User)

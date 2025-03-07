@@ -24,7 +24,7 @@ namespace BE.src.api.services
 
         public TokenService(IConfiguration configuration)
         {
-            _secrectKey = Environment.GetEnvironmentVariable("JWT_SECRET") ?? throw new ApplicationException("JWT secret not found in environment variables.");
+            _secrectKey = Environment.GetEnvironmentVariable("JWT_SECURITY_KEY") ?? throw new ApplicationException("JWT secret not found in environment variables.");
         }
 
         public string GenerateAccessToken(User user)

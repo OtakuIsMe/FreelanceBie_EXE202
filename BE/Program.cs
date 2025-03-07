@@ -62,7 +62,11 @@ var blogcConnectionString = BE.src.api.shared.Constant.Azure.ConnectionString;
 
 var jwtSecretKey = BE.src.api.shared.Constant.JWT.SecretKey;
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+    });
 builder.Services.AddControllersWithViews()
 	.AddNewtonsoftJson(options =>
 	options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
@@ -247,6 +251,8 @@ app.UseHttpsRedirection();
 
 app.UseCors(MyAllowSpecificOrigins);
 
+app.UseRateLimiter();
+
 app.UseSerilogRequestLogging();
 
 app.UseExceptionHandler();
@@ -255,6 +261,8 @@ app.UseStatusCodePages();
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.UseMiddleware<AuthMiddleware>();
 
 app.MapControllers();
 
