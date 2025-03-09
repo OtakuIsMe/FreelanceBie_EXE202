@@ -11,10 +11,10 @@ namespace BE.src.api.domains.DTOs.Post
 		public required string CompanyName { get; set; }
 		public required EmploymentTypeEnum EmploymentType { get; set; }
 		public required int Experience { get; set; }
-		public required Guid SpecialtyId { get; set; }
+		public required string Specialty { get; set; }
 		public required IFormFile CompanyLogo { get; set; }
 		public required string CompanyLink { get; set; }
-		public List<IFormFile>? Files { get; set; }
+		public List<IFormFile> Files { get; set; } = null!;
 		public required float Payment { get; set; }
 	}
 }

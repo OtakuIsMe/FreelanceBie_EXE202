@@ -6,8 +6,10 @@ import ReactQuill from 'react-quill';
 import JobInfo from '../../../components/JobInfo/JobInfo';
 import PDF from '../../../assets/pdf.png'
 import DOCX from '../../../assets/docx.png'
+import CheckOut from '../../../components/CheckOut/CheckOut';
+import { ApiGateway } from '../../../services/api/ApiService';
 
-interface postData {
+export interface postData {
 	title: string;
 	description: string;
 	workType: number;
@@ -25,6 +27,7 @@ interface postData {
 const PostJob: React.FC = () => {
 	const [currentStep, setCurrentStep] = useState(1);
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
+	const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false)
 	const [data, setData] = useState<postData>(
 		{
 			title: '',
@@ -73,10 +76,6 @@ const PostJob: React.FC = () => {
 			files: prevData.files ? prevData.files.filter((_, i) => i !== index) : null,
 		}));
 	};
-
-	useEffect(() => {
-		console.log(data)
-	}, [data])
 
 	const handleNextStep = () => {
 		setCurrentStep(prevStep => Math.min(prevStep + 1, 3));
@@ -145,9 +144,20 @@ const PostJob: React.FC = () => {
 		}));
 	};
 
+	const UploadJob = async () => {
+		const response = await ApiGateway.AddPostJob(data);
+		console.log(response)
+	}
+
 	return (
 		<div id="post-job">
 			<Header />
+			{isOpenPopup && (
+				<CheckOut amount={1}
+					closePopup={() =>
+						setIsOpenPopup(false)}
+					ActionAfterPayment={UploadJob} />
+			)}
 			<div className="popup-overlay-add-post">
 				<div className="popup-content">
 					<h2 className="popup-title">Post a Design Job</h2>
@@ -399,7 +409,7 @@ const PostJob: React.FC = () => {
 							{currentStep < 3 ? (
 								<button type="button" className="continue-btn" onClick={handleNextStep}>Continue</button>
 							) : (
-								<button type="submit" className="submit-btn">Submit</button>
+								<button type="submit" className="submit-btn" onClick={() => { setIsOpenPopup(true) }}>Submit</button>
 							)}
 						</div>
 					</div>

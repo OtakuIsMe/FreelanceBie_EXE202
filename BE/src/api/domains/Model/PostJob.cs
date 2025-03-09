@@ -12,6 +12,8 @@ namespace BE.src.api.domains.Model
 		public required string CompanyName { get; set; }
 		public required EmploymentTypeEnum EmploymentType { get; set; }
 		public required int Experience { get; set; }
+		public required string CompanyLink { get; set; }
+		public required float Payment { get; set; }
 
 		public Guid UserId { get; set; }
 		public User User { get; set; } = null!;

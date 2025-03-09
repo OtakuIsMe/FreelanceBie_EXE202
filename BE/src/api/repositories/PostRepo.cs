@@ -13,7 +13,7 @@ namespace BE.src.api.repositories
 		Task<bool> CreatePost(PostJob post);
 		Task<bool> CreateUserApply(UserApply userApply);
 		Task<PostJob> GetPostJobById(Guid posId);
-		Task<PostJob?> GetPostJobByCode(string code);
+		Task<PostJob?> GetPostJobByCode(Guid code);
 		Task<bool> IsApply(Guid UserId, Guid PostId);
 		Task<bool> IsSaved(Guid UserId, Guid PostId);
 		Task<List<UserApply>> UserApplyByPost(Guid PostId);
@@ -39,14 +39,14 @@ namespace BE.src.api.repositories
 			return await _context.SaveChangesAsync() > 0;
 		}
 
-		public async Task<PostJob?> GetPostJobByCode(string code)
+		public async Task<PostJob?> GetPostJobByCode(Guid code)
 		{
 			return await _context.PostJobs
 										.Include(p => p.Attachments)
 										.Include(p => p.CompanyLogo)
 										.Include(p => p.Specialty)
 										.FirstOrDefaultAsync(p =>
-										Utils.HashObject(p.Id) == code);
+										p.Id == code);
 		}
 
 		public async Task<PostJob> GetPostJobById(Guid posId)

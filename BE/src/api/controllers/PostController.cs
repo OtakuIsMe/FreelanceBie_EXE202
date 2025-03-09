@@ -31,7 +31,7 @@ namespace BE.src.api.controllers
 
 		[AllowAnonymous]
 		[HttpGet("PostJobDetail")]
-		public async Task<IActionResult> PostJobDetail([FromQuery] string postCode)
+		public async Task<IActionResult> PostJobDetail([FromQuery] Guid postCode)
 		{
 			Guid? userId = null;
 

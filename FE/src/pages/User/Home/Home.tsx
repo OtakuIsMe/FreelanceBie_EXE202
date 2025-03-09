@@ -53,7 +53,6 @@ export default function Home() {
 
 	return (
 		<div id="home">
-			<CheckOut />
 			<Header />
 			<div className="page-content">
 				<div className="banner section">

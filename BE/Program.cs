@@ -75,6 +75,8 @@ builder.Services.AddCors(options =>
 					  });
 });
 
+builder.Services.AddHttpClient();
+
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<IMembershipRepo, MembershipRepo>();
 builder.Services.AddScoped<INotificationRepo, NotificationRepo>();

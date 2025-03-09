@@ -13,7 +13,7 @@ namespace BE.src.api.services
 	{
 		Task<IActionResult> AddPostData(Guid userId, PostAddData data);
 		Task<IActionResult> ApplyJob(Guid userId, Guid postId);
-		Task<IActionResult> PostJobDetail(Guid? userId, string postCode);
+		Task<IActionResult> PostJobDetail(Guid? userId, Guid postCode);
 		Task<IActionResult> HistoryHiring(Guid postId);
 		Task<IActionResult> GetPosts(PostJobFilterDTO filter);
 	}
@@ -22,17 +22,31 @@ namespace BE.src.api.services
 		private readonly IPostRepo _postRepo;
 		private readonly ICacheService _cacheService;
 		private readonly INotificationRepo _notificationRepo;
-		public PostServ(IPostRepo postRepo, ICacheService cacheService, INotificationRepo notificationRepo)
+		private readonly ISpecialtyRepo _specialtyRepo;
+		public PostServ(IPostRepo postRepo, ICacheService cacheService, INotificationRepo notificationRepo, ISpecialtyRepo specialtyRepo)
 		{
 			_postRepo = postRepo;
 			_notificationRepo = notificationRepo;
 			_cacheService = cacheService;
+			_specialtyRepo = specialtyRepo;
 		}
 
 		public async Task<IActionResult> AddPostData(Guid userId, PostAddData data)
 		{
 			try
 			{
+				var specialty = await _specialtyRepo.GetSpecialtyByName(data.Specialty);
+
+				if (specialty == null)
+				{
+					var newSpecialty = new Specialty
+					{
+						Name = data.Specialty
+					};
+					await _specialtyRepo.AddSpecialty(newSpecialty);
+					specialty = newSpecialty;
+				}
+
 				PostJob newPost = new()
 				{
 					Title = data.Title,
@@ -43,7 +57,9 @@ namespace BE.src.api.services
 					EmploymentType = data.EmploymentType,
 					Experience = data.Experience,
 					UserId = userId,
-					SpecialtyId = data.SpecialtyId,
+					SpecialtyId = specialty.Id,
+					CompanyLink = data.CompanyLink,
+					Payment = data.Payment
 				};
 
 				var fileUrl = await Utils.GenerateAzureUrl(MediaTypeEnum.Image,
@@ -57,17 +73,25 @@ namespace BE.src.api.services
 				newPost.CompanyLogo = newImageVideo;
 
 				List<Attachment> attachments = [];
-				foreach (IFormFile fileAttachment in newPost.Attachments)
+				foreach (IFormFile fileAttachment in data.Files)
 				{
 					using var memoryStream = new MemoryStream();
 					await fileAttachment.CopyToAsync(memoryStream);
+
+					string fileExtension = Path.GetExtension(fileAttachment.FileName).ToLower();
+					FileTypeEnum fileType = fileExtension switch
+					{
+						".pdf" => FileTypeEnum.PDF,
+						".docx" => FileTypeEnum.DOCX,
+						_ => FileTypeEnum.Unknown
+					};
 
 					Attachment attachment = new Attachment
 					{
 						PostId = newPost.Id,
 						FileName = fileAttachment.FileName,
 						FileContent = memoryStream.ToArray(),
-						FileType = FileTypeEnum.PDF
+						FileType = fileType
 					};
 
 					attachments.Add(attachment);
@@ -139,7 +163,7 @@ namespace BE.src.api.services
 			}
 		}
 
-		public async Task<IActionResult> PostJobDetail(Guid? userId, string postCode)
+		public async Task<IActionResult> PostJobDetail(Guid? userId, Guid postCode)
 		{
 			try
 			{

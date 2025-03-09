@@ -25,7 +25,7 @@
 	width: 80%;
 	max-width: 700px;
 	height: auto;
-	background-color: white;
+	background-color: #fff9fc;
 	border-radius: 20px;
 	padding: 20px;
 	box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
@@ -169,4 +169,120 @@
 
 #check-out .payment-btn:active {
 	transform: translate(0em, 0.2em);
+}
+
+#check-out .qr-container {
+	display: flex;
+	gap: 20px;
+	margin: 76px 0;
+}
+
+#check-out .image-container {
+	width: 50%;
+	display: flex;
+	justify-content: center;
+}
+
+#check-out img {
+	width: 80%;
+}
+
+#check-out .info-container {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+#check-out .info-container .block-info {
+	margin-bottom: 8px;
+}
+
+#check-out .info-container .block-info .title {
+	color: #797979;
+}
+
+#check-out .info-container .block-info .data {
+	font-weight: 600;
+	line-height: 1;
+}
+
+#check-out .info-container .block-info.bank {
+	display: flex;
+}
+
+#check-out .info-container .block-info.bank img {
+	width: 40px;
+	height: 40px;
+	border-radius: 999px;
+	margin-right: 10px;
+	border: 1px solid rgb(228, 228, 228);
+	margin-bottom: 15px;
+}
+
+#check-out .image-congrate-container {
+	width: 100%;
+	height: 220px;
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#check-out .image-congrate-container .check-container {
+	width: 160px;
+	height: 160px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1;
+	border-radius: 999px;
+	background-color: white;
+	border: 1px solid rgb(235, 235, 235);
+}
+
+#check-out .image-congrate-container .check-container svg {
+	width: 120px;
+	height: 120px;
+	color: #80dc9d;
+}
+
+#check-out .image-congrate-container img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+#check-out .success-form {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+#check-out .success-form .title {
+	font-size: 25px;
+	font-weight: 700;
+	margin-bottom: 15px;
+}
+
+#check-out .success-form .des {
+	font-size: 14px;
+	color: #54525c;
+	margin-bottom: 100px;
+}
+
+#check-out .success-form .back {
+	width: 60%;
+	padding: 20px 0;
+	color: white;
+	background-color: var(--color-banner);
+	border: 1px solid rgb(224, 224, 224);
+	border-radius: 999px;
+	font-size: 16px;
+	margin-bottom: 30px;
+	cursor: pointer;
 }

@@ -242,7 +242,7 @@ namespace BE.src.api.domains.Database
 					.IsRequired();
 
 				entity.Property(p => p.Description)
-					.HasMaxLength(2000)
+					.HasColumnType("LONGTEXT")
 					.IsRequired();
 
 				entity.Property(p => p.WorkLocation)
@@ -254,6 +254,13 @@ namespace BE.src.api.domains.Database
 					.IsRequired();
 
 				entity.Property(p => p.Experience)
+					.IsRequired();
+
+				entity.Property(p => p.CompanyLink)
+					.HasMaxLength(200)
+					.IsRequired();
+
+				entity.Property(p => p.Payment)
 					.IsRequired();
 
 				entity.Property(p => p.WorkType)

@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from "axios";
+import { postData } from "../../pages/User/PostJob/PostJob";
 
 export class ApiGateway {
 	public static readonly API_Base: string = 'http://localhost:5000/';
@@ -133,4 +134,57 @@ export class ApiGateway {
 			throw error
 		}
 	}
+
+	public static async CheckPayment<T>(code: string): Promise<T> {
+		this.setAuthHeader();
+		try {
+			const response = await this.axiosInstance.get<T>(`transaction/Check-Payment?code=${code}`)
+			return response.data
+		} catch (error) {
+			console.log(error)
+			throw error
+		}
+	}
+
+	public static async AddPostJob<T>(
+		data: postData
+	): Promise<T> {
+		this.setAuthHeader();
+		const formData = new FormData();
+
+		formData.append("title", data.title);
+		formData.append("description", data.description);
+		formData.append("workType", data.workType.toString());
+		formData.append("workLocation", data.workLocation);
+		formData.append("companyName", data.companyName);
+		formData.append("employmentType", data.employmentType.toString());
+		formData.append("experience", data.experience.toString());
+		formData.append("specialty", data.specialty);
+		formData.append("companyLink", data.companyLink);
+		formData.append("payment", data.payment.toString());
+
+		if (data.companyLogo) {
+			formData.append("companyLogo", data.companyLogo);
+		}
+
+		if (data.files && data.files.length > 0) {
+			data.files.forEach((file) => {
+				formData.append("files", file);
+			});
+		}
+
+		try {
+			const response = await this.axiosInstance.post<T>("post/PostingJob", formData, {
+				headers: {
+					...this.axiosInstance.defaults.headers.common,
+					"Content-Type": "multipart/form-data",
+				},
+			});
+			return response.data;
+		} catch (error) {
+			console.error("Error posting job:", error);
+			throw error;
+		}
+	}
+
 }
