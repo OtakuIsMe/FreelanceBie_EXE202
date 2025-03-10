@@ -24,7 +24,7 @@ interface ReturnCheckPayment {
 const CheckOut: React.FC<CheckOutProps> = (props) => {
 	const [selectedMethod, setSelectedMethod] = useState<string>("qr");
 	const [code, setCode] = useState<string>("")
-	const [paymentCompleted, setPaymentCompleted] = useState(true);
+	const [paymentCompleted, setPaymentCompleted] = useState(false);
 	const [card, setCard] = useState<CardProps>({
 		number: '',
 		expiry: '',
