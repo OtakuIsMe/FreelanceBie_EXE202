@@ -2,7 +2,7 @@ import axios, { AxiosInstance } from "axios";
 import { postData } from "../../pages/User/PostJob/PostJob";
 
 export class ApiGateway {
-	public static readonly API_Base: string = 'http://localhost:5000/';
+	public static readonly API_Base: string = 'http://localhost:5000/api/v1/';
 	private static axiosInstance: AxiosInstance = axios.create({
 		baseURL: ApiGateway.API_Base,
 		headers: {
