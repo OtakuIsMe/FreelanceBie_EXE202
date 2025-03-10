@@ -39,7 +39,7 @@ namespace BE.src.api.services
 				var result = await _specialtyRepo.AddSpecialty(newSpecialty);
 				if (!result)
 				{
-					return ErrorResp.BadRequest("Failed to add specialty");
+					throw new ApplicationException("Failed to add specialty");
 				}
 
 				await _cacheService.ClearWithPattern("specialties");
@@ -48,7 +48,7 @@ namespace BE.src.api.services
 			}
 			catch (System.Exception ex)
 			{
-				return ErrorResp.BadRequest(ex.Message);
+				throw new ApplicationException(ex.Message);
 			}
 		}
 
@@ -59,13 +59,13 @@ namespace BE.src.api.services
 				var result = await _specialtyRepo.DeleteSpecialty(id);
 				if (!result)
 				{
-					return ErrorResp.BadRequest("Failed to delete specialty");
+					throw new ApplicationException("Failed to delete specialty");
 				}
 				return SuccessResp.Ok("Specialty deleted successfully");
 			}
 			catch (System.Exception ex)
 			{
-				return ErrorResp.BadRequest(ex.Message);
+				throw new ApplicationException(ex.Message);
 			}
 		}
 
@@ -76,7 +76,7 @@ namespace BE.src.api.services
 				var specialtyFinding = await _specialtyRepo.GetSpecialty(id);
 				if (specialtyFinding == null)
 				{
-					return ErrorResp.BadRequest("Specialty not found");
+					throw new ApplicationException("Specialty not found");
 				}
 
 				specialtyFinding.Name = specialty.Name ?? specialtyFinding.Name;
@@ -84,13 +84,13 @@ namespace BE.src.api.services
 				var result = await _specialtyRepo.UpdateSpecialty(specialtyFinding);
 				if (!result)
 				{
-					return ErrorResp.BadRequest("Failed to update specialty");
+					throw new ApplicationException("Failed to update specialty");
 				}
 				return SuccessResp.Ok("Specialty updated successfully");
 			}
 			catch (System.Exception ex)
 			{
-				return ErrorResp.BadRequest(ex.Message);
+				throw new ApplicationException(ex.Message);
 			}
 		}
 
@@ -112,7 +112,7 @@ namespace BE.src.api.services
 			}
 			catch (System.Exception ex)
 			{
-				return ErrorResp.BadRequest(ex.Message);
+				throw new ApplicationException(ex.Message);
 			}
 		}
 	}

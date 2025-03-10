@@ -46,6 +46,7 @@ namespace BE.src.api.domains.Database
 		public DbSet<SocialProfile> SocialProfiles { get; set; } = null!;
 		public DbSet<Notification> Notifications { get; set; } = null!;
 		public DbSet<Transaction> Transactions { get; set; } = null!;
+		public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
 
 		protected override void OnModelCreating(ModelBuilder builder)
 		{
@@ -492,6 +493,22 @@ namespace BE.src.api.domains.Database
 				entity.Property(u => u.PaymentId)
 					.HasMaxLength(100)
 					.IsRequired();
+			});
+
+			builder.Entity<RefreshToken>(entity =>
+			{
+				entity.HasKey(rt => rt.Id);
+
+				entity.Property(rt => rt.Token)
+					.HasMaxLength(200);
+
+				entity.HasIndex(rt => rt.Token)
+					.IsUnique();
+
+				entity.HasOne(rt => rt.User)
+					.WithMany()
+					.HasForeignKey(rt => rt.UserId)
+					.OnDelete(DeleteBehavior.Cascade);
 			});
 		}
 	}

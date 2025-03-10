@@ -44,12 +44,12 @@ namespace BE.src.api.repositories
 
 		public async Task<Membership?> GetMembershipById(Guid id)
 		{
-			return await _context.Memberships.FirstOrDefaultAsync(m => m.Id == id);
+			return await _context.Memberships.AsNoTracking().FirstOrDefaultAsync(m => m.Id == id);
 		}
 
 		public async Task<List<Membership>> GetMemberships()
 		{
-			return await _context.Memberships.ToListAsync();
+			return await _context.Memberships.AsNoTracking().ToListAsync();
 		}
 
 		public async Task<bool> UpdateMembership(Membership membership)
@@ -72,7 +72,7 @@ namespace BE.src.api.repositories
 
 		public async Task<MembershipUser?> GetMembershipUserRegistered(Guid userId)
 		{
-			return await _context.MemberUsers.FirstOrDefaultAsync(mu => mu.UserId == userId);
+			return await _context.MemberUsers.AsNoTracking().FirstOrDefaultAsync(mu => mu.UserId == userId);
 		}
 
 		public async Task<bool> UpdateMembershipUser(MembershipUser membershipUser)

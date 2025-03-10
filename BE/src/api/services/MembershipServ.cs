@@ -39,13 +39,13 @@ namespace BE.src.api.services
                 var isCreated = await _membershipRepo.CreateMembership(newMembership);
                 if (!isCreated)
                 {
-                    return ErrorResp.BadRequest("Fail to create membership");
+                    throw new ApplicationException("Fail to create membership");
                 }
                 return SuccessResp.Created("Membership created successfully");
             }
             catch (System.Exception ex)
             {
-                return ErrorResp.BadRequest(ex.Message);
+                throw new ApplicationException(ex.Message);
             }
 		}
 
@@ -56,13 +56,13 @@ namespace BE.src.api.services
                 var isDeleted = await _membershipRepo.DeleteMembership(id);
                 if (!isDeleted)
                 {
-                    return ErrorResp.BadRequest("Fail to delete membership");
+                    throw new ApplicationException("Fail to delete membership");
                 }
                 return SuccessResp.Ok("Membership deleted successfully");
             }
             catch (System.Exception ex)
             {
-                return ErrorResp.BadRequest(ex.Message);
+                throw new ApplicationException(ex.Message);
             }
 		}
 
@@ -81,7 +81,7 @@ namespace BE.src.api.services
                 var memberships = await _membershipRepo.GetMemberships();
                 if (memberships.Count == 0)
                 {
-                    return ErrorResp.NotFound("No membership found");
+                    throw new ApplicationException("No membership found");
                 }
 
                 await _cacheService.Set(key, memberships, TimeSpan.FromMinutes(10));
@@ -90,7 +90,7 @@ namespace BE.src.api.services
             }
             catch (System.Exception ex)
             {
-                return ErrorResp.BadRequest(ex.Message);
+                throw new ApplicationException(ex.Message);
             }
 		}
 
@@ -101,7 +101,7 @@ namespace BE.src.api.services
                 var membershipFinding = await _membershipRepo.GetMembershipById(id);
                 if (membershipFinding == null)
                 {
-                    return ErrorResp.NotFound("Membership not found");
+                    throw new ApplicationException("Membership not found");
                 }
 
                 membershipFinding.Name = membership.Name ?? membershipFinding.Name;
@@ -113,13 +113,13 @@ namespace BE.src.api.services
                 var isUpdated = await _membershipRepo.UpdateMembership(membershipFinding);
                 if (!isUpdated)
                 {
-                    return ErrorResp.BadRequest("Fail to update membership");
+                    throw new ApplicationException("Fail to update membership");
                 }
                 return SuccessResp.Ok("Membership updated successfully");
             }
             catch (System.Exception ex)
             {
-                return ErrorResp.BadRequest(ex.Message);
+                throw new ApplicationException(ex.Message);
             }
 		}
 	}

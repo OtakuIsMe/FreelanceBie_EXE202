@@ -101,7 +101,7 @@ namespace BE.src.api.services
 				var isCreated = await _postRepo.CreatePost(newPost);
 				if (!isCreated)
 				{
-					return ErrorResp.BadRequest("Cant create post");
+					throw new ApplicationException("Cant create post");
 				}
 
 				await _cacheService.ClearWithPattern("posts");
@@ -110,7 +110,7 @@ namespace BE.src.api.services
 			}
 			catch (System.Exception ex)
 			{
-				return ErrorResp.BadRequest(ex.Message);
+				throw new ApplicationException(ex.Message);
 			}
 		}
 
@@ -147,7 +147,7 @@ namespace BE.src.api.services
 			}
 			catch (System.Exception ex)
 			{
-				return ErrorResp.BadRequest(ex.Message);
+				throw new ApplicationException(ex.Message);
 			}
 		}
 
@@ -159,7 +159,7 @@ namespace BE.src.api.services
 			}
 			catch (System.Exception ex)
 			{
-				return ErrorResp.BadRequest(ex.Message);
+				throw new ApplicationException(ex.Message);
 			}
 		}
 
@@ -170,7 +170,7 @@ namespace BE.src.api.services
 				var post = await _postRepo.GetPostJobByCode(postCode);
 				if (post == null)
 				{
-					return ErrorResp.BadRequest("Cant find post");
+					throw new ApplicationException("Cant find post");
 				}
 				var postDetail = new PostDetail
 				{
@@ -202,7 +202,7 @@ namespace BE.src.api.services
 			}
 			catch (System.Exception ex)
 			{
-				return ErrorResp.BadRequest(ex.Message);
+				throw new ApplicationException(ex.Message);
 			}
 		}
 
@@ -219,7 +219,7 @@ namespace BE.src.api.services
 				var posts = await _postRepo.GetPosts(filter);
 				if (posts.Count == 0)
 				{
-					return ErrorResp.NotFound("No post found");
+					throw new ApplicationException("No post found");
 				}
 
 				await _cacheService.Set(cacheKey, posts, TimeSpan.FromMinutes(10));
@@ -228,7 +228,7 @@ namespace BE.src.api.services
 			}
 			catch (System.Exception ex)
 			{
-				return ErrorResp.BadRequest(ex.Message);
+				throw new ApplicationException(ex.Message);
 			}
 		}
 

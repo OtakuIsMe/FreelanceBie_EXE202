@@ -1,5 +1,7 @@
 using BE.src.api.domains.Database;
+using BE.src.api.domains.DTOs.ElasticSearch;
 using BE.src.api.domains.DTOs.User;
+using BE.src.api.domains.Enum;
 using BE.src.api.domains.Model;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,6 +26,12 @@ namespace BE.src.api.repositories
 		Task<User?> GetUserById(Guid userId, CancellationToken cancellationToken = default);
 		Task<bool> EditProfile(User user);
 		Task<List<User>> FindUsers(UserSearchingDTO userSearchingDTO);
+		Task<bool> AddNewRefreshToken(RefreshToken refreshToken);
+		Task<RefreshToken?> GetRefreshToken(string refreshToken);
+		Task<bool> UpdateNewRefreshToken(RefreshToken refreshToken);
+		Task<bool> RevokeRefreshToken(Guid userId);
+		Task<List<RefreshToken>> GetRefreshTokens(Guid userId);
+		Task<List<User>> GetOnlyCustomers();
 		Task<bool> AddImageVideo(ImageVideo img);
 		Task<bool> UpdateImageVideo(ImageVideo img);
 	}
@@ -116,7 +124,6 @@ namespace BE.src.api.repositories
 		{
 			return await _context.Users
 								.Include(x => x.ImageVideos)
-								.Include(x => x.Notifications)
 								.Include(x => x.Comments)
 								.Include(x => x.Likes)
 								.Include(x => x.Saves)
@@ -153,7 +160,7 @@ namespace BE.src.api.repositories
 
 		public async Task<List<User>> FindUsers(UserSearchingDTO userSearchingDTO)
 		{
-			return await _context.Users.Where(x =>
+			return await _context.Users.Where(x => x.Role == RoleEnum.Customer &&
 				(string.IsNullOrEmpty(userSearchingDTO.Name) || x.Name.ToLower().Contains(userSearchingDTO.Name.ToLower())) &&
 				(string.IsNullOrEmpty(userSearchingDTO.Username) || x.Username.ToLower().Contains(userSearchingDTO.Username.ToLower())) &&
 				(string.IsNullOrEmpty(userSearchingDTO.Email) || x.Email.ToLower().Contains(userSearchingDTO.Email.ToLower())) &&
@@ -163,6 +170,45 @@ namespace BE.src.api.repositories
 			)
 			.Include(x => x.ImageVideos)
 			.ToListAsync();
+		}
+
+		public async Task<bool> AddNewRefreshToken(RefreshToken refreshToken)
+		{
+			await _context.RefreshTokens.AddAsync(refreshToken);
+			return await _context.SaveChangesAsync() > 0;
+		}
+
+		public async Task<RefreshToken?> GetRefreshToken(string refreshToken)
+		{
+			return await _context.RefreshTokens
+							.Include(r => r.User)
+							.FirstOrDefaultAsync(x => x.Token == refreshToken);
+		}
+
+		public async Task<bool> UpdateNewRefreshToken(RefreshToken refreshToken)
+		{
+			_context.RefreshTokens.Update(refreshToken);
+			return await _context.SaveChangesAsync() > 0;
+		}
+
+		public async Task<bool> RevokeRefreshToken(Guid userId)
+		{
+			await _context.RefreshTokens.Where(u => u.UserId == userId).ExecuteDeleteAsync();
+
+			return true;
+		}
+
+		public async Task<List<RefreshToken>> GetRefreshTokens(Guid userId)
+		{
+			return await _context.RefreshTokens.Where(rft => rft.UserId == userId).ToListAsync();
+		}
+
+		public async Task<List<User>> GetOnlyCustomers()
+		{
+			return await _context.Users
+								.Where(user => user.Role == RoleEnum.Customer)
+								.Include(x => x.ImageVideos)
+								.ToListAsync();
 		}
 	}
 }

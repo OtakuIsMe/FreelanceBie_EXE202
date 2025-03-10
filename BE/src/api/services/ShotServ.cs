@@ -78,7 +78,7 @@ namespace BE.src.api.services
 				bool isCreated = await _shotRepo.CreateShot(newShot);
 				if (!isCreated)
 				{
-					return ErrorResp.BadRequest("Cant create shot");
+					throw new ApplicationException("Cant create shot");
 				}
 
 				await _cacheService.ClearWithPattern("shots");
@@ -87,7 +87,7 @@ namespace BE.src.api.services
 			}
 			catch (System.Exception ex)
 			{
-				return ErrorResp.BadRequest(ex.Message);
+				throw new ApplicationException(ex.Message);
 			}
 		}
 
@@ -120,7 +120,7 @@ namespace BE.src.api.services
 			}
 			catch (System.Exception ex)
 			{
-				return ErrorResp.BadRequest(ex.Message);
+				throw new ApplicationException(ex.Message);
 			}
 		}
 
@@ -152,7 +152,7 @@ namespace BE.src.api.services
 			}
 			catch (System.Exception ex)
 			{
-				return ErrorResp.BadRequest(ex.Message);
+				throw new ApplicationException(ex.Message);
 			}
 		}
 		private async Task<List<ShotCard>> GetShotCards(List<Shot> shots)
@@ -189,11 +189,11 @@ namespace BE.src.api.services
 				var shot = await _shotRepo.GetShotByShotCode(shotCode);
 				if (shot == null)
 				{
-					return ErrorResp.BadRequest("Cant find shot");
+					throw new ApplicationException("Cant find shot");
 				}
 				if (shot.User.ImageVideos == null || shot.User.Slogan == null)
 				{
-					return ErrorResp.BadRequest("Owner is not set up profile");
+					throw new ApplicationException("Owner is not set up profile");
 				}
 				var shotDetail = new ShotDetail
 				{
@@ -219,7 +219,7 @@ namespace BE.src.api.services
 			}
 			catch (System.Exception ex)
 			{
-				return ErrorResp.BadRequest(ex.Message);
+				throw new ApplicationException(ex.Message);
 			}
 		}
 
@@ -236,7 +236,7 @@ namespace BE.src.api.services
 				var shots = await _shotRepo.GetShots(filter);
 				if (shots.Count == 0)
 				{
-					return ErrorResp.NotFound("No shot found");
+					throw new ApplicationException("No shot found");
 				}
 
 				await _cacheService.Set(cacheKey, shots, TimeSpan.FromMinutes(10));
@@ -245,7 +245,7 @@ namespace BE.src.api.services
 			}
 			catch (System.Exception ex)
 			{
-				return ErrorResp.BadRequest(ex.Message);
+				throw new ApplicationException(ex.Message);
 			}
 		}
 

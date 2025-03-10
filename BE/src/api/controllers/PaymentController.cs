@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using BE.src.api.domains.DTOs.Payment;
 
-[Route("api/payment")]
+[Route("api/v1/payment")]
 [ApiController]
 public class PaymentController : ControllerBase
 {

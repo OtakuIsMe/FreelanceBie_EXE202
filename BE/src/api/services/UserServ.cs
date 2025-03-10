@@ -1,8 +1,10 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using BE.src.api.domains.DTOs.Post;
 using BE.src.api.domains.DTOs.User;
 using BE.src.api.domains.Enum;
+using BE.src.api.domains.eventbus.Producers;
 using BE.src.api.domains.Model;
 using BE.src.api.helpers;
 using BE.src.api.repositories;
@@ -10,6 +12,7 @@ using BE.src.api.shared.Constant;
 using BE.src.api.shared.Type;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Queue = BE.src.api.shared.Constant.EventBus;
 
 namespace BE.src.api.services
 {
@@ -40,9 +43,11 @@ namespace BE.src.api.services
 		private readonly IPostRepo _postRepo;
 		private readonly INotificationRepo _notificationRepo;
 		private readonly ICacheService _cacheService;
+		private readonly IEventBusRabbitMQProducer _eventBus;
+		private readonly ITokenService _tokenService;
 		public UserServ(IUserRepo userRepo, EmailServ emailServ, ISocialProfileRepo socialProfileRepo,
 						IMembershipRepo membershipRepo, IPostRepo postRepo, INotificationRepo notificationRepo,
-						ICacheService cacheService)
+						ICacheService cacheService, IEventBusRabbitMQProducer eventBus, ITokenService tokenService)
 		{
 			_userRepo = userRepo;
 			_emailServ = emailServ;
@@ -51,6 +56,8 @@ namespace BE.src.api.services
 			_postRepo = postRepo;
 			_notificationRepo = notificationRepo;
 			_cacheService = cacheService;
+			_eventBus = eventBus ?? throw new ApplicationException(nameof(eventBus));
+			_tokenService = tokenService;
 		}
 
 		public async Task<IActionResult> Login(LoginRq data)
@@ -93,6 +100,7 @@ namespace BE.src.api.services
 
 			return new JwtSecurityTokenHandler().WriteToken(token);
 		}
+
 		public async Task<IActionResult> GetAllUsers()
 		{
 			try
@@ -106,7 +114,7 @@ namespace BE.src.api.services
 				var users = await _userRepo.GetUsers();
 				if (users.Count == 0)
 				{
-					return ErrorResp.NotFound("No users found");
+					throw new ApplicationException("No users found");
 				}
 
 				await _cacheService.Set("all-users", users, TimeSpan.FromMinutes(10));
@@ -115,7 +123,7 @@ namespace BE.src.api.services
 			}
 			catch (System.Exception ex)
 			{
-				return ErrorResp.BadRequest(ex.Message);
+				throw new ApplicationException(ex.Message);
 			}
 		}
 		public async Task<IActionResult> RegisterUser(UserRegisterDTO user)
@@ -125,7 +133,7 @@ namespace BE.src.api.services
 				var existingUser = await _userRepo.GetUserByEmail(user.Email);
 				if (existingUser != null)
 				{
-					return ErrorResp.BadRequest("User already exists");
+					throw new ApplicationException("User already exists");
 				}
 
 				var newUser = new User
@@ -142,13 +150,13 @@ namespace BE.src.api.services
 				var result = await _userRepo.CreateUser(newUser);
 				if (!result)
 				{
-					return ErrorResp.BadRequest("Failed to create user");
+					throw new ApplicationException("Failed to create user");
 				}
 				return SuccessResp.Created("User created successfully");
 			}
 			catch (System.Exception ex)
 			{
-				return ErrorResp.BadRequest(ex.Message);
+				throw new ApplicationException(ex.Message);
 			}
 		}
 
@@ -212,13 +220,13 @@ namespace BE.src.api.services
 				bool isCreated = await _userRepo.CreateUser(newUser);
 				if (!isCreated)
 				{
-					return ErrorResp.BadRequest("Cant create user");
+					throw new ApplicationException("Cant create user");
 				}
 				return SuccessResp.Created("Add data user success");
 			}
 			catch (System.Exception ex)
 			{
-				return ErrorResp.BadRequest(ex.Message);
+				throw new ApplicationException(ex.Message);
 			}
 		}
 
@@ -235,13 +243,13 @@ namespace BE.src.api.services
 				var isCreated = await _userRepo.AddComment(comment);
 				if (!isCreated)
 				{
-					return ErrorResp.BadRequest("Cant create comment");
+					throw new ApplicationException("Cant create comment");
 				}
 				return SuccessResp.Created("Add comment success");
 			}
 			catch (System.Exception ex)
 			{
-				return ErrorResp.BadRequest(ex.Message);
+				throw new ApplicationException(ex.Message);
 			}
 		}
 
@@ -289,7 +297,7 @@ namespace BE.src.api.services
 			}
 			catch (System.Exception ex)
 			{
-				return ErrorResp.BadRequest(ex.Message);
+				throw new ApplicationException(ex.Message);
 			}
 		}
 
@@ -350,7 +358,7 @@ namespace BE.src.api.services
 			}
 			catch (System.Exception ex)
 			{
-				return ErrorResp.BadRequest(ex.Message);
+				throw new ApplicationException(ex.Message);
 			}
 		}
 
@@ -361,7 +369,7 @@ namespace BE.src.api.services
 				var user = await _userRepo.GetUserByEmail(email);
 				if (user == null)
 				{
-					return ErrorResp.NotFound("User not found");
+					throw new ApplicationException("User not found");
 				}
 
 				var htmlBody = $"<h3>Click the link below to verify your email address:</h3><a href=\"https://localhost:5173/\">Verify Email</a>";
@@ -369,13 +377,13 @@ namespace BE.src.api.services
 				var result = _emailServ.SendVerificationEmail(email, "Email Vertification", htmlBody);
 				if (!result.Result)
 				{
-					return ErrorResp.BadRequest("Failed to send email");
+					throw new ApplicationException("Failed to send email");
 				}
 				return SuccessResp.Ok("Email sent successfully");
 			}
 			catch (System.Exception ex)
 			{
-				return ErrorResp.BadRequest(ex.Message);
+				throw new ApplicationException(ex.Message);
 			}
 		}
 
@@ -385,19 +393,19 @@ namespace BE.src.api.services
 			{
 				if (data.NewPassword != data.ConfirmPassword)
 				{
-					return ErrorResp.BadRequest("Passwords do not match");
+					throw new ApplicationException("Passwords do not match");
 				}
 
 				var result = await _userRepo.ChangePassword(data.Email, Utils.HashObject<string>(data.NewPassword));
 				if (!result)
 				{
-					return ErrorResp.BadRequest("Failed to change password");
+					throw new ApplicationException("Failed to change password");
 				}
 				return SuccessResp.Ok("Password changed successfully");
 			}
 			catch (System.Exception ex)
 			{
-				return ErrorResp.BadRequest(ex.Message);
+				throw new ApplicationException(ex.Message);
 			}
 		}
 
@@ -414,7 +422,7 @@ namespace BE.src.api.services
 				var user = await _userRepo.ViewProfileUser(userId);
 				if (user == null)
 				{
-					return ErrorResp.NotFound("User not found");
+					throw new ApplicationException("User not found");
 				}
 
 				await _cacheService.Set($"profile-{userId}", user, TimeSpan.FromMinutes(10));
@@ -423,7 +431,7 @@ namespace BE.src.api.services
 			}
 			catch (System.Exception ex)
 			{
-				return ErrorResp.BadRequest(ex.Message);
+				throw new ApplicationException(ex.Message);
 			}
 		}
 
@@ -434,7 +442,7 @@ namespace BE.src.api.services
 				var userObj = await _userRepo.GetUserById(userId);
 				if (userObj == null)
 				{
-					return ErrorResp.NotFound("User not found");
+					throw new ApplicationException("User not found");
 				}
 
 				var existingSocialProfiles = await _socialProfileRepo.GetSocialProfiles(userId);
@@ -464,7 +472,7 @@ namespace BE.src.api.services
 			}
 			catch (System.Exception ex)
 			{
-				return ErrorResp.BadRequest(ex.Message);
+				throw new ApplicationException(ex.Message);
 			}
 		}
 
@@ -475,7 +483,7 @@ namespace BE.src.api.services
 				var userObj = await _userRepo.GetUserById(userId);
 				if (userObj == null)
 				{
-					return ErrorResp.NotFound("User not found");
+					throw new ApplicationException("User not found");
 				}
 
 				userObj.Name = user.Name ?? userObj.Name;
@@ -524,7 +532,7 @@ namespace BE.src.api.services
 			}
 			catch (System.Exception ex)
 			{
-				return ErrorResp.BadRequest(ex.Message);
+				throw new ApplicationException(ex.Message);
 			}
 		}
 
@@ -557,7 +565,7 @@ namespace BE.src.api.services
 				var users = await _userRepo.FindUsers(userSearchingDTO);
 				if (users.Count == 0)
 				{
-					return ErrorResp.NotFound("No users found");
+					throw new ApplicationException("No users found");
 				}
 
 				await _cacheService.Set(searchKey, users, TimeSpan.FromMinutes(5));
@@ -566,7 +574,7 @@ namespace BE.src.api.services
 			}
 			catch (System.Exception ex)
 			{
-				return ErrorResp.BadRequest(ex.Message);
+				throw new ApplicationException(ex.Message);
 			}
 		}
 
@@ -577,13 +585,13 @@ namespace BE.src.api.services
 				var user = await _userRepo.GetUserById(userId);
 				if (user == null)
 				{
-					return ErrorResp.NotFound("Cant found user");
+					throw new ApplicationException("Cant found user");
 				}
 				return SuccessResp.Ok(user);
 			}
 			catch (System.Exception ex)
 			{
-				return ErrorResp.BadRequest(ex.Message);
+				throw new ApplicationException(ex.Message);
 			}
 		}
 
@@ -591,43 +599,52 @@ namespace BE.src.api.services
 		{
 			try
 			{
-				var memberUser = await _membershipRepo.GetMembershipUserRegistered(userId);
-				if (memberUser == null)
+				var cachedMemberUser = await _cacheService.Get<string>($"member-user-{userId}");
+				if (cachedMemberUser is null)
 				{
-					return ErrorResp.NotFound("User not registered yet");
+					var memberUser = await _membershipRepo.GetMembershipUserRegistered(userId);
+					if (memberUser is null)
+					{
+						throw new ApplicationException("User not registered yet");
+					}
+
+					cachedMemberUser = memberUser.MembershipId.ToString();
+					await _cacheService.Set($"member-user-{userId}", cachedMemberUser, TimeSpan.FromMinutes(5));
 				}
 
-				var membership = await _membershipRepo.GetMembershipById(memberUser.MembershipId);
-				if (membership == null)
+				var cachedMembership = await _cacheService.Get<bool?>($"membership-{cachedMemberUser}");
+				if (cachedMembership is null)
 				{
-					return ErrorResp.NotFound("Membership not found");
+					var membership = await _membershipRepo.GetMembershipById(Guid.Parse(cachedMemberUser));
+					if (membership is null)
+					{
+						throw new ApplicationException("Membership not found");
+					}
+
+					await _cacheService.Set($"membership-{cachedMemberUser}", true, TimeSpan.FromMinutes(5));
 				}
 
-				var post = await _postRepo.GetLatestPosts();
-				if (post == null)
+				var cachedPost = await _cacheService.Get<PostJob>("latest-post");
+				if (cachedPost is null)
 				{
-					return ErrorResp.NotFound("No recent posts available");
+					var post = await _postRepo.GetLatestPosts();
+					if (post is null)
+					{
+						throw new ApplicationException("No recent posts available");
+					}
+
+					cachedPost = post;
+					await _cacheService.Set("latest-post", post, TimeSpan.FromMinutes(5));
 				}
 
-				var newNotification = new Notification
-				{
-					Message = $"A new post titled '{post.Title}' has been published. Check it out!",
-					UserId = userId,
-					CreateAt = DateTime.Now,
-					UpdateAt = DateTime.Now
-				};
-
-				var result = await _notificationRepo.AddNotification(newNotification);
-				if (!result)
-				{
-					return ErrorResp.BadRequest("Failed to send notification");
-				}
+				var eventMessage = new PostCreatedEvent(userId, cachedPost.Id, cachedPost.Title, DateTime.Now);
+				_eventBus.Publish(Queue.PostNotificationQueue, eventMessage);
 
 				return SuccessResp.Ok("Notification sent successfully");
 			}
 			catch (Exception ex)
 			{
-				return ErrorResp.BadRequest(ex.Message);
+				throw new ApplicationException(ex.Message);
 			}
 		}
 	}

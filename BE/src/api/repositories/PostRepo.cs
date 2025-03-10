@@ -5,6 +5,7 @@ using BE.src.api.domains.Model;
 using BE.src.api.helpers;
 using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Asn1.UA;
+using BE.src.api.domains.DTOs.ElasticSearch;
 
 namespace BE.src.api.repositories
 {
@@ -20,6 +21,7 @@ namespace BE.src.api.repositories
 		Task<List<PostJob>> GetPosts(PostJobFilterDTO filter);
 		Task<PostJob?> GetLatestPosts();
 		Task<PostJob?> GetPostById(Guid id, CancellationToken cancellationToken = default);
+		Task<List<PostJob>> GetAllPosts();
 	}
 	public class PostRepo : IPostRepo
 	{
@@ -122,6 +124,7 @@ namespace BE.src.api.repositories
 						 .Include(p => p.User)
 							 .ThenInclude(u => u.ImageVideos)
 						 .OrderByDescending(p => p.CreateAt)
+						 .AsNoTracking()
 						 .FirstOrDefaultAsync();
 		}
 
@@ -132,6 +135,14 @@ namespace BE.src.api.repositories
 							 .ThenInclude(u => u.ImageVideos)
 						 .Include(p => p.Specialty)
 						 .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
+		}
+
+		public async Task<List<PostJob>> GetAllPosts()
+		{
+			return await _context.PostJobs
+						 .Include(p => p.User)
+							 .ThenInclude(u => u.ImageVideos)	 
+						 .ToListAsync();
 		}
 	}
 }
