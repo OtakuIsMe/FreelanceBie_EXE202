@@ -35,5 +35,6 @@ namespace BE.src.api.domains.Model
 		public ICollection<Follow> Followings { get; set; } = null!;
 		public ICollection<ImageVideo> ImageVideos { get; set; } = null!;
 		public ICollection<Notification> Notifications { get; set; } = null!;
+		public ICollection<Specialty> Specialties { get; set; } = null!;
 	}
 }

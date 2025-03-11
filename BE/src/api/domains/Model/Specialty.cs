@@ -8,5 +8,6 @@ namespace BE.src.api.domains.Model
 
 		public ICollection<PostJob> Posts { get; set; } = null!;
 		public ICollection<Shot> Shots { get; set; } = null!;
+		public ICollection<User> Users { get; set; } = null!;
 	}
 }

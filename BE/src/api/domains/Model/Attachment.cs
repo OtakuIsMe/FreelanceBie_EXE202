@@ -9,6 +9,6 @@ namespace BE.src.api.domains.Model
 		public PostJob Post { get; set; } = null!;
 		public required string FileName { get; set; } = null!;
 		public required FileTypeEnum FileType { get; set; }
-		public byte[]? FileContent { get; set; }
+		public byte[] FileContent { get; set; } = null!;
 	}
 }

@@ -34,6 +34,7 @@ namespace BE.src.api.repositories
 		Task<List<User>> GetOnlyCustomers();
 		Task<bool> AddImageVideo(ImageVideo img);
 		Task<bool> UpdateImageVideo(ImageVideo img);
+		Task<List<DesignerCard>> ListDesigner(int item, int page, int countImg);
 	}
 	public class UserRepo : IUserRepo
 	{
@@ -209,6 +210,34 @@ namespace BE.src.api.repositories
 								.Where(user => user.Role == RoleEnum.Customer)
 								.Include(x => x.ImageVideos)
 								.ToListAsync();
+		}
+
+		public async Task<List<DesignerCard>> ListDesigner(int item, int page, int countImg)
+		{
+			return await _context.Users
+				.Where(u => u.Shots.Any())
+				.OrderByDescending(u => u.Id)
+				.Skip((page - 1) * item)
+				.Take(item)
+				.Select(u => new DesignerCard
+				{
+					Images = u.Shots
+						.OrderByDescending(s => s.CreateAt)
+						.Take(countImg)
+						.SelectMany(s => s.ImageVideos
+							.Where(iv => iv.IsMain)
+							.Select(iv => iv.Url))
+						.ToList(),
+
+					Specialties = u.Specialties.Select(s => s.Name).ToList(),
+					Price = null,
+					Place = "",
+					Username = u.Username,
+					UserImage = u.ImageVideos
+								.Select(iv => iv.Url)
+								.FirstOrDefault() ?? ""
+				})
+				.ToListAsync();
 		}
 	}
 }

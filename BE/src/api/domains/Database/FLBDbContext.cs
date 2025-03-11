@@ -427,6 +427,9 @@ namespace BE.src.api.domains.Database
 				entity.Property(u => u.Slogan)
 					.HasMaxLength(200)
 					.IsRequired(false);
+
+				entity.HasMany(u => u.Specialties)
+					.WithMany(s => s.Users);
 			});
 
 			builder.Entity<UserApply>(entity =>

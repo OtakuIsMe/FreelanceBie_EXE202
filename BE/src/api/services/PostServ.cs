@@ -16,6 +16,8 @@ namespace BE.src.api.services
 		Task<IActionResult> PostJobDetail(Guid? userId, Guid postCode);
 		Task<IActionResult> HistoryHiring(Guid postId);
 		Task<IActionResult> GetPosts(PostJobFilterDTO filter);
+		Task<FileContentResult?> DownloadFile(Guid id);
+		Task<IActionResult> GetListPostCard(int item, int page);
 	}
 	public class PostServ : IPostServ
 	{
@@ -182,12 +184,15 @@ namespace BE.src.api.services
 					EmploymentType = post.EmploymentType,
 					Experience = post.Experience,
 					Description = post.Description,
-					AttachmentPosts = post.Attachments.Select(a =>
+					Specialty = post.Specialty.Name,
+					Files = post.Attachments.Select(a =>
 					new AttachmentPost
 					{
 						Id = a.Id,
 						Name = a.FileName,
-						Type = a.FileType.ToString()
+						Type = a.FileType.ToString(),
+						Size = a.FileContent != null ? a.FileContent.Length : 0,
+						Url = $"http://localhost:5000/api/v1/post/download-attachment?id={a.Id}"
 					})
 				};
 				if (userId.HasValue)
@@ -251,5 +256,42 @@ namespace BE.src.api.services
 
 			return $"posts{string.Join("|", keyParts)}";
 		}
+
+		public async Task<FileContentResult?> DownloadFile(Guid id)
+		{
+			var attachment = await _postRepo.GetAttachmentById(id);
+			if (attachment == null || attachment.FileContent == null || attachment.FileContent.Length == 0)
+			{
+				return null;
+			}
+
+			return new FileContentResult(attachment.FileContent, "application/pdf")
+			{
+				FileDownloadName = attachment.FileName
+			};
+		}
+
+		public async Task<IActionResult> GetListPostCard(int item, int page)
+		{
+			try
+			{
+				var posts = await _postRepo.GetListPost(item, page);
+				var postsCard = posts.Select(s => new PostCard
+				{
+					Id = s.Id,
+					CompanyLogo = s.CompanyLogo.Url,
+					CompanyName = s.CompanyName,
+					Title = s.Title,
+					WorkLocation = s.WorkLocation,
+					LastPosted = (DateTime.UtcNow - s.CreateAt).TotalSeconds
+				}).ToList();
+				return SuccessResp.Ok(postsCard);
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+
 	}
 }

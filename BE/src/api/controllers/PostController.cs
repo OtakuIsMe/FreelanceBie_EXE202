@@ -59,5 +59,21 @@ namespace BE.src.api.controllers
 			_logger.LogInformation("GetPosts");
 			return await _postServ.GetPosts(filter);
 		}
+		[HttpGet("download-attachment")]
+		public async Task<IActionResult> GetFile([FromQuery] Guid id)
+		{
+			var fileResult = await _postServ.DownloadFile(id);
+			if (fileResult == null)
+			{
+				return NotFound("Cannot find attachment");
+			}
+
+			return fileResult;
+		}
+		[HttpGet("list-post-card")]
+		public async Task<IActionResult> GetListPostCard([FromQuery] int item, [FromQuery] int page)
+		{
+			return await _postServ.GetListPostCard(item, page);
+		}
 	}
 }

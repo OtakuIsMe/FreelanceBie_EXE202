@@ -22,6 +22,8 @@ namespace BE.src.api.repositories
 		Task<PostJob?> GetLatestPosts();
 		Task<PostJob?> GetPostById(Guid id, CancellationToken cancellationToken = default);
 		Task<List<PostJob>> GetAllPosts();
+		Task<Attachment?> GetAttachmentById(Guid id);
+		Task<List<PostJob>> GetListPost(int item, int page);
 	}
 	public class PostRepo : IPostRepo
 	{
@@ -141,8 +143,22 @@ namespace BE.src.api.repositories
 		{
 			return await _context.PostJobs
 						 .Include(p => p.User)
-							 .ThenInclude(u => u.ImageVideos)	 
+							 .ThenInclude(u => u.ImageVideos)
 						 .ToListAsync();
+		}
+
+		public async Task<Attachment?> GetAttachmentById(Guid id)
+		{
+			return await _context.Attachments.FirstOrDefaultAsync(a => a.Id == id);
+		}
+
+		public async Task<List<PostJob>> GetListPost(int item, int page)
+		{
+			return await _context.PostJobs
+							.Skip((page - 1) * item)
+							.Take(item)
+							.Include(p => p.CompanyLogo)
+							.ToListAsync();
 		}
 	}
 }

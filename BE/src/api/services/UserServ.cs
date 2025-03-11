@@ -33,6 +33,7 @@ namespace BE.src.api.services
 		Task<IActionResult> SearchingDesigners(UserSearchingDTO userSearchingDTO);
 		Task<IActionResult> GetUserById(Guid userId);
 		Task<IActionResult> CheckNotificationWhenPost(Guid userId);
+		Task<IActionResult> ListDesigner(int item, int page, int countImg);
 	}
 	public class UserServ : IUserServ
 	{
@@ -645,6 +646,18 @@ namespace BE.src.api.services
 			catch (Exception ex)
 			{
 				throw new ApplicationException(ex.Message);
+			}
+		}
+
+		public async Task<IActionResult> ListDesigner(int item, int page, int countImg)
+		{
+			try
+			{
+				return SuccessResp.Ok(await _userRepo.ListDesigner(item, page, countImg));
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
 			}
 		}
 	}

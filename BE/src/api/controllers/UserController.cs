@@ -2,6 +2,7 @@ using BE.src.api.domains.DTOs.User;
 using BE.src.api.services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace BE.src.api.controllers
 {
@@ -130,6 +131,11 @@ namespace BE.src.api.controllers
 			_logger.LogInformation("NofiticationsMembership");
 			Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
 			return await _userServ.CheckNotificationWhenPost(userId);
+		}
+		[HttpGet("list-designer")]
+		public async Task<IActionResult> ListDesigner([FromQuery] int item, [FromQuery] int page, [FromQuery] int countImg)
+		{
+			return await _userServ.ListDesigner(item, page, countImg);
 		}
 	}
 }
