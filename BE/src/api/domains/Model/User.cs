@@ -19,6 +19,8 @@ namespace BE.src.api.domains.Model
 		public string? Description { get; set; } = null!;
 		public DateOnly? DOB { get; set; } = null;
 		public string? Slogan { get; set; } = null!;
+		public string? Place { get; set; } = null!;
+		public float? Price { get; set; }
 
 		public ICollection<Experience> Experiences { get; set; } = null!;
 		public ICollection<SocialProfile> SocialProfiles { get; set; } = null!;

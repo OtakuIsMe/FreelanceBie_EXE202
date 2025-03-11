@@ -428,6 +428,13 @@ namespace BE.src.api.domains.Database
 					.HasMaxLength(200)
 					.IsRequired(false);
 
+				entity.Property(u => u.Place)
+					.HasMaxLength(100)
+					.IsRequired(false);
+
+				entity.Property(u => u.Price)
+					.IsRequired(false);
+
 				entity.HasMany(u => u.Specialties)
 					.WithMany(s => s.Users);
 			});

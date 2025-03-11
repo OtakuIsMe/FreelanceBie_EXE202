@@ -221,17 +221,21 @@ namespace BE.src.api.repositories
 				.Take(item)
 				.Select(u => new DesignerCard
 				{
-					Images = u.Shots
+					Shots = u.Shots
 						.OrderByDescending(s => s.CreateAt)
 						.Take(countImg)
-						.SelectMany(s => s.ImageVideos
-							.Where(iv => iv.IsMain)
-							.Select(iv => iv.Url))
+						.Select(s => new ShotDesigner
+						{
+							Id = s.Id,
+							Image = s.ImageVideos
+								.Where(i => i.IsMain)
+								.Select(i => i.Url)
+								.FirstOrDefault() ?? string.Empty
+						})
 						.ToList(),
-
 					Specialties = u.Specialties.Select(s => s.Name).ToList(),
-					Price = null,
-					Place = "",
+					Price = u.Price,
+					Place = u.Place,
 					Username = u.Username,
 					UserImage = u.ImageVideos
 								.Select(iv => iv.Url)

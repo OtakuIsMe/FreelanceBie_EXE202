@@ -209,4 +209,15 @@ export class ApiGateway {
 		}
 	}
 
+	public static async ListDesigner<T>(item: number, page: number, countImg: number): Promise<T> {
+		this.setAuthHeader()
+		try {
+			const response = await this.axiosInstance.get<T>(`user/list-designer?item=${item}&page=${page}&countImg=${countImg}`);
+			return response.data;
+		} catch (error) {
+			console.error("Error List Designer:", error)
+			throw error;
+		}
+	}
+
 }

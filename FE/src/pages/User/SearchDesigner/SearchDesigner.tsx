@@ -7,16 +7,19 @@ import Avt from '../../../assets/IMG_2564.jpg'
 import Header from '../../../components/Header/Header'
 import Designer from '../../../components/Cards/Designer/Designer'
 import './SearchDesigner.css'
+import { ApiGateway } from '../../../services/api/ApiService'
+
+interface DesignerCard {
+	shots: { id: string; image: string }[];
+	specialties: string[];
+	price?: number | null;
+	place?: string | null;
+	username: string;
+	userImage: string;
+}
 
 const SearchDesigner = () => {
 
-	const des = [
-		{ "avatarURL": Avt, "name": "Rick Asley", "location": "US", "isSaved": false, "specialty": ["Animation", "Mobile", "Print", "Animation", "Mobile", "Print", "Animation", "Mobile", "Print"], "products": [D1, D2, D3, D4] },
-		{ "avatarURL": Avt, "name": "Rick Asley", "location": "US", "isSaved": false, "specialty": ["Animation", "Mobile", "Print"], "products": [D1, D2, D3, D4] },
-		{ "avatarURL": Avt, "name": "Rick Asley", "location": "US", "isSaved": false, "specialty": ["Animation", "Mobile", "Print"], "products": [D1, D2, D3, D4] },
-		{ "avatarURL": Avt, "name": "Rick Asley", "location": "US", "isSaved": false, "specialty": ["Animation", "Mobile", "Print"], "products": [D1, D2, D3, D4] },
-		{ "avatarURL": Avt, "name": "Rick Asley", "location": "US", "isSaved": false, "specialty": ["Animation", "Mobile", "Print"], "products": [D1, D2, D3, D4] },
-	]
 
 	const categories = [
 		'All',
@@ -30,8 +33,17 @@ const SearchDesigner = () => {
 		'Web Design',
 	];
 
-	const [designers, setDesigners] = useState([]);
+	const [designers, setDesigners] = useState<DesignerCard[]>([]);
 	const [active, setActive] = useState<string>('All');
+
+	const fetchDesigners = async () => {
+		const data = await ApiGateway.ListDesigner<DesignerCard[]>(4, 1, 4);
+		setDesigners(data);
+	}
+
+	useEffect(() => {
+		fetchDesigners()
+	}, []);
 
 	const handleToggle = (category: string) => {
 		setActive(category);
@@ -75,15 +87,15 @@ const SearchDesigner = () => {
 					</div>
 				</div>
 				<div className="designers section">
-					{des.map((designer, index) =>
+					{designers.map((designer, index) =>
 						<Designer
 							key={index}
-							avatarURL={designer.avatarURL}
-							name={designer.name}
-							location={designer.location}
-							isSaved={designer.isSaved}
-							specialty={designer.specialty}
-							products={designer.products}
+							avatarURL={designer.userImage}
+							name={designer.username}
+							place={designer.place}
+							isSaved={false}
+							specialty={designer.specialties}
+							products={designer.shots}
 						/>
 					)}
 				</div>

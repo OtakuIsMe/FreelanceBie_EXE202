@@ -14,7 +14,7 @@ export default function Modal({ children, onClose }: ModalProps) {
 		};
 	}, []);
 	return (
-		<div id="modal-overlay" onClick={onClose}>
+		<div id="modal-overlay">
 			<div className="modal-content" onClick={(e) => e.stopPropagation()}>
 				{children}
 			</div>

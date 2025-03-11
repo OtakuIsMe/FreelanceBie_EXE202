@@ -1,85 +1,89 @@
 #find_job {
-    background-color: #fff;
+	background-color: #fff;
+	width: 100%;
+	min-height: 100vh;
 }
 
 #find_job .job-board-container {
-    display: flex;
-    gap: 20px;
-    padding: 10px 60px ;
+	display: flex;
+	gap: 20px;
+	width: 90%;
+	margin: 50px auto 0 auto;
+	max-width: 1400px;
 }
 
 #find_job .job-list-section {
-    flex: 2;
-    width: 100%;
+	flex: 3;
+	width: 100%;
 }
 
-#find_job .job-list-section > p {
-    font-family: 'Kadwa', Arial, Helvetica, sans-serif;
-    margin-bottom: 5px;
+#find_job .job-list-section>p {
+	font-family: 'Kadwa', Arial, Helvetica, sans-serif;
+	margin-bottom: 5px;
 }
 
 #find_job .search-bar {
-    position: relative;
-    margin-bottom: 20px;
-    width: 100%;
+	position: relative;
+	margin-bottom: 20px;
+	width: 100%;
 }
 
 #find_job .search-bar input {
-    width: calc(100% - 70px);
-    padding: 12px 35px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+	width: calc(100% - 70px);
+	padding: 12px 35px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
 }
 
 #find_job .search-icon {
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: gray;
+	position: absolute;
+	left: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	color: gray;
 }
 
 #find_job .job-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
 }
 
 #find_job .filter-section {
-    flex: 1;
-    width: 100%;
-    height: fit-content;
-    margin: calc(2em + 5px) 20px 0;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+	flex: 1;
+	width: 100%;
+	height: fit-content;
+	margin: calc(2em + 5px) 20px 0;
+	padding: 20px;
+	border: 1px solid #ddd;
+	border-radius: 5px;
 }
 
 #find_job .filter-option {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 10px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 10px;
 }
 
 #find_job .location-input {
-    width: calc(100% - 20px);
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-bottom: 15px;
+	width: calc(100% - 20px);
+	padding: 8px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	margin-bottom: 15px;
 }
 
 #find_job .filter-button {
-    width: 100%;
-    padding: 10px;
-    background-color: var(--color-banner);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+	width: 100%;
+	padding: 10px;
+	background-color: var(--color-banner);
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
 }
 
 #find_job .filter-button:hover {
-    background-color: var(--btn-hover);
+	background-color: var(--btn-hover);
 }

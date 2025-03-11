@@ -1,103 +1,105 @@
 #designer_card {
-    border: 1px solid #ccc;
-    border-radius: 25px;
-    width: clamp(200px, 100%, 700px);
+	border: 1px solid #ccc;
+	border-radius: 25px;
+	width: clamp(200px, 100%, 700px);
 }
 
-#designer_card > .container {
-    width: 100%;
+#designer_card>.container {
+	width: 100%;
 }
 
-#designer_card > .des-container > .user-info {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-sizing: border-box;
-    padding: 10px 20px;
+#designer_card>.des-container>.user-info {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	box-sizing: border-box;
+	padding: 10px 20px;
 }
 
-#designer_card > .des-container > .user-info > div {
-    display: flex;
-    gap: 25px;
+#designer_card>.des-container>.user-info>div {
+	display: flex;
+	gap: 25px;
 }
 
-#designer_card > .des-container > .user-info > .second-part > div {
-    display: flex;
-    align-items: center;
+#designer_card>.des-container>.user-info>.second-part>div {
+	display: flex;
+	align-items: center;
 }
 
-#designer_card > .des-container > .user-info > div > div > p:first-child {
-    font-size: 22px;
-    font-weight: 600;
+#designer_card>.des-container>.user-info>div>div>p:first-child {
+	font-size: 22px;
+	font-weight: 600;
 }
 
-#designer_card > .des-container > .user-info > div > img {
-    height: 48px;
-    width: 48px;
-    border-radius: 50%;
+#designer_card>.des-container>.user-info>div>img {
+	height: 48px;
+	width: 48px;
+	border-radius: 59999px;
+	object-fit: cover;
+	object-position: center;
 }
 
-#designer_card > .des-container > .user-products > .product-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    padding: 10px 20px;
-    overflow-x: auto;
+#designer_card>.des-container>.user-products>.product-container {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 12px;
+	padding: 10px 20px;
+	overflow-x: auto;
 }
 
-#designer_card > .des-container > .user-products > .product-container > .img-container {
-    width: 100%;
-    height: 10em;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid #e0e0e0;
-    border-radius: 15px;
-    overflow: hidden;
+#designer_card>.des-container>.user-products>.product-container .img-container {
+	width: 100%;
+	height: 10em;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border: 1px solid #e0e0e0;
+	border-radius: 15px;
+	overflow: hidden;
 }
 
-#designer_card > .des-container > .user-products > .product-container > .img-container > img {
-    width: 100%;
-    transition: all 0.2s;
+#designer_card>.des-container>.user-products>.product-container>a>.img-container>img {
+	width: 100%;
+	transition: all 0.2s;
 }
 
-#designer_card > .des-container > .user-skills {
-    width: 100%;
+#designer_card>.des-container>.user-skills {
+	width: 100%;
 }
 
-#designer_card > .des-container > .user-skills > .skill-container {
-    height: fit-content;
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    padding: 0 20px 10px;
-    align-items: center;
+#designer_card>.des-container>.user-skills>.skill-container {
+	height: fit-content;
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	padding: 0 20px 10px;
+	align-items: center;
 }
 
-#designer_card > .des-container > .user-skills > .skill-container span {
-    color: #aaa;
-    cursor: pointer;
-    font-size: 14px;
+#designer_card>.des-container>.user-skills>.skill-container span {
+	color: #aaa;
+	cursor: pointer;
+	font-size: 14px;
 }
 
 #designer_card:hover {
-    border: #ff9ada solid 1px;
-    box-shadow: 0 0 5px rgba(228, 111, 185, 0.62);
+	border: #ff9ada solid 1px;
+	box-shadow: 0 0 5px rgba(228, 111, 185, 0.62);
 }
 
-#designer_card > .des-container > .user-products > .product-container > .img-container:hover> img {
-    transform: scale(1.2);
+#designer_card>.des-container>.user-products>.product-container>a>.img-container:hover>img {
+	transform: scale(1.2);
 }
 
-#designer_card > .des-container > .user-products > .product-container > .img-container:hover + * > img,
-#designer_card > .des-container > .user-products > .product-container > .img-container:hover + * + * > img,
-#designer_card > .des-container > .user-products > .product-container > .img-container:hover + * + * + * > img,
-#designer_card > .des-container > .user-products > .product-container > .img-container:has(+ * :hover) > img,
-#designer_card > .des-container > .user-products > .product-container > .img-container:has(+ * + * :hover) > img,
-#designer_card > .des-container > .user-products > .product-container > .img-container:has(+ * + * + * :hover) > img {
-    filter: brightness(.5);
+#designer_card>.des-container>.user-products>.product-container .img-container:hover+*>img,
+#designer_card>.des-container>.user-products>.product-container .img-container:hover+*+*>img,
+#designer_card>.des-container>.user-products>.product-container .img-container:hover+*+*+*>img,
+#designer_card>.des-container>.user-products>.product-container .img-container:has(+ * :hover)>img,
+#designer_card>.des-container>.user-products>.product-container .img-container:has(+ * + * :hover)>img,
+#designer_card>.des-container>.user-products>.product-container .img-container:has(+ * + * + * :hover)>img {
+	filter: brightness(.5);
 }
 
-#designer_card > .des-container > .user-skills > .skill-container span:hover {
-    text-decoration: underline;
+#designer_card>.des-container>.user-skills>.skill-container span:hover {
+	text-decoration: underline;
 }
