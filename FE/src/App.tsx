@@ -36,7 +36,7 @@ function MainRoutes() {
 				<Route path='/find-job' element={<FindJob />} />
 				<Route path='/Profile' element={<ProfilePage />} />
 				<Route path='/des-profile' element={<DesProfilePage />} />
-				<Route path='/job-detail' element={<JobDetail />} />
+				<Route path='/job-detail/:id' element={<JobDetail />} />
 				<Route path="/post-job" element={<PostJob />} />
 				<Route path="/shot">
 					<Route path="edit" element={<ShotEdit />} />

@@ -187,4 +187,26 @@ export class ApiGateway {
 		}
 	}
 
+	public static async JobDetail<T>(id: string): Promise<T> {
+		this.setAuthHeader();
+		try {
+			const response = await this.axiosInstance.get<T>(`post/PostJobDetail?postCode=${id}`)
+			return response.data;
+		} catch (error) {
+			console.error("Error job detail:", error);
+			throw error;
+		}
+	}
+
+	public static async ListPost<T>(item: number, page: number): Promise<T> {
+		this.setAuthHeader();
+		try {
+			const response = await this.axiosInstance.get<T>(`post/list-post-card?item=${item}&page=${page}`)
+			return response.data;
+		} catch (error) {
+			console.error("Error List Job:", error)
+			throw error;
+		}
+	}
+
 }

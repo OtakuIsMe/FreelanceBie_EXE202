@@ -15,7 +15,15 @@ interface JobInfoProps {
 	specialty: string;
 	experience: number;
 	employmentType: number;
-	files: File[] | null;
+	files: File[] | FileProps[] | null;
+}
+
+export interface FileProps {
+	id: string;
+	name: string,
+	type: string,
+	size: number,
+	url: string
 }
 
 
@@ -63,12 +71,12 @@ const JobInfo: React.FC<JobInfoProps> = (props) => {
 								<div key={index} className="file-preview">
 									<div className='img-info'>
 										<img
-											src={file.type === "application/pdf" ? PDF : DOCX}
+											src={file.type.toLowerCase().includes("pdf") ? PDF : DOCX}
 											alt="File Type"
 											className="file-icon"
 										/>
 										<div className="file-info">
-											<a href={URL.createObjectURL(file)} target="_blank" rel="noopener noreferrer">
+											<a href={file instanceof File ? URL.createObjectURL(file) : file.url} target="_blank" rel="noopener noreferrer">
 												{file.name}
 											</a>
 											<span>{(file.size / 1024).toFixed(2)} KB</span>
