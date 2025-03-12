@@ -1,106 +1,146 @@
-#pricing .pricing-container {
-    text-align: center;
-    padding: 40px;
-    background-color: #f8f9fc;
+#pricing .content-background{
+	background-color: white;
+	display: flex;
+	justify-content: center;
+}
+#pricing p{
+	font-family: "Mona-Sans Regular", "Mona-Sans Regular Placeholder", sans-serif;
 }
 
-#pricing .pricing-header {
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
+
+#pricing .content-container{
+	max-width: 1200px;
+	width: 80%;
+	margin-top: 80px;
 }
 
-#pricing .pricing-subheader {
-    font-size: 16px;
-    color: #666;
-    margin-bottom: 30px;
+#pricing .membership-container{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
-#pricing .pricing-plans {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
+#pricing .title-container .logo{
+	background-color: #fdebf8;
+	width: fit-content;
+	padding: 6px 14px 4px;
+	color: rgb(216, 106, 212);
+	font-size: 13px;
+	font-weight: 600;
 }
 
-#pricing .plan {
-    background: #fff;
-    border-radius: 10px;
-    padding: 30px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    text-align: start;
-    width: 300px;
+#pricing .title-container .title{
+	font-size: 62px;
+	width: 460px;
+	font-family: "Source Serif 4", "Source Serif 4 Placeholder", serif;
+	margin: 10px 0;
 }
 
-#pricing .plan.enterprise {
-    background: #ffeafa;
+#pricing .title-container .des{
+	font-size: 16px;
 }
 
-#pricing .plan h4 {
-    font-size: 18px;
-    font-weight: bold;
+#pricing .membership{
+	width: 500px;
+	padding: 40px;
+	box-sizing: border-box;
+	background-color: rgba(245, 228, 241, 0.99);
+	border-radius: 16px;
 }
 
-#pricing .plan h2 {
-    font-size: 36px;
-    margin: 10px 0;
+#pricing .membership .price-container{
+	display: flex;
+	align-items: end;
+	margin-bottom: 50px;
 }
 
-#pricing .plan h2 span {
-    font-size: 24px;
+#pricing .membership .price-container .price{
+	font-size: 64px;
+	font-weight: 800;
+	line-height: 1;
+	margin-right: 5px;
 }
 
-#pricing .plan hr {
-    color: #777;
+#pricing .membership .price-container .quanty{
+	color: rgb(110, 109, 122);
 }
 
-#pricing .plan p {
-    color: #777;
+#pricing .membership ul {
+  list-style: none;
+  padding-left: 0px;
 }
 
-#pricing ul {
-    list-style: none;
-    padding: 0;
+#pricing .membership ul li{
+	display: flex;
+	align-items: center;
+	font-size: 14px;
+	margin-bottom: 20px;
 }
 
-#pricing li {
-    margin: 5px 0;
+#pricing .membership ul li svg{
+	color: #EA4C89;
+	width: 15px;
+	height: 15px;
+	margin-right: 7px;
 }
 
-#pricing .disabled {
-    color: #ccc;
+#pricing .membership .join{
+	all: unset;
+	padding: 16px 50px;
+	background-color: rgb(234, 76, 137);
+	border-radius: 999px;
+	color: white;
+	font-weight: 700;
+	font-family: "Mona-Sans Bold", "Mona-Sans Bold Placeholder", sans-serif;
+	cursor: pointer;
 }
 
-#pricing .benefit {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+#pricing .membership .join:hover{
+	background-color: rgba(234, 76, 137, 0.8);
 }
 
-#pricing .choose-button {
-    width: 100%;
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+#pricing .framer-container{
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: 20px;
+	margin-top: 80px;
+	margin-bottom: 150px;
 }
 
-#pricing .choose-button.free {
-    background: #dedede;
-    cursor: pointer;
+#pricing .framer-container img{
+	width: 200px;
+	height: 160px;
+	object-fit: cover;
+	object-position: center;
 }
 
-#pricing .choose-button.free:hover {
-    background: #ccc;
+#pricing .framer-container .card{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	border: 1px solid #f3f3f4;
+	padding: 36px 24px;
+	height: 370px;
+	box-sizing: border-box;
 }
 
-#pricing .choose-button.enterprise {
-    background: #000;
-    color: #fff;
+#pricing .framer-container .card .title{
+	font-size: 22px;
+	font-weight: 600;
+	margin-top: 30px;
+	margin-bottom: 10px;
 }
 
-#pricing .choose-button.enterprise:hover {
-    background: #2c2c2c;
+
+#pricing .framer-container .card .des{
+	font-size: 16px;
+	color: rgb(6, 3, 24);
+	text-align: center;
 }
+
+
+
+
+
+
+
