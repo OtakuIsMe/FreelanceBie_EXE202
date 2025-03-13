@@ -1,0 +1,35 @@
+# Ignore build output directories
+bin/
+obj/
+
+# Ignore test result files
+TestResults/
+
+# Ignore code coverage results
+coverage/
+
+# Ignore user-specific files
+*.user
+*.userosscache
+*.suo
+
+# Ignore temporary files
+*.tmp
+*.temp
+
+# Ignore logs
+*.log
+
+# Ignore Visual Studio specific files
+.vscode/
+.vs/
+
+# Ignore Rider specific files
+.idea/
+
+# Ignore ReSharper specific files
+_ReSharper.Caches/
+
+# Ignore xUnit test results
+*.trx
+*.coverage
