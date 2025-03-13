@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import './PostJob.css'
 import { FaDollarSign } from 'react-icons/fa'
 import Header from '../../../components/Header/Header';
