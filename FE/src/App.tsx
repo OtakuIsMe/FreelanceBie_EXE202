@@ -12,7 +12,6 @@ import JobDetail from './pages/User/JobDetail/JobDetail'
 import Pricing from './pages/User/Pricing/Pricing'
 import Modal from './hooks/Modal'
 import PostJob from './pages/User/PostJob/PostJob'
-import PostInfo from './pages/User/Post/Info/PostInfo'
 import PostManage from './pages/User/Post/Manage/PostManage'
 import PostEmployee from './pages/User/Post/Employee/PostEmployee'
 
@@ -48,7 +47,6 @@ function MainRoutes() {
 					<Route index element={<Pricing />} />
 				</Route>
 				<Route path='/post'>
-					<Route path='info' element={<PostInfo />} />
 					<Route path='manage' element={<PostManage />} />
 					<Route path='employee' element={<PostEmployee />} />
 				</Route>

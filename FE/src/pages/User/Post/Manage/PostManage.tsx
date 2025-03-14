@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
+import * as React from 'react';
 import Header from '../../../../components/Header/Header';
 import './PostManage.css';
-import ProgressBar from 'react-bootstrap/ProgressBar';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import Stack from '@mui/material/Stack';
+import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
+import { styled } from '@mui/material/styles';
+
 
 interface jobCard {
 	title: string,
@@ -203,6 +206,24 @@ const PostManage: React.FC = () => {
 		)
 	}
 
+	const BorderLinearProgress = styled(LinearProgress)<{ status?: boolean }>(({ theme, status }) => ({
+		height: 5,
+		borderRadius: 5,
+		[`&.${linearProgressClasses.colorPrimary}`]: {
+			backgroundColor: theme.palette.grey[200],
+			...theme.applyStyles('dark', {
+				backgroundColor: theme.palette.grey[800],
+			}),
+		},
+		[`& .${linearProgressClasses.bar}`]: {
+			borderRadius: 5,
+			backgroundColor: status === true ? '#9bbe7f' : '#b4431e',
+			...theme.applyStyles('dark', {
+				backgroundColor: '#308fe8',
+			}),
+		},
+	}));
+
 	return (
 		<div id="post-manage">
 			<Header />
@@ -306,8 +327,10 @@ const PostManage: React.FC = () => {
 											<span>{getDaysToGo(job.closeAt)}</span>
 										</div>
 									</div>
-									<div className={`progress-bar-container ${job.status ? "active" : ""}`}>
-										<ProgressBar now={getProgress(job.createAt, job.closeAt)} />
+									<div className="progress-bar-container">
+										<Stack spacing={1} sx={{ flexGrow: 1 }}>
+											<BorderLinearProgress variant="determinate" value={getProgress(job.createAt, job.closeAt)} status={job.status} />
+										</Stack>
 									</div>
 								</div>
 								<div className="detail-container">

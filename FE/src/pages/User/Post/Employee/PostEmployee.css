@@ -1,0 +1,370 @@
+#post-employee {
+	min-height: 100vh;
+	background-color: #f2f7fa;
+}
+
+#post-employee .post-info-container {
+	padding: 30px 0;
+	width: 90%;
+	max-width: 1300px;
+	margin: 0 auto 0 auto;
+	font-family: "Mona Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+#post-employee .btn-actions {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 40px;
+	align-items: center;
+}
+
+#post-employee .btn-actions button {
+	all: unset
+}
+
+#post-employee .btn-actions .back {
+	font-size: 13px;
+	cursor: pointer;
+	color: rgb(107, 107, 107);
+	display: flex;
+	align-items: center;
+}
+
+#post-employee .btn-actions .back:hover {
+	text-decoration: underline;
+	color: rgb(48, 48, 48);
+}
+
+#post-employee .btn-actions .back svg {
+	margin-right: 10px;
+	width: 15px;
+	height: 15px;
+}
+
+#post-employee .btn-actions .add-project {
+	color: white;
+	background-color: #9bbe7f;
+	font-size: 13px;
+	display: flex;
+	align-items: center;
+	padding: 5px 10px 5px 6px;
+	font-weight: 700;
+	border-radius: 6px;
+	cursor: pointer;
+}
+
+#post-employee .btn-actions .add-project:hover {
+	background-color: #83af5e;
+}
+
+#post-employee .btn-actions .add-project svg {
+	width: 20px;
+	height: 20px;
+	margin-right: 2px;
+}
+
+#post-employee .title-status {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	height: fit-content;
+	margin-bottom: 20px;
+}
+
+#post-employee .title-status .title {
+	font-size: 1.5em;
+	font-weight: 700;
+}
+
+#post-employee .title-status .status-edit {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+#post-employee .title-status .status {
+	display: flex;
+	align-items: center;
+	height: 25px;
+	padding: 0px 10px 0px 6px;
+	background-color: white;
+	border: 1px solid rgb(212, 212, 212);
+	border-radius: 4px;
+	font-size: 13px;
+	cursor: pointer;
+}
+
+#post-employee .title-status .status.actice svg {
+	color: #9bbe7f;
+}
+
+#post-employee .title-status .status svg {
+	color: #b4431e;
+}
+
+#post-employee .title-status .edit {
+	height: 25px;
+	width: 25px;
+	border-radius: 999px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: white;
+	border: 1px solid rgb(212, 212, 212);
+	cursor: pointer;
+}
+
+#post-employee .title-status .edit svg {
+	width: 20px;
+	height: 20px;
+}
+
+#post-employee .detail-container {
+	display: grid;
+	padding: 20px 20px 30px 20px;
+	box-sizing: border-box;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+	background-color: white;
+	border: 1px solid rgb(212, 212, 212);
+	border-radius: 5px;
+	margin-bottom: 40px;
+}
+
+#post-employee .detail-container .tag {
+	padding: 0 20px;
+}
+
+#post-employee .detail-container .tag:not(:last-child) {
+	border-right: 1px solid rgb(212, 212, 212);
+}
+
+#post-employee .detail-container .tag .title {
+	font-size: 1.2em;
+	color: rgb(133, 133, 133);
+}
+
+#post-employee .detail-container .tag .info {
+	font-size: 16px;
+}
+
+#post-employee .count-action {
+	display: flex;
+	justify-content: space-between;
+	display: flex;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+#post-employee .count-action .count {
+	font-size: 14px;
+	font-weight: 700;
+}
+
+#post-employee .count-action .action-filter-container {
+	display: flex;
+	align-items: center;
+}
+
+#post-employee .count-action .search-bar {
+	display: flex;
+	align-items: center;
+	height: fit-content;
+	padding: 3px 6px;
+	background-color: white;
+	border-radius: 4px;
+	border: 1px solid rgb(212, 212, 212);
+	height: 32px;
+	box-sizing: border-box;
+}
+
+#post-employee .count-action .search-bar svg {
+	width: 20px;
+	height: 20px;
+	margin-right: 5px;
+}
+
+#post-employee .count-action .search-bar input {
+	width: 200px;
+}
+
+#post-employee .count-action .search-bar input[type="text"] {
+	all: unset;
+}
+
+#post-employee .count-action .status-hiring-filter {
+	position: relative;
+	display: flex;
+	align-items: center;
+	height: 32px;
+	padding: 0 10px;
+	background-color: white;
+	border: 1px solid rgb(212, 212, 212);
+	box-sizing: border-box;
+	border-radius: 4px;
+	margin-left: 15px;
+	cursor: pointer;
+}
+
+#post-employee .count-action .status-hiring-filter .dropdown {
+	position: absolute;
+	top: calc(100% + 10px);
+	left: 0;
+	width: 140%;
+	background-color: white;
+	border-radius: 10px;
+	border: 1px solid rgb(212, 212, 212);
+	padding: 5px 10px;
+}
+
+#post-employee .count-action .status-hiring-filter .dropdown .filter {
+	display: flex;
+	align-items: center;
+	padding: 5px 0;
+	border-bottom: 1px solid #d4d4d4;
+}
+
+#post-employee .count-action .status-hiring-filter .dropdown .filter.not {
+	border-bottom: none;
+}
+
+#post-employee .count-action .status-hiring-filter .dropdown .filter .name {
+	margin-left: 10px;
+}
+
+#post-employee .count-action .status-hiring-filter svg {
+	height: 16px;
+	width: 16px;
+	margin-right: 5px;
+}
+
+#post-employee .count-action .status-hiring-filter .title {
+	font-size: 14px;
+}
+
+#post-employee .freelancers {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: 10px;
+}
+
+#post-employee .freelancer {
+	background-color: white;
+	border: 1px solid #d4d4d4;
+	border-radius: 8px;
+	box-sizing: border-box;
+	padding: 20px
+}
+
+#post-employee .freelancer .image-name {
+	display: flex;
+	align-items: center;
+	margin-bottom: 25px;
+}
+
+#post-employee .freelancer .image-name img {
+	width: 40px;
+	height: 40px;
+	object-fit: cover;
+	object-position: center;
+	border-radius: 999px;
+	margin-right: 10px;
+}
+
+#post-employee .freelancer .image-name .name-email {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	height: 36px;
+}
+
+#post-employee .freelancer .image-name .name-email .name {
+	font-size: 16px;
+	font-weight: 700;
+	line-height: 1.1;
+}
+
+#post-employee .freelancer .image-name .name-email .email {
+	font-size: 12px;
+	color: rgb(124, 124, 124);
+}
+
+#post-employee .freelancer .location-price {
+	display: flex;
+	padding: 15px 0;
+	border: 1px solid #d4d4d4;
+	margin-bottom: 15px;
+	border-radius: 5px;
+}
+
+#post-employee .freelancer .location-price .location {
+	flex: 1;
+	padding: 0 20px;
+	border-right: 1px solid #d4d4d4;
+}
+
+#post-employee .freelancer .location-price .price {
+	flex: 1;
+	padding: 0 20px;
+}
+
+#post-employee .freelancer .location-price .box .value {
+	font-size: 15px;
+	font-weight: 600;
+}
+
+#post-employee .freelancer .location-price .box .title {
+	font-size: 12px;
+	color: rgb(153, 153, 153);
+}
+
+#post-employee .freelancer .action-btns {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 30px;
+}
+
+#post-employee .freelancer .action-btns .btn {
+	width: 48%;
+	display: flex;
+	justify-content: center;
+	border: 1px solid #d4d4d4;
+	border-radius: 5px;
+	padding: 6px;
+	box-sizing: border-box;
+	font-size: 14px;
+	align-items: center;
+	cursor: pointer;
+}
+
+#post-employee .freelancer .action-btns .btn.accept {
+	color: #799e5b;
+}
+
+#post-employee .freelancer .action-btns .btn.deny {
+	color: #b4431e;
+}
+
+#post-employee .freelancer .action-btns .btn.active {
+	color: black;
+	background-color: #f4f6f8;
+}
+
+#post-employee .freelancer .action-btns .btn svg {
+	width: 20px;
+	height: 20px;
+	margin-right: 5px;
+}
+
+#post-employee .freelancer .status-des {
+	display: flex;
+	justify-content: center;
+	width: auto;
+}
+
+#post-employee .freelancer .status-des .hired span {
+	color: #799e5b;
+}
+
+#post-employee .freelancer .status-des .denied span {
+	color: #b4431e;
+}

@@ -3,6 +3,11 @@
 	background-color: #f2f7fa;
 }
 
+
+#post-manage p {
+	margin: 0;
+}
+
 #post-manage .manage-container {
 	padding: 50px 0;
 	width: 90%;
@@ -238,7 +243,7 @@
 
 #post-manage .jobs-container .job-card .counting-container {
 	display: flex;
-	padding: 10px 0;
+	padding: 20px 0;
 	background-color: #f2f7fa;
 	border: 1px solid #eceeef;
 	border-radius: 8px;
@@ -293,18 +298,6 @@
 #post-manage .jobs-container .job-card .time-container .time-left span {
 	font-weight: 700;
 	font-size: 14px;
-}
-
-#post-manage .jobs-container .job-card .plan-container .progress {
-	height: 6px;
-}
-
-#post-manage .jobs-container .job-card .plan-container .progress-bar-container .progress .progress-bar {
-	background-color: #b4431e;
-}
-
-#post-manage .jobs-container .job-card .plan-container .progress-bar-container.active .progress .progress-bar {
-	background-color: #9bbe7f;
 }
 
 #post-manage .jobs-container .detail-container {
