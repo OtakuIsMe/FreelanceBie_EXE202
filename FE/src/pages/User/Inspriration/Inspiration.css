@@ -1,115 +1,115 @@
 #inspiration {
-    width: 100%;
-    height: fit-content;
-    min-height: 100vh;
-    position: relative;
-    display: flex;
-    flex-direction: column;
+	width: 100%;
+	height: fit-content;
+	min-height: 100vh;
+	position: relative;
+	display: flex;
+	flex-direction: column;
 }
 
-#inspiration > .page-content {
-    width: 100%;
-    height: fit-content;
-    min-height: 100vh;
-    position: relative;
-    display: block;
+#inspiration>.page-content {
+	width: 100%;
+	height: fit-content;
+	min-height: 100vh;
+	position: relative;
+	display: block;
 }
 
-#inspiration > .page-content > .section {
-    display: flex;
-    flex-direction: column;
-    /* height: 100vh; */
-    width: 100%;
-    margin: 50px auto;
+#inspiration>.page-content>.section {
+	display: flex;
+	flex-direction: column;
+	/* height: 100vh; */
+	width: 100%;
+	margin: 50px auto;
 }
 
-#inspiration > .page-content > .search-filter {
-    align-items: center;
-    position: relative;
-    margin: 180px auto 100px;
+#inspiration>.page-content>.search-filter {
+	align-items: center;
+	position: relative;
+	margin: 100px auto 100px;
 }
 
-#inspiration > .page-content > .search-filter > .title {
-    width: 600px;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-    margin-bottom: 50px;
+#inspiration>.page-content>.search-filter>.title {
+	width: 600px;
+	display: flex;
+	flex-direction: column;
+	gap: 18px;
+	margin-bottom: 50px;
 }
 
-#inspiration > .page-content > .search-filter > .title p:first-child{
-    font-size: 40px;
-    font-family: 'Kadwa', Arial, Helvetica, sans-serif;
+#inspiration>.page-content>.search-filter>.title p:first-child {
+	font-size: 40px;
+	font-family: 'Kadwa', Arial, Helvetica, sans-serif;
 }
 
-#inspiration > .page-content > .search-filter > .title p:last-child{
-    font-size: 20px;
+#inspiration>.page-content>.search-filter>.title p:last-child {
+	font-size: 20px;
 }
 
-#inspiration > .page-content > .search-filter > .title p {
-    text-align: center;
+#inspiration>.page-content>.search-filter>.title p {
+	text-align: center;
 }
 
-#inspiration > .page-content > .search-filter > .search {
-    display: flex;
-    position: relative;
-    margin-bottom: 20px;
-    width: 650px;
-    border-radius: 30px;
+#inspiration>.page-content>.search-filter>.search {
+	display: flex;
+	position: relative;
+	margin-bottom: 20px;
+	width: 650px;
+	border-radius: 30px;
 }
 
-#inspiration > .page-content > .search-filter > .search input,
-#inspiration > .page-content > .search-filter > .search button {
-    font-size: 20px;
-    border: none;
+#inspiration>.page-content>.search-filter>.search input,
+#inspiration>.page-content>.search-filter>.search button {
+	font-size: 20px;
+	border: none;
 }
 
-#inspiration > .page-content > .search-filter > .search input {
-    width: 100%;
-    padding: 15px 30px;
-    border-radius: 30px;
-    box-sizing: border-box;
-    background-color: rgb(250, 250, 250);
-    border: 2px solid rgb(200, 200, 200);
-    z-index: 1;
+#inspiration>.page-content>.search-filter>.search input {
+	width: 100%;
+	padding: 15px 30px;
+	border-radius: 30px;
+	box-sizing: border-box;
+	background-color: rgb(250, 250, 250);
+	border: 2px solid rgb(200, 200, 200);
+	z-index: 1;
 }
 
-#inspiration > .page-content > .search-filter > .search input:focus {
-    outline: none;
-    border: 2px solid #ff9ada;
-    background-color: #fff5ff;
+#inspiration>.page-content>.search-filter>.search input:focus {
+	outline: none;
+	border: 2px solid #ff9ada;
+	background-color: #fff5ff;
 }
 
-#inspiration > .page-content > .search-filter > .search button {
-    background-color: var(--color-banner);
-    color: #eee;
-    transform: translateX(-25px);
-    border-radius: 0 30px 30px 0;
-    padding-left: 30px;
-    padding-right: 10px;
-    z-index: 0;
-    cursor: pointer;
+#inspiration>.page-content>.search-filter>.search button {
+	background-color: var(--color-banner);
+	color: #eee;
+	transform: translateX(-25px);
+	border-radius: 0 30px 30px 0;
+	padding-left: 30px;
+	padding-right: 10px;
+	z-index: 0;
+	cursor: pointer;
 }
 
-#inspiration > .page-content > .search-filter > .search button:hover {
-    /* --btn-hover: light-dark(#cc4d9d, #00abce); */
-    --btn-hover:#cc4d9d;
-    background-color: var(--btn-hover);
+#inspiration>.page-content>.search-filter>.search button:hover {
+	/* --btn-hover: light-dark(#cc4d9d, #00abce); */
+	--btn-hover: #cc4d9d;
+	background-color: var(--btn-hover);
 }
 
-#inspiration > .page-content > .inspis {
-    display: flex;
-    justify-content: center;
-    margin-top: 0;
+#inspiration>.page-content>.inspis {
+	display: flex;
+	justify-content: center;
+	margin-top: 0;
 }
 
-#inspiration > .page-content > .inspis > .inspis-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: 30px;
+#inspiration>.page-content>.inspis>.inspis-container {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr;
+	gap: 30px;
 }
 
-#inspiration > .page-content > .search-filter > .trending {
-    display: flex;
-    align-items: center;
+#inspiration>.page-content>.search-filter>.trending {
+	display: flex;
+	align-items: center;
 }

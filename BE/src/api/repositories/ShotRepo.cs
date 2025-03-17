@@ -21,6 +21,8 @@ namespace BE.src.api.repositories
 		Task<List<Shot>> GetShots(ShotSearchFilterDTO filter);
 		Task<Shot?> GetShotById(Guid id);
 		Task<List<ShotView>> GetShotRandom(int index);
+		Task<List<ShotLiked>> GetShotLikeds(Guid userId);
+		Task<List<ShotView>> ListShotView(int page, int count);
 	}
 	public class ShotRepo : IShotRepo
 	{
@@ -174,5 +176,55 @@ namespace BE.src.api.repositories
 
 			return result;
 		}
+
+		public async Task<List<ShotLiked>> GetShotLikeds(Guid userId)
+		{
+			return await _context.Likes.Where(l => l.UserId == userId)
+										.Select(l => new ShotLiked
+										{
+											Id = l.ShotId,
+											Title = l.Shot.Title,
+											Author = l.Shot.User.Username,
+											Image = l.Shot.ImageVideos.Where(i => i.IsMain).Select(i => i.Url).FirstOrDefault() ?? "",
+											DatePosted = l.CreateAt,
+											Likes = _context.Likes.Count(like => like.ShotId == l.ShotId)
+										}).ToListAsync();
+		}
+		public async Task<List<ShotView>> ListShotView(int page, int count)
+		{
+			// Truy vấn dữ liệu trước
+			var shots = await _context.Shots
+				.OrderByDescending(s => s.View)
+				.Skip(page * count)
+				.Take(count)
+				.Include(s => s.User)
+				.Include(s => s.ImageVideos)
+				.ToListAsync();
+
+			var shotViews = new List<ShotView>();
+
+			foreach (var item in shots)
+			{
+				var countLikeTask = await GetLikeCount(item.Id);
+				var countViewTask = await GetViewCount(item.Id);
+
+				shotViews.Add(new ShotView
+				{
+					Id = item.Id,
+					Title = item.Title,
+					User = new UserShotCard
+					{
+						Username = item.User?.Username ?? "Unknown",
+						Image = item.User?.ImageVideos?.FirstOrDefault()?.Url ?? ""
+					},
+					CountLike = countLikeTask,
+					CountView = countViewTask,
+					Image = item.ImageVideos?.Where(i => i.IsMain).Select(i => i.Url).FirstOrDefault() ?? ""
+				});
+			}
+
+			return shotViews;
+		}
+
 	}
 }

@@ -2,17 +2,21 @@ import React, { useContext, useState } from 'react';
 import './Authenication.css';
 import LoginSide from '../../assets/login-side.png'
 import { useAuthenContext } from '../../hooks/AuthenContext';
+import { ApiGateway } from '../../services/api/ApiService';
+import { Store } from 'react-notifications-component';
 
 interface AuthenicationProps {
 	closeLogin: () => void;
 	fetchUser: () => Promise<void>;
+	type: string;
 }
 
-const Authenication: React.FC<AuthenicationProps> = ({ closeLogin, fetchUser }) => {
-	const [emailInput, setEmailInput] = useState("");
-	const [passwordInput, setPasswordInput] = useState("");
+const Authenication: React.FC<AuthenicationProps> = ({ closeLogin, fetchUser, type }) => {
+	const [emailInput, setEmailInput] = useState<string>("");
+	const [passwordInput, setPasswordInput] = useState<string>("");
+	const [usernameInput, setUsernameInput] = useState<string>("")
 	const [isWrongSignIn, setIsWrongSignIn] = useState<boolean>(false);
-	const [typeInput, setTypeInput] = useState<string>("Login")
+	const [typeInput, setTypeInput] = useState<string>(type)
 	const { login } = useAuthenContext();
 
 	const onChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,6 +27,10 @@ const Authenication: React.FC<AuthenicationProps> = ({ closeLogin, fetchUser }) 
 		setPasswordInput(e.target.value);
 	}
 
+	const onChangeUserName = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setUsernameInput(e.target.value);
+	}
+
 	const onClickSignIn = async () => {
 		const isSuccess = await login(emailInput, passwordInput);
 		if (isSuccess) {
@@ -31,6 +39,47 @@ const Authenication: React.FC<AuthenicationProps> = ({ closeLogin, fetchUser }) 
 		} else {
 			setIsWrongSignIn(true)
 		}
+	}
+
+	const Register = async () => {
+		const isSuccess = await ApiGateway.SignUp(usernameInput, emailInput, passwordInput)
+		if (isSuccess) {
+			setTypeInput("Login")
+			handleRegisterSuccess();
+		} else {
+			handleRegisterFail();
+		}
+	}
+
+	const handleRegisterSuccess = () => {
+		Store.addNotification({
+			title: "Register Success",
+			message: "Welcome to FreelanceBie",
+			type: "success",
+			insert: "top",
+			container: "top-right",
+			animationIn: ["animate__animated", "animate__fadeIn"],
+			animationOut: ["animate__animated", "animate__fadeOut"],
+			dismiss: {
+				duration: 5000,
+				onScreen: true
+			}
+		});
+	}
+	const handleRegisterFail = () => {
+		Store.addNotification({
+			title: "Register Fail",
+			message: "Something go wrong",
+			type: "success",
+			insert: "top",
+			container: "top-right",
+			animationIn: ["animate__animated", "animate__fadeIn"],
+			animationOut: ["animate__animated", "animate__fadeOut"],
+			dismiss: {
+				duration: 5000,
+				onScreen: true
+			}
+		});
 	}
 
 	const ChangeStateType = (value: string) => {
@@ -84,8 +133,8 @@ const Authenication: React.FC<AuthenicationProps> = ({ closeLogin, fetchUser }) 
 								<input type="text"
 									className="username input"
 									placeholder="Username"
-									value={emailInput}
-									onChange={onChangeEmail} />
+									value={usernameInput}
+									onChange={onChangeUserName} />
 								<input type="text"
 									className="email input"
 									placeholder="Email"
@@ -96,7 +145,7 @@ const Authenication: React.FC<AuthenicationProps> = ({ closeLogin, fetchUser }) 
 									placeholder="Password"
 									value={passwordInput}
 									onChange={onChangePassword} />
-								<button className='sign-in'>Sign Up</button>
+								<button className='sign-in' onClick={Register}>Sign Up</button>
 								<p className="sign-up">Already have an account <span className='bold' onClick={() => ChangeStateType("Login")}>Login</span></p>
 							</>
 						)}

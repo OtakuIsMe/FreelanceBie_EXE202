@@ -264,4 +264,53 @@ export class ApiGateway {
 		}
 	}
 
+	public static async SignUp<T>(username: string, email: string, password: string) {
+		this.setAuthHeader()
+		try {
+			const user = {
+				userName: username,
+				email: email,
+				password: password
+			}
+			const response = await this.axiosInstance.post<T>(`user/register`, user);
+			return response.data
+		} catch (error) {
+			console.error("Error List Designer:", error)
+			throw error;
+		}
+	}
+
+	public static async LikeShot<T>(shotId: string, state: boolean) {
+		this.setAuthHeader()
+		try {
+			const response = await this.axiosInstance.put<T>(`shot/LikeShot?shotId=${shotId}&state=${state}`)
+			return response.data
+		} catch (error) {
+			console.error("Error List Designer:", error)
+			throw error;
+		}
+	}
+
+	public static async LikedShot<T>() {
+		this.setAuthHeader()
+		try {
+			const response = await this.axiosInstance.get<T>(`shot/ListShotLiked`)
+			return response.data
+		} catch (error) {
+			console.error("Error List Designer:", error)
+			throw error;
+		}
+	}
+
+	public static async ListShot<T>(page: number, count: number) {
+		this.setAuthHeader()
+		try {
+			const response = await this.axiosInstance.get<T>(`shot/ListShot?page=${page}&count=${count}`)
+			return response.data
+		} catch (error) {
+			console.error("Error List Designer:", error)
+			throw error;
+		}
+	}
+
 }

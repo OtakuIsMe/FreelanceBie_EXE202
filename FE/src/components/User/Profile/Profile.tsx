@@ -78,94 +78,11 @@ export default function Profile() {
 		about: "Hi, my name is John there! I'm the Co-founder and Head of Design at BB agency. Designer at heart. Head of Design might be an overstatement, but as with many 20 people agencies I need to wear many different hats. I manage creative teams and set up processes that allow our collaborators and clients to achieve growth, scalability, and progress."
 	});
 
-	const [likedPosts, setLikedPosts] = useState<LikedPost[]>([
-		{
-			id: '1',
-			title: 'Modern Dashboard Design Trends',
-			image: '/src/assets/Post Like.jpg',
-			author: 'Jane Cooper',
-			likes: 234,
-			datePosted: '2024-03-15'
-		},
-		{
-			id: '2',
-			title: 'Mobile App UI Collection',
-			image: '/src/assets/Post Like.jpg',
-			author: 'Robert Fox',
-			likes: 189,
-			datePosted: '2024-03-14'
-		},
-		{
-			id: '3',
-			title: 'E-commerce Website Redesign',
-			image: '/src/assets/Post Like.jpg',
-			author: 'Wade Warren',
-			likes: 456,
-			datePosted: '2024-03-13'
-		},
-		{
-			id: '4',
-			title: 'Financial App Interface',
-			image: '/src/assets/Post Like.jpg',
-			author: 'Esther Howard',
-			likes: 321,
-			datePosted: '2024-03-12'
-		},
-		{
-			id: '5',
-			title: 'Travel App Design',
-			image: '/src/assets/Post Like.jpg',
-			author: 'Jenny Wilson',
-			likes: 287,
-			datePosted: '2024-03-11'
-		},
-		{
-			id: '6',
-			title: 'Social Media Dashboard',
-			image: '/src/assets/Post Like.jpg',
-			author: 'Guy Hawkins',
-			likes: 198,
-			datePosted: '2024-03-10'
-		},
-		{
-			id: '7',
-			title: 'NFT Marketplace Design',
-			image: '/src/assets/Post Like.jpg',
-			author: 'Brooklyn Simmons',
-			likes: 432,
-			datePosted: '2024-03-09'
-		},
-		{
-			id: '8',
-			title: 'Smart Home App Interface',
-			image: '/src/assets/Post Like.jpg',
-			author: 'Cameron Williamson',
-			likes: 167,
-			datePosted: '2024-03-08'
-		},
-		{
-			id: '9',
-			title: 'Fitness Tracking Dashboard',
-			image: '/src/assets/Post Like.jpg',
-			author: 'Leslie Alexander',
-			likes: 298,
-			datePosted: '2024-03-07'
-		},
-		{
-			id: '10',
-			title: 'Food Delivery App Design',
-			image: '/src/assets/Post Like.jpg',
-			author: 'Kristin Watson',
-			likes: 345,
-			datePosted: '2024-03-06'
-		}
-	]);
+	const [likedPosts, setLikedPosts] = useState<LikedPost[]>([]);
 
 	const [workPosts, setWorkPosts] = useState<WorkPost[]>([]);
 
 	const [activeTab, setActiveTab] = useState<string>('work');
-	const [editValue, setEditValue] = useState('');
-	const [editField, setEditField] = useState('');
 	const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
 
 	// Cập nhật state để theo dõi lỗi cho từng trường
@@ -249,27 +166,6 @@ export default function Profile() {
 		setActiveTab(tab);
 	};
 
-	const handleEditClick = (field: string, value: string) => {
-		setEditField(field);
-		setEditValue(value);
-		setIsEditPopupOpen(true);
-	};
-
-	const handleChange = (field: keyof ProfileData, value: string) => {
-		setProfile(prev => {
-			const newProfile = { ...prev };
-
-			// Handle arrays
-			if (field === 'languages' || field === 'workHistory') {
-				newProfile[field] = value.split(',').map(item => item.trim());
-			} else {
-				(newProfile as any)[field] = value;
-			}
-
-			return newProfile;
-		});
-	};
-
 	const hanldeAddPostClick = () => {
 		window.location.href = '/shot/edit'
 	}
@@ -292,27 +188,6 @@ export default function Profile() {
 		if (window.confirm('Are you sure you want to remove this post from liked posts?')) {
 			setLikedPosts(prev => prev.filter(p => p.id !== postId));
 		}
-	};
-
-	// Cập nhật hàm handleSave
-	const handleSave = () => {
-		setValidationErrors({});
-
-		if (!validateField(editField, editValue)) {
-			return;
-		}
-
-		const fieldKey = editField.toLowerCase().replace(/\s+/g, '') as keyof ProfileData;
-
-		setProfile(prev => ({
-			...prev,
-			[fieldKey]: editField === 'Languages' || editField === 'Work History'
-				? editValue.split(',').map(item => item.trim())
-				: editValue
-		}));
-
-		setIsEditPopupOpen(false);
-		setValidationErrors({}); // Clear all validation errors
 	};
 
 	const [editableProfile, setEditableProfile] = useState<EditableProfile>({
@@ -372,7 +247,13 @@ export default function Profile() {
 
 	useEffect(() => {
 		fetchShotOwner()
+		fetchLikedShot()
 	}, [])
+
+	const fetchLikedShot = async () => {
+		const data = await ApiGateway.LikedShot<LikedPost[]>()
+		setLikedPosts(data);
+	}
 
 	const fetchShotOwner = async () => {
 		const data = await ApiGateway.ShotOwner<{
@@ -420,8 +301,6 @@ export default function Profile() {
 					<div className="main-info">
 						<div className="name-section">
 							<h1>{profile.name}</h1>
-							{/* <button className="like-btn">♡</button>
-              <button className="edit-btn">Edit Profile</button> */}
 						</div>
 						<p className="title">{profile.title}</p>
 						<p className="location">{profile.location}</p>
@@ -465,31 +344,10 @@ export default function Profile() {
 						</a>
 						<a
 							href="#"
-							className={activeTab === 'collection' ? 'active' : ''}
-							onClick={handleTabClick('collection')}
-						>
-							Collection
-						</a>
-						<a
-							href="#"
 							className={activeTab === 'liked' ? 'active' : ''}
 							onClick={handleTabClick('liked')}
 						>
 							Liked Posts
-						</a>
-						<a
-							href="#"
-							className={activeTab === 'comments' ? 'active' : ''}
-							onClick={handleTabClick('comments')}
-						>
-							Comments
-						</a>
-						<a
-							href="#"
-							className={activeTab === 'about' ? 'active' : ''}
-							onClick={handleTabClick('about')}
-						>
-							About
 						</a>
 					</nav>
 
@@ -558,27 +416,6 @@ export default function Profile() {
 									</div>
 								))}
 							</div>
-						</section>
-					)}
-
-					{activeTab === 'collection' && (
-						<section className="collection">
-							<h2>My Collections</h2>
-							<p>Collections coming soon...</p>
-						</section>
-					)}
-
-					{activeTab === 'comments' && (
-						<section className="comments">
-							<h2>My Comments</h2>
-							<p>Comments coming soon...</p>
-						</section>
-					)}
-
-					{activeTab === 'about' && (
-						<section className="about-section">
-							<h2>About Me</h2>
-							<p>{profile.about}</p>
 						</section>
 					)}
 				</div>
@@ -705,136 +542,9 @@ export function DesProfile() {
 		about: "Hi, my name is John there! I'm the Co-founder and Head of Design at BB agency. Designer at heart. Head of Design might be an overstatement, but as with many 20 people agencies I need to wear many different hats. I manage creative teams and set up processes that allow our collaborators and clients to achieve growth, scalability, and progress."
 	});
 
-	const [likedPosts, setLikedPosts] = useState<LikedPost[]>([
-		{
-			id: '1',
-			title: 'Modern Dashboard Design Trends',
-			image: '/src/assets/Post Like.jpg',
-			author: 'Jane Cooper',
-			likes: 234,
-			datePosted: '2024-03-15'
-		},
-		{
-			id: '2',
-			title: 'Mobile App UI Collection',
-			image: '/src/assets/Post Like.jpg',
-			author: 'Robert Fox',
-			likes: 189,
-			datePosted: '2024-03-14'
-		},
-		{
-			id: '3',
-			title: 'E-commerce Website Redesign',
-			image: '/src/assets/Post Like.jpg',
-			author: 'Wade Warren',
-			likes: 456,
-			datePosted: '2024-03-13'
-		},
-		{
-			id: '4',
-			title: 'Financial App Interface',
-			image: '/src/assets/Post Like.jpg',
-			author: 'Esther Howard',
-			likes: 321,
-			datePosted: '2024-03-12'
-		},
-		{
-			id: '5',
-			title: 'Travel App Design',
-			image: '/src/assets/Post Like.jpg',
-			author: 'Jenny Wilson',
-			likes: 287,
-			datePosted: '2024-03-11'
-		},
-		{
-			id: '6',
-			title: 'Social Media Dashboard',
-			image: '/src/assets/Post Like.jpg',
-			author: 'Guy Hawkins',
-			likes: 198,
-			datePosted: '2024-03-10'
-		},
-		{
-			id: '7',
-			title: 'NFT Marketplace Design',
-			image: '/src/assets/Post Like.jpg',
-			author: 'Brooklyn Simmons',
-			likes: 432,
-			datePosted: '2024-03-09'
-		},
-		{
-			id: '8',
-			title: 'Smart Home App Interface',
-			image: '/src/assets/Post Like.jpg',
-			author: 'Cameron Williamson',
-			likes: 167,
-			datePosted: '2024-03-08'
-		},
-		{
-			id: '9',
-			title: 'Fitness Tracking Dashboard',
-			image: '/src/assets/Post Like.jpg',
-			author: 'Leslie Alexander',
-			likes: 298,
-			datePosted: '2024-03-07'
-		},
-		{
-			id: '10',
-			title: 'Food Delivery App Design',
-			image: '/src/assets/Post Like.jpg',
-			author: 'Kristin Watson',
-			likes: 345,
-			datePosted: '2024-03-06'
-		}
-	]);
+	const [likedPosts, setLikedPosts] = useState<LikedPost[]>([]);
 
-	const [workPosts] = useState<WorkPost[]>([
-		{
-			id: '1',
-			title: 'Mobile Banking App Design',
-			image: '/src/assets/Post Like.jpg',
-			category: 'Mobile App',
-			views: 1234,
-			likes: 423,
-			datePosted: '2024-03-15'
-		},
-		{
-			id: '2',
-			title: 'E-commerce Website Redesign',
-			image: '/src/assets/Post Like.jpg',
-			category: 'Web Design',
-			views: 892,
-			likes: 345,
-			datePosted: '2024-03-10'
-		},
-		{
-			id: '3',
-			title: 'Food Delivery App UI Kit',
-			image: '/src/assets/Post Like.jpg',
-			category: 'UI Kit',
-			views: 2156,
-			likes: 567,
-			datePosted: '2024-03-05'
-		},
-		{
-			id: '4',
-			title: 'Social Media Dashboard',
-			image: '/src/assets/Post Like.jpg',
-			category: 'Dashboard',
-			views: 1567,
-			likes: 289,
-			datePosted: '2024-02-28'
-		},
-		{
-			id: '5',
-			title: 'Travel App Interface',
-			image: '/src/assets/Post Like.jpg',
-			category: 'Mobile App',
-			views: 1890,
-			likes: 456,
-			datePosted: '2024-02-20'
-		}
-	]);
+	const [workPosts] = useState<WorkPost[]>([]);
 
 	const [activeTab, setActiveTab] = useState<string>('work');
 	const [editValue, setEditValue] = useState('');
@@ -923,21 +633,6 @@ export function DesProfile() {
 		setActiveTab(tab);
 	};
 
-	const handleChange = (field: keyof ProfileData, value: string) => {
-		setProfile(prev => {
-			const newProfile = { ...prev };
-
-			// Handle arrays
-			if (field === 'languages' || field === 'workHistory') {
-				newProfile[field] = value.split(',').map(item => item.trim());
-			} else {
-				(newProfile as any)[field] = value;
-			}
-
-			return newProfile;
-		});
-	};
-
 	const handleLikePost = (postId: string) => {
 		setLikedPosts(prev => {
 			const post = prev.find(p => p.id === postId);
@@ -950,12 +645,6 @@ export function DesProfile() {
 			}
 			return prev;
 		});
-	};
-
-	const handleRemoveLikedPost = (postId: string) => {
-		if (window.confirm('Are you sure you want to remove this post from liked posts?')) {
-			setLikedPosts(prev => prev.filter(p => p.id !== postId));
-		}
 	};
 
 	// Cập nhật hàm handleSave
@@ -987,22 +676,8 @@ export function DesProfile() {
 		education: profile.education
 	});
 
-	const handleEditAll = () => {
-		setEditableProfile({
-			email: profile.email,
-			languages: profile.languages.join(', '),
-			nickname: profile.nickname,
-			workHistory: profile.workHistory.join(', '),
-			education: profile.education
-		});
-		setIsEditPopupOpen(true);
-	};
-
 	const handleSaveAll = () => {
-		// Reset all validation errors
 		setValidationErrors(prev => ({ ...prev }));
-
-		// Validate all fields
 		let hasErrors = false;
 
 		for (const [field, value] of Object.entries(editableProfile)) {
@@ -1011,7 +686,6 @@ export function DesProfile() {
 			}
 		}
 
-		// If there are any validation errors, stop here
 		if (hasErrors) {
 			return;
 		}
@@ -1111,31 +785,10 @@ export function DesProfile() {
 						</a>
 						<a
 							href="#"
-							className={activeTab === 'collection' ? 'active' : ''}
-							onClick={handleTabClick('collection')}
-						>
-							Collection
-						</a>
-						<a
-							href="#"
 							className={activeTab === 'liked' ? 'active' : ''}
 							onClick={handleTabClick('liked')}
 						>
 							Liked Posts
-						</a>
-						<a
-							href="#"
-							className={activeTab === 'comments' ? 'active' : ''}
-							onClick={handleTabClick('comments')}
-						>
-							Comments
-						</a>
-						<a
-							href="#"
-							className={activeTab === 'about' ? 'active' : ''}
-							onClick={handleTabClick('about')}
-						>
-							About
 						</a>
 					</nav>
 
@@ -1190,27 +843,6 @@ export function DesProfile() {
 									</div>
 								))}
 							</div>
-						</section>
-					)}
-
-					{activeTab === 'collection' && (
-						<section className="collection">
-							<h2>My Collections</h2>
-							<p>Collections coming soon...</p>
-						</section>
-					)}
-
-					{activeTab === 'comments' && (
-						<section className="comments">
-							<h2>My Comments</h2>
-							<p>Comments coming soon...</p>
-						</section>
-					)}
-
-					{activeTab === 'about' && (
-						<section className="about-section">
-							<h2>About Me</h2>
-							<p>{profile.about}</p>
 						</section>
 					)}
 				</div>

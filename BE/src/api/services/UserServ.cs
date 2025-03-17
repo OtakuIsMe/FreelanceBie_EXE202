@@ -139,16 +139,22 @@ namespace BE.src.api.services
 
 				var newUser = new User
 				{
-					Name = user.Name,
 					Username = user.UserName,
 					Email = user.Email,
 					Password = Utils.HashObject<string>(user.Password),
 					Role = RoleEnum.Customer,
-					CreateAt = DateTime.Now,
-					UpdateAt = DateTime.Now
 				};
 
 				var result = await _userRepo.CreateUser(newUser);
+
+				var Image = new ImageVideo
+				{
+					IsMain = false,
+					Type = MediaTypeEnum.Image,
+					Url = "https://freelancebie1234.blob.core.windows.net/image/user/default.png",
+					UserId = newUser.Id
+				};
+				await _userRepo.AddImageVideo(Image);
 				if (!result)
 				{
 					throw new ApplicationException("Failed to create user");

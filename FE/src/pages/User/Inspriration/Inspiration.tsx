@@ -1,28 +1,27 @@
 import React, { useState, useEffect } from 'react'
 import Header from '../../../components/Header/Header'
 import Explore from '../../../components/Cards/Explore/Explore'
-import D1 from '../../../assets/D1.jpg'
-import D2 from '../../../assets/D2.jpg'
-import D3 from '../../../assets/D3.jpg'
-import D4 from '../../../assets/D4.jpg'
-import D5 from '../../../assets/D5.jpg'
 import Tag from '../../../components/Cards/Tag/Tag'
 import './Inspiration.css'
+import { ApiGateway } from '../../../services/api/ApiService'
+import { Link, useLocation } from "react-router-dom";
+
+interface ShotView {
+	id: string;
+	image: string;
+	countView: number;
+	countLike: number;
+	user: {
+		username: string;
+		image: string;
+	};
+	title: string;
+}
 
 const Inspiration: React.FC = () => {
+	const location = useLocation();
 
-	const exp = [
-		{ username: 'Otaku', liked: 61, viewed: 126, img: D1, topic: ['Web design'] },
-		{ username: 'Otaku', liked: 61, viewed: 126, img: D2, topic: ['Web design'] },
-		{ username: 'Otaku', liked: 61, viewed: 126, img: D3, topic: ['Web design'] },
-		{ username: 'Otaku', liked: 61, viewed: 126, img: D4, topic: ['Web design'] },
-		{ username: 'Otaku', liked: 61, viewed: 126, img: D5, topic: ['Web design'] },
-		{ username: 'Otaku', liked: 61, viewed: 126, img: D1, topic: ['Web design'] },
-		{ username: 'Otaku', liked: 61, viewed: 126, img: D2, topic: ['Web design'] },
-		{ username: 'Otaku', liked: 61, viewed: 126, img: D3, topic: ['Web design'] },
-		{ username: 'Otaku', liked: 61, viewed: 126, img: D4, topic: ['Web design'] },
-		{ username: 'Otaku', liked: 61, viewed: 126, img: D5, topic: ['Web design'] },
-	]
+	const [shots, setShots] = useState<ShotView[]>([])
 
 	const tags = [
 		{ tag: 'Landing Page' },
@@ -41,6 +40,15 @@ const Inspiration: React.FC = () => {
 		'Duffel Bag',
 	]);
 	const [suggestedText, setSuggestedText] = useState<string>('');
+
+	useEffect(() => {
+		fetchShots()
+	}, [])
+
+	const fetchShots = async () => {
+		const data = await ApiGateway.ListShot<ShotView[]>(1, 10)
+		setShots(data)
+	}
 
 	const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const value = event.target.value;
@@ -117,14 +125,20 @@ const Inspiration: React.FC = () => {
 					<div className="trending">
 						<p>Trending:</p>
 						{tags.map((tag, index) =>
-							<Tag tag={tag.tag} />
+							<Tag tag={tag.tag} key={index} />
 						)}
 					</div>
 				</form>
 				<div className="inspis">
 					<div className="inspis-container">
-						{exp.map((exp, index) =>
-							<Explore username={exp.username} liked={exp.liked} viewed={exp.viewed} img={exp.img} />
+						{shots.map((shot, index) =>
+							<Link
+								key={index}
+								to={`/shot/${shot.id}`}
+								state={{ background: location }}
+							>
+								<Explore username={shot.user.username} liked={shot.countLike} viewed={shot.countView} img={shot.image} />
+							</Link>
 						)}
 					</div>
 				</div>

@@ -25,7 +25,7 @@ namespace BE.src.api.controllers
 			return await _shotServ.AddShotData(data, userId);
 		}
 		[Authorize(Policy = "Customer")]
-		[HttpGet("LikeShot")]
+		[HttpPut("LikeShot")]
 		public async Task<IActionResult> LikeShot([FromQuery] Guid shotId, [FromQuery] bool state)
 		{
 			_logger.LogInformation("LikeShot");
@@ -73,6 +73,18 @@ namespace BE.src.api.controllers
 		public async Task<IActionResult> ShotRandom([FromQuery] int item)
 		{
 			return await _shotServ.ShotRandom(item);
+		}
+		[Authorize]
+		[HttpGet("ListShotLiked")]
+		public async Task<IActionResult> ListShotLiked()
+		{
+			Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
+			return await _shotServ.ListShotLiked(userId);
+		}
+		[HttpGet("ListShot")]
+		public async Task<IActionResult> ListShotView([FromQuery] int page, [FromQuery] int count)
+		{
+			return await _shotServ.ListShotView(page, count);
 		}
 	}
 }

@@ -3,7 +3,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 10px 20px;
+	padding: 10px 40px;
 	background-color: var(--default-bg-color-header);
 	top: 0;
 	z-index: 1000;
@@ -97,7 +97,7 @@
 /* Authentication Buttons */
 #main_header .auth {
 	display: flex;
-	gap: 10px;
+	gap: 20px;
 	align-items: center;
 }
 
@@ -117,10 +117,153 @@
 	color: var(--hover-color);
 }
 
-#main_header .username {
+#main_header .auth .user-container {
+	position: relative;
+}
+
+#main_header .auth .user-container .user-dropdown {
+	position: absolute;
+	right: 0;
+	top: calc(100%);
+	padding: 20px 0;
+}
+
+#main_header .auth .user-container .user-dropdown .background {
+	background-color: white;
+	box-shadow: 0px 15px 50px 0px rgba(27, 32, 50, 0.1);
+	width: 320px;
+	flex-direction: column;
+	align-items: center;
+	padding: 24px;
+	box-sizing: border-box;
+	border-radius: 5px;
+	display: none;
+}
+
+#main_header .auth .user-container:hover .user-dropdown .background {
+	display: flex;
+}
+
+#main_header .auth .user-container img {
+	width: 50px;
+	height: 50px;
+	object-fit: cover;
+	object-position: center;
+	border-radius: 999px;
+	border: 1px solid rgb(223, 223, 223);
+	box-sizing: border-box;
+}
+
+#main_header .auth .user-container .user-dropdown .avatar {
+	margin-bottom: 10px;
+}
+
+#main_header .auth .user-container .user-dropdown .card {
+	width: -moz-available;
+	width: -webkit-fill-available;
+	padding: 20px 0;
+	border-bottom: 1px solid rgb(194, 194, 194);
+	font-size: 14px;
 	color: black;
 	cursor: pointer;
 }
+
+#main_header .auth .user-container .user-dropdown .card:hover {
+	color: #565564;
+}
+
+#main_header .auth .user-container .user-dropdown .logout.card {
+	border-bottom: none;
+	padding-bottom: 0;
+}
+
+#main_header .auth .user-container .user-dropdown p {
+	font-size: 16px;
+	font-weight: 700;
+	font-family: "Mona Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+#main_header .auth .pro {
+	padding: 0 16px;
+	height: 34px;
+	font-size: 14px;
+	font-weight: 700;
+	font-family: "Mona Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	display: flex;
+	align-items: center;
+	background-color: #ecebf0;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+#main_header .auth .pro:hover {
+	background-color: #f4f3f7;
+}
+
+#main_header .auth .button {
+	width: 50px;
+	height: 50px;
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: rgb(255, 255, 255);
+	border-radius: 50%;
+	cursor: pointer;
+	transition-duration: .3s;
+	box-shadow: 2px 2px 10px rgba(233, 233, 233, 0.13);
+	border: none;
+}
+
+#main_header .auth .bell {
+	width: 18px;
+}
+
+#main_header .auth .bell path {
+	fill: rgb(44, 44, 44);
+}
+
+#main_header .auth .button:hover {
+	background-color: rgb(247, 247, 247);
+}
+
+#main_header .auth .button:hover .bell {
+	animation: bellRing 0.9s both;
+}
+
+/* bell ringing animation keyframes*/
+@keyframes bellRing {
+
+	0%,
+	100% {
+		transform-origin: top;
+	}
+
+	15% {
+		transform: rotateZ(10deg);
+	}
+
+	30% {
+		transform: rotateZ(-10deg);
+	}
+
+	45% {
+		transform: rotateZ(5deg);
+	}
+
+	60% {
+		transform: rotateZ(-5deg);
+	}
+
+	75% {
+		transform: rotateZ(2deg);
+	}
+}
+
+.button:active {
+	transform: scale(0.8);
+}
+
 
 /* Responsive Design */
 @media (max-width: 768px) {

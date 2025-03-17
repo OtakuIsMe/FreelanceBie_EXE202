@@ -14,6 +14,8 @@ import Modal from './hooks/Modal'
 import PostJob from './pages/User/PostJob/PostJob'
 import PostManage from './pages/User/Post/Manage/PostManage'
 import PostEmployee from './pages/User/Post/Employee/PostEmployee'
+import { ReactNotifications } from 'react-notifications-component'
+import 'react-notifications-component/dist/theme.css'
 
 function App() {
 	return (
@@ -31,6 +33,7 @@ function MainRoutes() {
 	const background = location.state?.background;
 	return (
 		<AuthenProvider>
+			<ReactNotifications />
 			<Routes location={background || location}>
 				<Route path='/' element={<Home />} />
 				<Route path='/inspiration' element={<Inspiration />} />

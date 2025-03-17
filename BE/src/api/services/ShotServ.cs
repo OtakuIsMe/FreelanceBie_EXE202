@@ -18,6 +18,8 @@ namespace BE.src.api.services
 		Task<IActionResult> GetShots(ShotSearchFilterDTO filter);
 		Task<IActionResult> OtherShots(Guid shotId);
 		Task<IActionResult> ShotRandom(int item);
+		Task<IActionResult> ListShotLiked(Guid userId);
+		Task<IActionResult> ListShotView(int page, int count);
 	}
 	public class ShotServ : IShotServ
 	{
@@ -275,6 +277,29 @@ namespace BE.src.api.services
 			{
 				var shots = await _shotRepo.GetShotRandom(item);
 				return SuccessResp.Ok(shots);
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+
+		public async Task<IActionResult> ListShotLiked(Guid userId)
+		{
+			try
+			{
+				return SuccessResp.Ok(await _shotRepo.GetShotLikeds(userId));
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+		public async Task<IActionResult> ListShotView(int page, int count)
+		{
+			try
+			{
+				return SuccessResp.Ok(await _shotRepo.ListShotView(page, count));
 			}
 			catch (System.Exception ex)
 			{
