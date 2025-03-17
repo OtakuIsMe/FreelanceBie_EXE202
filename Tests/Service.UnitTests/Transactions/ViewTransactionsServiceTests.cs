@@ -59,6 +59,10 @@ public class ViewTransactionsServiceTests
 
 		var transactions = new List<MyTransaction>
 		{
+			new MyTransaction
+			{
+				MemberUserId = Guid.NewGuid()
+			}
 		};
 
 		_cacheServiceMock.Setup(cache => cache.Get<List<MyTransaction>>(String.Empty))
