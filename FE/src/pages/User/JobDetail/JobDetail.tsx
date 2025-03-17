@@ -5,6 +5,11 @@ import Job from "../../../components/Cards/Job/Job";
 import JobInfo, { FileProps } from "../../../components/JobInfo/JobInfo";
 import { useParams } from "react-router-dom";
 import { ApiGateway } from "../../../services/api/ApiService";
+
+import { ReactNotifications } from 'react-notifications-component'
+import 'react-notifications-component/dist/theme.css'
+import { Store } from 'react-notifications-component';
+
 interface JobPostProps {
 	title: string;
 	description: string;
@@ -44,12 +49,30 @@ const JobDetail: React.FC = () => {
 		setJobPost(data);
 	};
 
+	const handleApplySuccess = () => {
+		Store.addNotification({
+			title: "Apply Success",
+			message: "Your Profile will be sending to employer",
+			type: "success",
+			insert: "top",
+			container: "top-right",
+			animationIn: ["animate__animated", "animate__fadeIn"],
+			animationOut: ["animate__animated", "animate__fadeOut"],
+			dismiss: {
+				duration: 5000,
+				onScreen: true
+			}
+		});
+	}
+
 	return (
 		<div id="job_detail">
+			<ReactNotifications />
 			<div className="job-detail-container">
 				<div className="job-left-column">
 					{jobPosts && (
 						<JobInfo
+							id={id ?? ""}
 							title={jobPosts.title}
 							description={jobPosts.description}
 							workType={jobPosts.workType}
@@ -60,6 +83,7 @@ const JobDetail: React.FC = () => {
 							experience={jobPosts.experience}
 							employmentType={jobPosts.employmentType}
 							files={jobPosts.files}
+							applyNoti={handleApplySuccess}
 						/>
 					)}
 				</div>
@@ -74,8 +98,6 @@ const JobDetail: React.FC = () => {
 								company={job.company}
 								title={job.title}
 								location={job.location}
-								spectialty={job.specialty}
-								jType={job.jType}
 								timePosted={job.timePosted}
 								mini={true}
 							/>

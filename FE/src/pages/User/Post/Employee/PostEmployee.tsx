@@ -1,11 +1,13 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './PostEmployee.css'
 import Header from '../../../../components/Header/Header'
+import { useSearchParams } from "react-router-dom";
+import { ApiGateway } from '../../../../services/api/ApiService';
 
 interface postInfo {
 	title: string,
-	createAt: Date,
-	closeAt: Date,
+	createAt: string,
+	closeAt: string,
 	workLocation: string,
 	numberApplied: number,
 	numberHired: number,
@@ -20,72 +22,49 @@ interface freelancerProp {
 	email: string
 }
 const PostEmployee: React.FC = () => {
+	const [searchParams] = useSearchParams();
+	const jobId = searchParams.get("q");
+
 	const [post, setPost] = useState<postInfo>({
-		title: "UX/UI Designer",
-		createAt: new Date(),
-		closeAt: new Date(),
-		workLocation: "Ho Chi Minh, Viet Nam",
+		title: "",
+		createAt: "",
+		closeAt: "",
+		workLocation: "",
 		numberApplied: 0,
 		numberHired: 0,
 		status: false
 	})
 
-
-	const [freelancers, setFreelancers] = useState<freelancerProp[]>([
-		{
-			image: "https://freelancebie1234.blob.core.windows.net/image/user/7915ab40914ac102bd24ec565484b2e70ac3e4eb2123bc5fb9f23cc8b80d0a29.png", // Add image URL here
-			username: "John Doe",
-			place: "New York, USA",
-			price: 50,
-			status: 1,
-			email: "johndoe@example.com",
-		},
-		{
-			image: "https://freelancebie1234.blob.core.windows.net/image/user/34908229b253ad36857fc22cc726c41719f36de8649b686a95dfc87c0ebe3cef.png", // Add image URL here
-			username: "Jane Smith",
-			place: "London, UK",
-			price: 40,
-			status: 0,
-			email: "janesmith@example.com",
-		},
-		{
-			image: "https://freelancebie1234.blob.core.windows.net/image/user/496d74b53fa97884c75230a5b3c630f8d7eeda3baa96459011585ad724a57324.png", // Add image URL here
-			username: "Alice Johnson",
-			place: "Sydney, Australia",
-			price: 60,
-			status: 2,
-			email: "alicejohnson@example.com",
-		},
-		{
-			image: "https://freelancebie1234.blob.core.windows.net/image/user/f4f585deb45a301c324948052a616f529f91d470da07f6a4e4c2eed0e4d2d46a.png", // Add image URL here
-			username: "Michael Brown",
-			place: "Toronto, Canada",
-			price: 55,
-			status: 1,
-			email: "michaelbrown@example.com",
-		},
-		{
-			image: "https://freelancebie1234.blob.core.windows.net/image/user/ad1dd42caafe5d0c560b88ae25b4c92e55ed8264383f7c79570a72747a59ba41.png", // Add image URL here
-			username: "Sophia Wilson",
-			place: "Berlin, Germany",
-			price: 45,
-			status: 0,
-			email: "sophiawilson@example.com",
-		},
-		{
-			image: "https://freelancebie1234.blob.core.windows.net/image/user/f1534d85b44993bba838e3d669b965a34e128c0a98d60ab4985b0a0c6cff5a85.png", // Add image URL here
-			username: "David Lee",
-			place: "Tokyo, Japan",
-			price: 70,
-			status: 1,
-			email: "davidlee@example.com",
-		},
-	])
+	const [freelancers, setFreelancers] = useState<freelancerProp[]>([])
 
 	const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false)
 
-	const formatDate = (date: Date): string => {
-		return date.toLocaleDateString("en-US", {
+	useEffect(() => {
+		if (jobId != null) {
+			fetchFreelancer(jobId)
+			fetchPostDetail(jobId)
+		}
+	}, [jobId])
+
+
+	const fetchFreelancer = async (id: string) => {
+		const data = await ApiGateway.ListApply<freelancerProp[]>(id)
+		setFreelancers(data ?? []);
+	}
+
+	const fetchPostDetail = async (id: string) => {
+		const data = await ApiGateway.PostEmployeeDetail<postInfo>(id)
+		setPost(data);
+	}
+
+	const formatDate = (date: string): string => {
+		const parsedDate = new Date(date);
+
+		if (isNaN(parsedDate.getTime())) {
+			return "Invalid Date";
+		}
+
+		return parsedDate.toLocaleDateString("en-US", {
 			month: "short",
 			day: "2-digit",
 			year: "numeric",
@@ -97,7 +76,7 @@ const PostEmployee: React.FC = () => {
 			<Header />
 			<div className="post-info-container">
 				<div className="btn-actions">
-					<button className="back">
+					<button className="back" onClick={() => { window.location.href = "/post/manage" }}>
 						<svg xmlns="http://www.w3.org/2000/svg" width="12" height="24" viewBox="0 0 12 24"><path fill="currentColor" fill-rule="evenodd" d="m3.343 12l7.071 7.071L9 20.485l-7.778-7.778a1 1 0 0 1 0-1.414L9 3.515l1.414 1.414z" /></svg>
 						Back to Posts
 					</button>

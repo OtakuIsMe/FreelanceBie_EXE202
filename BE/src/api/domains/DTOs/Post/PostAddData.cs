@@ -16,5 +16,6 @@ namespace BE.src.api.domains.DTOs.Post
 		public required string CompanyLink { get; set; }
 		public List<IFormFile> Files { get; set; } = null!;
 		public required float Payment { get; set; }
+		// public required DateTime CloseAt { get; set; }
 	}
 }

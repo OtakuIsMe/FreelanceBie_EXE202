@@ -1,7 +1,6 @@
 #job_detail .job-detail-container {
 	display: flex;
-	height: 100vh;
-	margin: 20px auto;
+	min-height: 100vh;
 	padding: 20px 150px;
 	border: 1px solid #ddd;
 	border-radius: 8px;

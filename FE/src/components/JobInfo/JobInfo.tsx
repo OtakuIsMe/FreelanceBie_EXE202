@@ -3,9 +3,11 @@ import './JobInfo.css'
 import Tag from '../Cards/Tag/Tag';
 
 import PDF from '../../assets/pdf.png'
-import DOCX from '../../assets/docx.png'
+import DOCX from '../../assets/docx.png';
+import { ApiGateway } from '../../services/api/ApiService';
 
 interface JobInfoProps {
+	id: string;
 	title: string;
 	description: string;
 	workType: number;
@@ -16,6 +18,7 @@ interface JobInfoProps {
 	experience: number;
 	employmentType: number;
 	files: File[] | FileProps[] | null;
+	applyNoti: () => void;
 }
 
 export interface FileProps {
@@ -27,18 +30,24 @@ export interface FileProps {
 }
 
 
-
 const JobInfo: React.FC<JobInfoProps> = (props) => {
 
 	const employmentTypeLabels = ["Full Time", "Part Time", "Contract"];
 	const workTypeLabels = ["Remote", "Onsite", "Hybrid"];
+
+	const handleApplyClick = async () => {
+		const data = await ApiGateway.ApplyJob(props.id)
+		if (data) {
+			props.applyNoti();
+		}
+	}
 
 	return (
 		<div id="job-info">
 			<div className="job-header">
 				<div className="top">
 					<h1>{props.title}</h1>
-					<button className="apply-button">Apply Now</button>
+					<button className="apply-button" onClick={handleApplyClick}>Apply Now</button>
 				</div>
 				<div className="bottom">
 					<div className="img-container">

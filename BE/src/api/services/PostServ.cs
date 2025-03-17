@@ -18,6 +18,9 @@ namespace BE.src.api.services
 		Task<IActionResult> GetPosts(PostJobFilterDTO filter);
 		Task<FileContentResult?> DownloadFile(Guid id);
 		Task<IActionResult> GetListPostCard(int item, int page);
+		Task<IActionResult> PostsOwner(Guid ownerId);
+		Task<IActionResult> GetFreelancerByPost(Guid PostId);
+		Task<IActionResult> GetPostEmployeeDetail(Guid PostId);
 	}
 	public class PostServ : IPostServ
 	{
@@ -61,7 +64,9 @@ namespace BE.src.api.services
 					UserId = userId,
 					SpecialtyId = specialty.Id,
 					CompanyLink = data.CompanyLink,
-					Payment = data.Payment
+					Payment = data.Payment,
+					Status = true,
+					CloseAt = new DateTime(2025, 4, 1)
 				};
 
 				var fileUrl = await Utils.GenerateAzureUrl(MediaTypeEnum.Image,
@@ -293,5 +298,47 @@ namespace BE.src.api.services
 			}
 		}
 
+		public async Task<IActionResult> PostsOwner(Guid ownerId)
+		{
+			try
+			{
+				var post = await _postRepo.PostOwner(ownerId);
+				return SuccessResp.Ok(post);
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+
+		public async Task<IActionResult> GetFreelancerByPost(Guid PostId)
+		{
+			try
+			{
+				var freelancers = await _postRepo.FreelancersByPost(PostId);
+				return SuccessResp.Ok(freelancers);
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+
+		public async Task<IActionResult> GetPostEmployeeDetail(Guid PostId)
+		{
+			try
+			{
+				var post = await _postRepo.GetPostEmployeeDetail(PostId);
+				if (post == null)
+				{
+					return ErrorResp.NotFound("Cant fount post");
+				}
+				return SuccessResp.Ok(post);
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
 	}
 }

@@ -24,6 +24,9 @@ namespace BE.src.api.repositories
 		Task<List<PostJob>> GetAllPosts();
 		Task<Attachment?> GetAttachmentById(Guid id);
 		Task<List<PostJob>> GetListPost(int item, int page);
+		Task<List<PostManageCard>> PostOwner(Guid userId);
+		Task<List<FreelancerCard>> FreelancersByPost(Guid PostId);
+		Task<PostManageCard?> GetPostEmployeeDetail(Guid PostId);
 	}
 	public class PostRepo : IPostRepo
 	{
@@ -159,6 +162,61 @@ namespace BE.src.api.repositories
 							.Take(item)
 							.Include(p => p.CompanyLogo)
 							.ToListAsync();
+		}
+
+		public async Task<List<PostManageCard>> PostOwner(Guid userId)
+		{
+			return await _context.PostJobs.Where(p => p.UserId == userId)
+										.Select(s => new PostManageCard
+										{
+											Id = s.Id,
+											Title = s.Title,
+											Status = s.Status,
+											WorkLocation = s.WorkLocation,
+											WorkType = s.WorkType,
+											EmploymentType = s.EmploymentType,
+											CreateAt = s.CreateAt,
+											CloseAt = s.CloseAt,
+											NumberApplied = s.UserApplies.Count(),
+											NumberHired = s.UserApplies.Count(ua => ua.Status == ApplyStatusEnum.Accept),
+											Specialty = s.Specialty.Name
+										})
+										.ToListAsync();
+		}
+
+		public Task<List<FreelancerCard>> FreelancersByPost(Guid PostId)
+		{
+			return _context.UserApplies.Where(ua => ua.PostId == PostId)
+										.Select(ua => new FreelancerCard
+										{
+											Username = ua.User.Username,
+											Image = ua.User.ImageVideos.Select(i => i.Url).FirstOrDefault() ?? "",
+											Place = ua.User.Place ?? "",
+											Price = ua.User.Price ?? 0,
+											Email = ua.User.Email,
+											Status = ua.Status
+										}).ToListAsync();
+		}
+
+		public async Task<PostManageCard?> GetPostEmployeeDetail(Guid PostId)
+		{
+			return await _context.PostJobs
+				.Where(p => p.Id == PostId)
+				.Select(s => new PostManageCard
+				{
+					Id = s.Id,
+					Title = s.Title,
+					Status = s.Status,
+					WorkLocation = s.WorkLocation,
+					WorkType = s.WorkType,
+					EmploymentType = s.EmploymentType,
+					CreateAt = s.CreateAt,
+					CloseAt = s.CloseAt,
+					NumberApplied = s.UserApplies.Count(),
+					NumberHired = s.UserApplies.Count(ua => ua.Status == ApplyStatusEnum.Accept),
+					Specialty = s.Specialty.Name
+				})
+				.FirstOrDefaultAsync();
 		}
 	}
 }

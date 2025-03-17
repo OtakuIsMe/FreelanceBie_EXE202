@@ -280,6 +280,9 @@ namespace BE.src.api.domains.Database
 						p => p.ToEnum<EmploymentTypeEnum>()
 					);
 
+				entity.Property(p => p.Status)
+					.IsRequired();
+
 				entity.HasOne(p => p.User)
 					.WithMany(u => u.Posts)
 					.HasForeignKey(p => p.UserId)

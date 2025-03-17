@@ -25,7 +25,7 @@ namespace BE.src.api.controllers
 			return await _postServ.AddPostData(userId, data);
 		}
 		[Authorize(Policy = "Customer")]
-		[HttpGet("ApplyJob")]
+		[HttpPost("ApplyJob")]
 		public async Task<IActionResult> ApplyJob([FromQuery] Guid postId)
 		{
 			_logger.LogInformation("ApplyJob");
@@ -46,13 +46,6 @@ namespace BE.src.api.controllers
 			}
 			return await _postServ.PostJobDetail(userId, postCode);
 		}
-
-		// [Authorize(Policy = "Customer")]
-		// [HttpGet("HistoryHiring")]
-		// public async Task<IActionResult> HistoryHiring([FromQuery] Guid postId)
-		// {
-		// 	return await _postServ.
-		// }
 		[HttpGet("filter-posts")]
 		public async Task<IActionResult> GetPosts([FromQuery] PostJobFilterDTO filter)
 		{
@@ -74,6 +67,24 @@ namespace BE.src.api.controllers
 		public async Task<IActionResult> GetListPostCard([FromQuery] int item, [FromQuery] int page)
 		{
 			return await _postServ.GetListPostCard(item, page);
+		}
+
+		[HttpGet("list-post-owner")]
+		[Authorize]
+		public async Task<IActionResult> GetListPostsOwner()
+		{
+			Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
+			return await _postServ.PostsOwner(userId);
+		}
+		[HttpGet("ListApply")]
+		public async Task<IActionResult> GetListUserApply([FromQuery] Guid postId)
+		{
+			return await _postServ.GetFreelancerByPost(postId);
+		}
+		[HttpGet("PostEmployeeDetail")]
+		public async Task<IActionResult> GetPostEmployeeDetail([FromQuery] Guid postId)
+		{
+			return await _postServ.GetPostEmployeeDetail(postId);
 		}
 	}
 }

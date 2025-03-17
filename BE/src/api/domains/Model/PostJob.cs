@@ -14,6 +14,8 @@ namespace BE.src.api.domains.Model
 		public required int Experience { get; set; }
 		public required string CompanyLink { get; set; }
 		public required float Payment { get; set; }
+		public required bool Status { get; set; }
+		public required DateTime CloseAt { get; set; }
 
 		public Guid UserId { get; set; }
 		public User User { get; set; } = null!;

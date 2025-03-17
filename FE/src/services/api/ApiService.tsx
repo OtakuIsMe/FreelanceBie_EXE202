@@ -220,4 +220,48 @@ export class ApiGateway {
 		}
 	}
 
+	public static async ListPostOwner<T>() {
+		this.setAuthHeader()
+		try {
+			const response = await this.axiosInstance.get<T>(`post/list-post-owner`);
+			return response.data;
+		} catch (error) {
+			console.error("Error List Designer:", error)
+			throw error;
+		}
+	}
+
+	public static async ListApply<T>(id: string) {
+		this.setAuthHeader()
+		try {
+			const response = await this.axiosInstance.get<T>(`post/ListApply?postId=${id}`)
+			return response.data;
+		} catch (error) {
+			console.error("Error List Designer:", error)
+			throw error;
+		}
+	}
+
+	public static async PostEmployeeDetail<T>(id: string) {
+		this.setAuthHeader()
+		try {
+			const response = await this.axiosInstance.get<T>(`post/PostEmployeeDetail?postId=${id}`)
+			return response.data;
+		} catch (error) {
+			console.error("Error List Designer:", error)
+			throw error;
+		}
+	}
+
+	public static async ApplyJob<T>(id: string) {
+		this.setAuthHeader()
+		try {
+			const response = await this.axiosInstance.post<T>(`post/ApplyJob?postId=${id}`);
+			return response.data;
+		} catch (error) {
+			console.error("Error List Designer:", error)
+			throw error;
+		}
+	}
+
 }

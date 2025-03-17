@@ -5,6 +5,7 @@ import './PostManage.css';
 import Stack from '@mui/material/Stack';
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
 import { styled } from '@mui/material/styles';
+import { ApiGateway } from '../../../../services/api/ApiService';
 
 
 interface jobCard {
@@ -13,8 +14,8 @@ interface jobCard {
 	workType: number,
 	workLocation: string,
 	employmentType: number,
-	createAt: Date,
-	closeAt: Date,
+	createAt: string,
+	closeAt: string,
 	numberApplied: number,
 	numberHired: number,
 	id: string,
@@ -31,87 +32,14 @@ const PostManage: React.FC = () => {
 	const [jobs, setJobs] = useState<jobCard[]>([])
 
 	useEffect(() => {
-		setJobs([
-			{
-				title: "Frontend Developer",
-				status: true,
-				workType: 0, // Remote
-				workLocation: "Ho Chi Minh",
-				employmentType: 1, // Part-Time
-				createAt: new Date("2025-01-01"),
-				closeAt: new Date("2025-04-01"),
-				numberApplied: 50,
-				numberHired: 5,
-				id: "job1",
-				Specialty: "React, TypeScript",
-			},
-			{
-				title: "Backend Developer",
-				status: true,
-				workType: 1, // Onsite
-				workLocation: "Hanoi",
-				employmentType: 0, // Full-Time
-				createAt: new Date("2025-02-15"),
-				closeAt: new Date("2025-05-15"),
-				numberApplied: 80,
-				numberHired: 10,
-				id: "job2",
-				Specialty: "Node.js, .NET",
-			},
-			{
-				title: "UX/UI Designer",
-				status: false,
-				workType: 2, // Hybrid
-				workLocation: "Da Nang",
-				employmentType: 2, // Contract
-				createAt: new Date("2025-03-10"),
-				closeAt: new Date("2025-06-10"),
-				numberApplied: 30,
-				numberHired: 3,
-				id: "job3",
-				Specialty: "Figma, Adobe XD",
-			},
-			{
-				title: "Frontend Developer",
-				status: true,
-				workType: 0, // Remote
-				workLocation: "Ho Chi Minh",
-				employmentType: 1, // Part-Time
-				createAt: new Date("2025-01-01"),
-				closeAt: new Date("2025-04-01"),
-				numberApplied: 50,
-				numberHired: 5,
-				id: "job1",
-				Specialty: "React, TypeScript",
-			},
-			{
-				title: "Backend Developer",
-				status: true,
-				workType: 1, // Onsite
-				workLocation: "Hanoi",
-				employmentType: 0, // Full-Time
-				createAt: new Date("2025-02-15"),
-				closeAt: new Date("2025-05-15"),
-				numberApplied: 80,
-				numberHired: 10,
-				id: "job2",
-				Specialty: "Node.js, .NET",
-			},
-			{
-				title: "UX/UI Designer",
-				status: false,
-				workType: 2, // Hybrid
-				workLocation: "Da Nang",
-				employmentType: 2, // Contract
-				createAt: new Date("2025-03-10"),
-				closeAt: new Date("2025-06-10"),
-				numberApplied: 30,
-				numberHired: 3,
-				id: "job3",
-				Specialty: "Figma, Adobe XD",
-			},
-		]);
+		FetchPostOwner();
 	}, []);
+
+	const FetchPostOwner = async () => {
+		const data = await ApiGateway.ListPostOwner<jobCard[]>();
+		setJobs(data);
+		console.log(data)
+	}
 
 	const employmentTypeMap: Record<number, string> = {
 		0: "Full-Time",
@@ -133,27 +61,38 @@ const PostManage: React.FC = () => {
 		return workTypeMap[type] || "Unknown";
 	};
 
-	const formatDate = (date: Date): string => {
-		return date.toLocaleDateString("en-GB", {
+	const formatDate = (date: string): string => {
+		return new Date(date).toLocaleDateString("en-GB", {
 			day: "2-digit",
 			month: "short",
 		});
 	};
 
-	const getDaysToGo = (closeAt: Date): string => {
+	const getDaysToGo = (closeAt: string): string => {
+		const closeDate = new Date(closeAt);
 		const today = new Date();
-		const diffTime = closeAt.getTime() - today.getTime();
+
+		if (isNaN(closeDate.getTime())) return "Invalid Date";
+
+		const diffTime = closeDate.getTime() - today.getTime();
 		const daysRemaining = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
 		return daysRemaining > 0 ? `${daysRemaining} Days to go` : "Closed";
 	};
 
-	const getProgress = (createAt: Date, closeAt: Date): number => {
-		const totalDuration = closeAt.getTime() - createAt.getTime();
-		const elapsedTime = new Date().getTime() - createAt.getTime();
+	const getProgress = (createAt: string, closeAt: string): number => {
+		const createDate = new Date(createAt);
+		const closeDate = new Date(closeAt);
+		const now = new Date();
+
+		if (isNaN(createDate.getTime()) || isNaN(closeDate.getTime())) return 0;
+
+		const totalDuration = closeDate.getTime() - createDate.getTime();
+		const elapsedTime = now.getTime() - createDate.getTime();
+
+		if (totalDuration <= 0) return 100;
 
 		const progress = (elapsedTime / totalDuration) * 100;
-
 		return Math.min(Math.max(progress, 0), 100);
 	};
 
@@ -334,7 +273,7 @@ const PostManage: React.FC = () => {
 									</div>
 								</div>
 								<div className="detail-container">
-									<p className="detail">
+									<p className="detail" onClick={() => { window.location.href = `/post/employee?q=${job.id}`; }}>
 										<span>View Details</span>
 										<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><path fill="currentColor" d="M7 1L5.6 2.5L13 10l-7.4 7.5L7 19l9-9z" /></svg>
 									</p>
