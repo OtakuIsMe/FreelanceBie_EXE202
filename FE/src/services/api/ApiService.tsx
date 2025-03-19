@@ -313,4 +313,15 @@ export class ApiGateway {
 		}
 	}
 
+	public static async Profile<T>() {
+		this.setAuthHeader()
+		try {
+			const response = await this.axiosInstance.get<T>(`user/view-profile`)
+			return response.data
+		} catch (error) {
+			console.error("Error List Designer:", error)
+			throw error;
+		}
+	}
+
 }

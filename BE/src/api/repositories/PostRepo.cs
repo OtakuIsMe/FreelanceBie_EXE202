@@ -27,6 +27,8 @@ namespace BE.src.api.repositories
 		Task<List<PostManageCard>> PostOwner(Guid userId);
 		Task<List<FreelancerCard>> FreelancersByPost(Guid PostId);
 		Task<PostManageCard?> GetPostEmployeeDetail(Guid PostId);
+		Task<UserApply?> GetUserApply(Guid ApplyId);
+		Task<bool> UpdateUserApply(UserApply userApply);
 	}
 	public class PostRepo : IPostRepo
 	{
@@ -217,6 +219,17 @@ namespace BE.src.api.repositories
 					Specialty = s.Specialty.Name
 				})
 				.FirstOrDefaultAsync();
+		}
+
+		public async Task<UserApply?> GetUserApply(Guid ApplyId)
+		{
+			return await _context.UserApplies.FirstOrDefaultAsync(a => a.Id == ApplyId);
+		}
+
+		public async Task<bool> UpdateUserApply(UserApply userApply)
+		{
+			_context.UserApplies.Update(userApply);
+			return await _context.SaveChangesAsync() > 0;
 		}
 	}
 }

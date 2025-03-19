@@ -14,13 +14,13 @@ namespace BE.src.api.services
 		Task<IActionResult> AddPostData(Guid userId, PostAddData data);
 		Task<IActionResult> ApplyJob(Guid userId, Guid postId);
 		Task<IActionResult> PostJobDetail(Guid? userId, Guid postCode);
-		Task<IActionResult> HistoryHiring(Guid postId);
 		Task<IActionResult> GetPosts(PostJobFilterDTO filter);
 		Task<FileContentResult?> DownloadFile(Guid id);
 		Task<IActionResult> GetListPostCard(int item, int page);
 		Task<IActionResult> PostsOwner(Guid ownerId);
 		Task<IActionResult> GetFreelancerByPost(Guid PostId);
 		Task<IActionResult> GetPostEmployeeDetail(Guid PostId);
+		Task<IActionResult> ApplyJobStatus(Guid applyId, bool status);
 	}
 	public class PostServ : IPostServ
 	{
@@ -151,18 +151,6 @@ namespace BE.src.api.services
 				}
 				await _postRepo.CreateUserApply(userApply);
 				return SuccessResp.Created("Apply succes");
-			}
-			catch (System.Exception ex)
-			{
-				throw new ApplicationException(ex.Message);
-			}
-		}
-
-		public async Task<IActionResult> HistoryHiring(Guid postId)
-		{
-			try
-			{
-				return SuccessResp.Ok("Ok");
 			}
 			catch (System.Exception ex)
 			{
@@ -334,6 +322,32 @@ namespace BE.src.api.services
 					return ErrorResp.NotFound("Cant fount post");
 				}
 				return SuccessResp.Ok(post);
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+
+		public async Task<IActionResult> ApplyJobStatus(Guid applyId, bool status)
+		{
+			try
+			{
+				var apply = await _postRepo.GetUserApply(applyId);
+				if (apply == null)
+				{
+					return ErrorResp.NotFound("Cant find apply");
+				}
+				if (status)
+				{
+					apply.Status = ApplyStatusEnum.Accept;
+				}
+				else
+				{
+					apply.Status = ApplyStatusEnum.Decline;
+				}
+				await _postRepo.UpdateUserApply(apply);
+				return SuccessResp.Ok("Update Apply Status");
 			}
 			catch (System.Exception ex)
 			{

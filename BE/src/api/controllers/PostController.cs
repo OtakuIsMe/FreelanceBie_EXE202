@@ -86,5 +86,10 @@ namespace BE.src.api.controllers
 		{
 			return await _postServ.GetPostEmployeeDetail(postId);
 		}
+		[HttpPut("ApplyJobStatus")]
+		public async Task<IActionResult> ApplyJobStatus([FromQuery] Guid applyId, [FromQuery] bool status)
+		{
+			return await _postServ.ApplyJobStatus(applyId, status);
+		}
 	}
 }

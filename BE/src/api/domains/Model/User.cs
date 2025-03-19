@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using Azure.Storage.Blobs.Models;
 using BE.src.api.domains.Enum;
 using BE.src.api.domains.Model.Base;
+using Nest;
 
 namespace BE.src.api.domains.Model
 {
@@ -14,13 +15,13 @@ namespace BE.src.api.domains.Model
 		public required string Password { get; set; }
 		public required RoleEnum Role { get; set; }
 		public string? Phone { get; set; } = null!;
-		public string? City { get; set; } = null!;
 		public string? Education { get; set; } = null!;
 		public string? Description { get; set; } = null!;
 		public DateOnly? DOB { get; set; } = null;
 		public string? Slogan { get; set; } = null!;
 		public string? Place { get; set; } = null!;
 		public float? Price { get; set; }
+		public string? Language { get; set; } = null!;
 
 		public ICollection<Experience> Experiences { get; set; } = null!;
 		public ICollection<SocialProfile> SocialProfiles { get; set; } = null!;

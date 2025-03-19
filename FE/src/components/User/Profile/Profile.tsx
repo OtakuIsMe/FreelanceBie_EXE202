@@ -10,17 +10,14 @@ import 'quill/dist/quill.snow.css';
 
 interface ProfileData {
 	name: string;
-	title: string;
+	slogan: string;
 	location: string;
-	followers: number;
-	following: number;
 	email: string;
-	languages: string[];
-	nickname: string;
+	languages: string;
+	username: string;
 	joinDate: string;
-	workHistory: string[];
 	education: string;
-	about: string;
+	image: string
 }
 
 interface LikedPost {
@@ -42,7 +39,6 @@ interface WorkPost {
 	datePosted: string;
 }
 
-// Thêm interface cho validation
 interface ValidationRules {
 	[key: string]: {
 		required?: boolean;
@@ -57,25 +53,21 @@ interface EditableProfile {
 	email: string;
 	languages: string;
 	nickname: string;
-	workHistory: string;
 	education: string;
 }
 
 export default function Profile() {
 
 	const [profile, setProfile] = useState<ProfileData>({
-		name: "Rick Roll",
-		title: "UI/UX Designer",
-		location: "Ha Noi, Viet Nam",
-		followers: 852,
-		following: 156,
-		email: "hunglcse161248@fpt.edu.vn",
-		languages: ["Vietnamese", "English"],
-		nickname: "FreelanceBie",
-		joinDate: "2 months ago, on 08/26/2024",
-		workHistory: ["Petrovna.ai", "Shop.inc", "P.i"],
-		education: "Standford University",
-		about: "Hi, my name is John there! I'm the Co-founder and Head of Design at BB agency. Designer at heart. Head of Design might be an overstatement, but as with many 20 people agencies I need to wear many different hats. I manage creative teams and set up processes that allow our collaborators and clients to achieve growth, scalability, and progress."
+		name: "",
+		slogan: "",
+		location: "",
+		email: "",
+		languages: "",
+		username: "",
+		joinDate: "",
+		education: "",
+		image: ""
 	});
 
 	const [likedPosts, setLikedPosts] = useState<LikedPost[]>([]);
@@ -118,6 +110,15 @@ export default function Profile() {
 			errorMessage: 'Education should not contain special characters'
 		}
 	};
+
+	useEffect(() => {
+		fetchingUser();
+	}, [])
+
+	const fetchingUser = async () => {
+		const data = await ApiGateway.Profile<ProfileData>()
+		setProfile(data);
+	}
 
 	// Cập nhật hàm validateField
 	const validateField = (field: string, value: string): boolean => {
@@ -192,18 +193,16 @@ export default function Profile() {
 
 	const [editableProfile, setEditableProfile] = useState<EditableProfile>({
 		email: profile.email,
-		languages: profile.languages.join(', '),
-		nickname: profile.nickname,
-		workHistory: profile.workHistory.join(', '),
+		languages: profile.languages,
+		nickname: profile.username,
 		education: profile.education
 	});
 
 	const handleEditAll = () => {
 		setEditableProfile({
 			email: profile.email,
-			languages: profile.languages.join(', '),
-			nickname: profile.nickname,
-			workHistory: profile.workHistory.join(', '),
+			languages: profile.languages,
+			nickname: profile.username,
 			education: profile.education
 		});
 		setIsEditPopupOpen(true);
@@ -232,9 +231,8 @@ export default function Profile() {
 			setProfile(prev => ({
 				...prev,
 				email: editableProfile.email,
-				languages: editableProfile.languages.split(',').map(item => item.trim()),
+				languages: editableProfile.languages,
 				nickname: editableProfile.nickname,
-				workHistory: editableProfile.workHistory.split(',').map(item => item.trim()),
 				education: editableProfile.education
 			}));
 
@@ -296,14 +294,14 @@ export default function Profile() {
 				<div className="cover-image"></div>
 				<div className="profile-info">
 					<div className="avatar">
-						<img src={avatarImg} alt="Profile Avatar" />
+						<img src={profile.image} alt="Profile Avatar" />
 					</div>
 					<div className="main-info">
 						<div className="name-section">
 							<h1>{profile.name}</h1>
 						</div>
-						<p className="title">{profile.title}</p>
 						<p className="location">{profile.location}</p>
+						<p className="title">{profile.slogan}</p>
 						<div className="social-links">
 							<a href="#" className="social-icon">
 								<MdEmail size={24} />
@@ -317,16 +315,6 @@ export default function Profile() {
 							<a href="#" className="social-icon">
 								<FaInstagram size={24} />
 							</a>
-						</div>
-					</div>
-					<div className="stats">
-						<div className="stat-item">
-							<span className="number">{profile.followers}</span>
-							<span className="label">Followers</span>
-						</div>
-						<div className="stat-item">
-							<span className="number">{profile.following}</span>
-							<span className="label">Following</span>
 						</div>
 					</div>
 				</div>
@@ -440,17 +428,12 @@ export default function Profile() {
 
 						<div className="detail-item">
 							<span className="label">Languages :</span>
-							<span className="value">{profile.languages.join(', ')}</span>
+							<span className="value">{profile.languages}</span>
 						</div>
 
 						<div className="detail-item">
 							<span className="label">Nickname :</span>
-							<span className="value">{profile.nickname}</span>
-						</div>
-
-						<div className="detail-item">
-							<span className="label">Work History</span>
-							<span className="value">{profile.workHistory.join(', ')}</span>
+							<span className="value">{profile.username}</span>
 						</div>
 
 						<div className="detail-item">
@@ -528,18 +511,15 @@ export default function Profile() {
 
 export function DesProfile() {
 	const [profile, setProfile] = useState<ProfileData>({
-		name: "Rick Roll",
-		title: "UI/UX Designer",
-		location: "Ha Noi, Viet Nam",
-		followers: 852,
-		following: 156,
-		email: "hunglcse161248@fpt.edu.vn",
-		languages: ["Vietnamese", "English"],
-		nickname: "FreelanceBie",
-		joinDate: "2 months ago, on 08/26/2024",
-		workHistory: ["Petrovna.ai", "Shop.inc", "P.i"],
-		education: "Standford University",
-		about: "Hi, my name is John there! I'm the Co-founder and Head of Design at BB agency. Designer at heart. Head of Design might be an overstatement, but as with many 20 people agencies I need to wear many different hats. I manage creative teams and set up processes that allow our collaborators and clients to achieve growth, scalability, and progress."
+		name: "",
+		slogan: "",
+		location: "",
+		email: "",
+		languages: "",
+		username: "",
+		joinDate: "",
+		education: "",
+		image: ""
 	});
 
 	const [likedPosts, setLikedPosts] = useState<LikedPost[]>([]);
@@ -547,8 +527,6 @@ export function DesProfile() {
 	const [workPosts] = useState<WorkPost[]>([]);
 
 	const [activeTab, setActiveTab] = useState<string>('work');
-	const [editValue, setEditValue] = useState('');
-	const [editField, setEditField] = useState('');
 	const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
 
 	// Cập nhật state để theo dõi lỗi cho từng trường
@@ -647,32 +625,10 @@ export function DesProfile() {
 		});
 	};
 
-	// Cập nhật hàm handleSave
-	const handleSave = () => {
-		setValidationErrors({});
-
-		if (!validateField(editField, editValue)) {
-			return;
-		}
-
-		const fieldKey = editField.toLowerCase().replace(/\s+/g, '') as keyof ProfileData;
-
-		setProfile(prev => ({
-			...prev,
-			[fieldKey]: editField === 'Languages' || editField === 'Work History'
-				? editValue.split(',').map(item => item.trim())
-				: editValue
-		}));
-
-		setIsEditPopupOpen(false);
-		setValidationErrors({}); // Clear all validation errors
-	};
-
 	const [editableProfile, setEditableProfile] = useState<EditableProfile>({
 		email: profile.email,
-		languages: profile.languages.join(', '),
-		nickname: profile.nickname,
-		workHistory: profile.workHistory.join(', '),
+		languages: profile.languages,
+		nickname: profile.username,
 		education: profile.education
 	});
 
@@ -695,9 +651,8 @@ export function DesProfile() {
 			setProfile(prev => ({
 				...prev,
 				email: editableProfile.email,
-				languages: editableProfile.languages.split(',').map(item => item.trim()),
+				languages: editableProfile.languages,
 				nickname: editableProfile.nickname,
-				workHistory: editableProfile.workHistory.split(',').map(item => item.trim()),
 				education: editableProfile.education
 			}));
 
@@ -740,8 +695,8 @@ export function DesProfile() {
 						<div className="name-section">
 							<h1>{profile.name}</h1>
 						</div>
-						<p className="title">{profile.title}</p>
 						<p className="location">{profile.location}</p>
+						<p className="title">{profile.slogan}</p>
 						<div className="social-links">
 							<a href="#" className="social-icon">
 								<MdEmail size={24} />
@@ -755,19 +710,6 @@ export function DesProfile() {
 							<a href="#" className="social-icon">
 								<FaInstagram size={24} />
 							</a>
-						</div>
-					</div>
-					<div className="stats">
-						<button className="like-btn">
-							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="none" stroke="#606060" stroke-dasharray="32" stroke-dashoffset="32" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c0 0 0 0 -0.76 -1c-0.88 -1.16 -2.18 -2 -3.74 -2c-2.49 0 -4.5 2.01 -4.5 4.5c0 0.93 0.28 1.79 0.76 2.5c0.81 1.21 8.24 9 8.24 9M12 8c0 0 0 0 0.76 -1c0.88 -1.16 2.18 -2 3.74 -2c2.49 0 4.5 2.01 4.5 4.5c0 0.93 -0.28 1.79 -0.76 2.5c-0.81 1.21 -8.24 9 -8.24 9"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.7s" values="32;0" /></path></svg>
-						</button>
-						<div className="stat-item">
-							<span className="number">{profile.followers}</span>
-							<span className="label">Followers</span>
-						</div>
-						<div className="stat-item">
-							<span className="number">{profile.following}</span>
-							<span className="label">Following</span>
 						</div>
 					</div>
 				</div>
@@ -860,19 +802,13 @@ export function DesProfile() {
 
 						<div className="detail-item">
 							<span className="label">Languages :</span>
-							<span className="value">{profile.languages.join(', ')}</span>
+							<span className="value">{profile.languages}</span>
 						</div>
 
 						<div className="detail-item">
 							<span className="label">Nickname :</span>
-							<span className="value">{profile.nickname}</span>
+							<span className="value">{profile.username}</span>
 						</div>
-
-						<div className="detail-item">
-							<span className="label">Work History</span>
-							<span className="value">{profile.workHistory.join(', ')}</span>
-						</div>
-
 						<div className="detail-item">
 							<span className="label">Education :</span>
 							<span className="value">{profile.education}</span>

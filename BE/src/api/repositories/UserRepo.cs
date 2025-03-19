@@ -22,7 +22,7 @@ namespace BE.src.api.repositories
 		Task<bool> UpdateSave(Save save);
 		Task<bool> DeleteSave(Save save);
 		Task<bool> ChangePassword(string email, string newPassword);
-		Task<User?> ViewProfileUser(Guid userId, CancellationToken cancellationToken = default);
+		Task<UserProfileDTO?> ViewProfileUser(Guid userId, CancellationToken cancellationToken = default);
 		Task<User?> GetUserById(Guid userId, CancellationToken cancellationToken = default);
 		Task<bool> EditProfile(User user);
 		Task<List<User>> FindUsers(UserSearchingDTO userSearchingDTO);
@@ -121,18 +121,22 @@ namespace BE.src.api.repositories
 			return await _context.SaveChangesAsync() > 0;
 		}
 
-		public async Task<User?> ViewProfileUser(Guid userId, CancellationToken cancellationToken = default)
+		public async Task<UserProfileDTO?> ViewProfileUser(Guid userId, CancellationToken cancellationToken = default)
 		{
-			return await _context.Users
-								.Include(x => x.ImageVideos)
-								.Include(x => x.Comments)
-								.Include(x => x.Likes)
-								.Include(x => x.Saves)
-									.ThenInclude(x => x.Post)
-								.Include(x => x.Saves)
-									.ThenInclude(x => x.Shot)
-										.ThenInclude(x => x.ImageVideos)
-								.FirstOrDefaultAsync(x => x.Id == userId, cancellationToken);
+			return await _context.Users.Where(x => x.Id == userId)
+								.Select(u => new UserProfileDTO
+								{
+									Name = u.Name,
+									Slogan = u.Slogan,
+									Location = u.Place,
+									Email = u.Email,
+									Language = u.Language,
+									Username = u.Username,
+									JoinDate = u.CreateAt,
+									Education = u.Education,
+									Image = u.ImageVideos.Select(i => i.Url).FirstOrDefault() ?? ""
+								})
+								.FirstOrDefaultAsync(cancellationToken);
 		}
 
 		public async Task<bool> EditProfile(User user)
@@ -166,7 +170,6 @@ namespace BE.src.api.repositories
 				(string.IsNullOrEmpty(userSearchingDTO.Username) || x.Username.ToLower().Contains(userSearchingDTO.Username.ToLower())) &&
 				(string.IsNullOrEmpty(userSearchingDTO.Email) || x.Email.ToLower().Contains(userSearchingDTO.Email.ToLower())) &&
 				(string.IsNullOrEmpty(userSearchingDTO.Phone) || x.Phone.Contains(userSearchingDTO.Phone)) &&
-				(string.IsNullOrEmpty(userSearchingDTO.City) || x.City.ToLower().Contains(userSearchingDTO.City.ToLower())) &&
 				(string.IsNullOrEmpty(userSearchingDTO.Education) || x.Education.ToLower().Contains(userSearchingDTO.Education.ToLower()))
 			)
 			.Include(x => x.ImageVideos)

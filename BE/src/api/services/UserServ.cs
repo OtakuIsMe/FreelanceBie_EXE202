@@ -179,7 +179,6 @@ namespace BE.src.api.services
 					Password = Utils.HashObject(data.Password),
 					Role = data.Role,
 					Phone = data.Phone,
-					City = data.City,
 					Education = data.Education,
 					Description = data.Description,
 					DOB = data.DOB
@@ -420,11 +419,11 @@ namespace BE.src.api.services
 		{
 			try
 			{
-				var cachedProfile = await _cacheService.Get<User>($"profile-{userId}");
-				if (cachedProfile != null)
-				{
-					return SuccessResp.Ok(cachedProfile);
-				}
+				// var cachedProfile = await _cacheService.Get<User>($"profile-{userId}");
+				// if (cachedProfile != null)
+				// {
+				// 	return SuccessResp.Ok(cachedProfile);
+				// }
 
 				var user = await _userRepo.ViewProfileUser(userId);
 				if (user == null)
@@ -432,7 +431,7 @@ namespace BE.src.api.services
 					throw new ApplicationException("User not found");
 				}
 
-				await _cacheService.Set($"profile-{userId}", user, TimeSpan.FromMinutes(10));
+				// await _cacheService.Set($"profile-{userId}", user, TimeSpan.FromMinutes(10));
 
 				return SuccessResp.Ok(user);
 			}
@@ -495,7 +494,6 @@ namespace BE.src.api.services
 
 				userObj.Name = user.Name ?? userObj.Name;
 				userObj.Phone = user.Phone ?? userObj.Phone;
-				userObj.City = user.City ?? userObj.City;
 				userObj.Education = user.Education ?? userObj.Education;
 				userObj.Description = user.Description ?? userObj.Description;
 
@@ -551,7 +549,6 @@ namespace BE.src.api.services
 			if (!string.IsNullOrEmpty(searchDTO.Username)) keyParts.Add($"Username:{searchDTO.Username}");
 			if (!string.IsNullOrEmpty(searchDTO.Email)) keyParts.Add($"Email:{searchDTO.Email}");
 			if (!string.IsNullOrEmpty(searchDTO.Phone)) keyParts.Add($"Phone:{searchDTO.Phone}");
-			if (!string.IsNullOrEmpty(searchDTO.City)) keyParts.Add($"City:{searchDTO.City}");
 			if (!string.IsNullOrEmpty(searchDTO.Education)) keyParts.Add($"Education:{searchDTO.Education}");
 
 			return $"searching_designers{string.Join("|", keyParts)}";

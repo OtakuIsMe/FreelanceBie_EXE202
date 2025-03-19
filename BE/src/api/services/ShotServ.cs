@@ -132,7 +132,6 @@ namespace BE.src.api.services
 
 			if (!string.IsNullOrEmpty(filter.UserName)) keyParts.Add($"username:{filter.UserName}");
 			if (!string.IsNullOrEmpty(filter.UserEmail)) keyParts.Add($"useremail:{filter.UserEmail}");
-			if (!string.IsNullOrEmpty(filter.UserCity)) keyParts.Add($"usercity:{filter.UserCity}");
 			if (!string.IsNullOrEmpty(filter.UserEducation)) keyParts.Add($"usereducation:{filter.UserEducation}");
 			if (!string.IsNullOrEmpty(filter.SpecialtyName)) keyParts.Add($"specialtyname:{filter.SpecialtyName}");
 			if (!string.IsNullOrEmpty(filter.HtmlKeyword)) keyParts.Add($"htmlkeyword:{filter.HtmlKeyword}");

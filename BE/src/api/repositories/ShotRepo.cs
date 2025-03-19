@@ -112,9 +112,6 @@ namespace BE.src.api.repositories
 			if (!string.IsNullOrEmpty(filter.UserEmail))
 				query = query.Where(s => s.User.Email.Contains(filter.UserEmail));
 
-			if (!string.IsNullOrEmpty(filter.UserCity))
-				query = query.Where(s => s.User.City.Contains(filter.UserCity));
-
 			if (!string.IsNullOrEmpty(filter.UserEducation))
 				query = query.Where(s => s.User.Education.Contains(filter.UserEducation));
 

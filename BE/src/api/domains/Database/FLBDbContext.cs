@@ -412,10 +412,6 @@ namespace BE.src.api.domains.Database
 					.HasMaxLength(15)
 					.IsRequired(false);
 
-				entity.Property(u => u.City)
-					.HasMaxLength(100)
-					.IsRequired(false);
-
 				entity.Property(u => u.Education)
 					.HasMaxLength(100)
 					.IsRequired(false);

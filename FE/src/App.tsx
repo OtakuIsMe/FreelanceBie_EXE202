@@ -45,6 +45,7 @@ function MainRoutes() {
 				<Route path="/post-job" element={<PostJob />} />
 				<Route path="/shot">
 					<Route path="edit" element={<ShotEdit />} />
+					<Route path='detail' element={<ShotDetail />} />
 				</Route>
 				<Route path='/pro'>
 					<Route index element={<Pricing />} />
@@ -54,16 +55,12 @@ function MainRoutes() {
 					<Route path='employee' element={<PostEmployee />} />
 				</Route>
 			</Routes>
-			{background ? (
+			{background && (
 				<Modal onClose={() => navigate(-1)}>
 					<Routes>
 						<Route path="/shot/:id" element={<ShotDetail />} />
 					</Routes>
 				</Modal>
-			) : (
-				<Routes>
-					<Route path="/shot/:id" element={<ShotDetail />} />
-				</Routes>
 			)}
 		</AuthenProvider>
 	)
