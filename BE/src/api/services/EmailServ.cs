@@ -5,7 +5,11 @@ using MimeKit;
 
 namespace BE.src.api.services
 {
-    public class EmailServ
+	public interface IEmailServ
+	{
+		Task<bool> SendVerificationEmail(string toEmail, string subject, string htmlBody);
+	}
+    public class EmailServ : IEmailServ
     {
         private readonly ILogger<EmailServ> logger;
 

@@ -38,17 +38,16 @@ namespace BE.src.api.services
 	public class UserServ : IUserServ
 	{
 		private readonly IUserRepo _userRepo;
-		private readonly EmailServ _emailServ;
+		private readonly IEmailServ _emailServ;
 		private readonly ISocialProfileRepo _socialProfileRepo;
 		private readonly IMembershipRepo _membershipRepo;
 		private readonly IPostRepo _postRepo;
 		private readonly INotificationRepo _notificationRepo;
 		private readonly ICacheService _cacheService;
 		private readonly IEventBusRabbitMQProducer _eventBus;
-		private readonly ITokenService _tokenService;
-		public UserServ(IUserRepo userRepo, EmailServ emailServ, ISocialProfileRepo socialProfileRepo,
+		public UserServ(IUserRepo userRepo, IEmailServ emailServ, ISocialProfileRepo socialProfileRepo,
 						IMembershipRepo membershipRepo, IPostRepo postRepo, INotificationRepo notificationRepo,
-						ICacheService cacheService, IEventBusRabbitMQProducer eventBus, ITokenService tokenService)
+						ICacheService cacheService, IEventBusRabbitMQProducer eventBus)
 		{
 			_userRepo = userRepo;
 			_emailServ = emailServ;
@@ -58,7 +57,6 @@ namespace BE.src.api.services
 			_notificationRepo = notificationRepo;
 			_cacheService = cacheService;
 			_eventBus = eventBus ?? throw new ApplicationException(nameof(eventBus));
-			_tokenService = tokenService;
 		}
 
 		public async Task<IActionResult> Login(LoginRq data)

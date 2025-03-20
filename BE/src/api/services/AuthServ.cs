@@ -74,7 +74,7 @@ namespace BE.src.api.services
                     throw new ApplicationException("Redis fresh token key is invalid");
                 }
 
-                var storedToken = await _userRepo.GetRefreshToken(refreshToken);
+                var storedToken = await _userRepo.GetRefreshToken(cachedToken);
                 if (storedToken is null || storedToken.ExpiresOnUtc < DateTime.UtcNow)
                     throw new ApplicationException("Refresh token has expired");
 
@@ -99,7 +99,10 @@ namespace BE.src.api.services
 		{
 			try
             {
-                var userRftTokens = await _userRepo.GetRefreshTokens(userId);
+	            if (userId != CurrentUserId())
+		            throw new ApplicationException("You cannot do this action");
+
+	            var userRftTokens = await _userRepo.GetRefreshTokens(userId);
                 if (userRftTokens.Count == 0)
                     throw new ApplicationException("Cannot get user refresh tokens");
 
@@ -107,9 +110,6 @@ namespace BE.src.api.services
                 {
                     await _cachServ.Remove($"rft:{item.Token}");
                 }    
-
-                if(userId != CurrentUserId())
-                    throw new ApplicationException("You cannot do this action");
 
                 return SuccessResp.Ok(new 
                     {
