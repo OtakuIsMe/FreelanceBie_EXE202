@@ -29,6 +29,7 @@ namespace BE.src.api.repositories
 		Task<PostManageCard?> GetPostEmployeeDetail(Guid PostId);
 		Task<UserApply?> GetUserApply(Guid ApplyId);
 		Task<bool> UpdateUserApply(UserApply userApply);
+		Task<bool> UpdatePost(PostJob post);
 	}
 	public class PostRepo : IPostRepo
 	{
@@ -229,6 +230,12 @@ namespace BE.src.api.repositories
 		public async Task<bool> UpdateUserApply(UserApply userApply)
 		{
 			_context.UserApplies.Update(userApply);
+			return await _context.SaveChangesAsync() > 0;
+		}
+
+		public async Task<bool> UpdatePost(PostJob post)
+		{
+			_context.PostJobs.Update(post);
 			return await _context.SaveChangesAsync() > 0;
 		}
 	}

@@ -324,4 +324,25 @@ export class ApiGateway {
 		}
 	}
 
+	public static async ApplyJobStatus<T>(applyId: string, status: boolean) {
+		this.setAuthHeader()
+		try {
+			const response = await this.axiosInstance.put<T>(`post/ApplyJobStatus?applyId=${applyId}&status=${status}`)
+			return response.data
+		} catch (error) {
+			console.error("Error List Designer:", error)
+			throw error;
+		}
+	}
+
+	public static async PostStatus<T>(postId: string, status: boolean) {
+		this.setAuthHeader()
+		try {
+			const response = await this.axiosInstance.put<T>(`post/PostStatus?postId=${postId}&status=${status}`)
+			return response.data
+		} catch (error) {
+			console.error("Error List Designer:", error)
+			throw error;
+		}
+	}
 }

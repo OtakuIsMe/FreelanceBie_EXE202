@@ -14,6 +14,7 @@ interface postInfo {
 	status: boolean
 }
 interface freelancerProp {
+	id: string;
 	image: string,
 	username: string,
 	place: string,
@@ -70,6 +71,17 @@ const PostEmployee: React.FC = () => {
 			year: "numeric",
 		});
 	};
+
+	const handleApplyStatus = async (applid: string, status: boolean) => {
+		const data = await ApiGateway.ApplyJobStatus(applid, status)
+		if (data) {
+			setFreelancers((prevFreelancers) =>
+				prevFreelancers.map((freelancer) =>
+					freelancer.id === applid ? { ...freelancer, status: status ? 0 : 1 } : freelancer
+				)
+			);
+		}
+	}
 
 	return (
 		<div id="post-employee">
@@ -172,7 +184,8 @@ const PostEmployee: React.FC = () => {
 									</div>
 								</div>
 								<div className="action-btns">
-									<div className={`accept btn ${freelancer.status === 0 ? "active" : ""}`}>
+									<div className={`accept btn ${freelancer.status === 0 ? "active" : ""}`}
+										onClick={() => { handleApplyStatus(freelancer.id, true) }}>
 										{freelancer.status === 0 ? (
 											<>
 												<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m2.75 8.75l3.5 3.5l7-7.5" /></svg>
@@ -185,7 +198,8 @@ const PostEmployee: React.FC = () => {
 											</>
 										)}
 									</div>
-									<div className={`deny btn ${freelancer.status === 1 ? "active" : ""}`}>
+									<div className={`deny btn ${freelancer.status === 1 ? "active" : ""}`}
+										onClick={() => { handleApplyStatus(freelancer.id, false) }}>
 										{freelancer.status === 1 ? (
 											<>
 												<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m2.75 8.75l3.5 3.5l7-7.5" /></svg>

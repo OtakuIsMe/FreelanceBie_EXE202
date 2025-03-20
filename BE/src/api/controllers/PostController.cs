@@ -91,5 +91,10 @@ namespace BE.src.api.controllers
 		{
 			return await _postServ.ApplyJobStatus(applyId, status);
 		}
+		[HttpPut("PostStatus")]
+		public async Task<IActionResult> PostStatus([FromQuery] Guid postId, [FromQuery] bool status)
+		{
+			return await _postServ.PostStatus(postId, status);
+		}
 	}
 }

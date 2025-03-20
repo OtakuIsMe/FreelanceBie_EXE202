@@ -434,6 +434,9 @@ namespace BE.src.api.domains.Database
 				entity.Property(u => u.Price)
 					.IsRequired(false);
 
+				entity.Property(u => u.Language)
+					.IsRequired(false);
+
 				entity.HasMany(u => u.Specialties)
 					.WithMany(s => s.Users);
 			});

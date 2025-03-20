@@ -21,6 +21,7 @@ namespace BE.src.api.services
 		Task<IActionResult> GetFreelancerByPost(Guid PostId);
 		Task<IActionResult> GetPostEmployeeDetail(Guid PostId);
 		Task<IActionResult> ApplyJobStatus(Guid applyId, bool status);
+		Task<IActionResult> PostStatus(Guid postID, bool status);
 	}
 	public class PostServ : IPostServ
 	{
@@ -348,6 +349,26 @@ namespace BE.src.api.services
 				}
 				await _postRepo.UpdateUserApply(apply);
 				return SuccessResp.Ok("Update Apply Status");
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+
+		public async Task<IActionResult> PostStatus(Guid postID, bool status)
+		{
+			try
+			{
+				var post = await _postRepo.GetPostById(postID);
+				if (post == null)
+				{
+					return ErrorResp.NotFound("Cant find post job");
+				}
+
+				post.Status = status;
+				await _postRepo.UpdatePost(post);
+				return SuccessResp.Ok("Update Post Status");
 			}
 			catch (System.Exception ex)
 			{
