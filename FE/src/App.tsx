@@ -16,6 +16,7 @@ import PostManage from './pages/User/Post/Manage/PostManage'
 import PostEmployee from './pages/User/Post/Employee/PostEmployee'
 import { ReactNotifications } from 'react-notifications-component'
 import 'react-notifications-component/dist/theme.css'
+import Messages from './pages/User/Messages/Messages'
 
 function App() {
 	return (
@@ -54,6 +55,7 @@ function MainRoutes() {
 					<Route path='manage' element={<PostManage />} />
 					<Route path='employee' element={<PostEmployee />} />
 				</Route>
+				<Route path='/messages/:id' element={<Messages />} />
 			</Routes>
 			{background && (
 				<Modal onClose={() => navigate(-1)}>
