@@ -17,6 +17,8 @@ import PostEmployee from './pages/User/Post/Employee/PostEmployee'
 import { ReactNotifications } from 'react-notifications-component'
 import 'react-notifications-component/dist/theme.css'
 import Messages from './pages/User/Messages/Messages'
+import PaymentCancel from './payment/cancel/PaymentCancel'
+import PaymentSuccess from './payment/success/PaymentSuccess'
 
 function App() {
 	return (
@@ -56,6 +58,8 @@ function MainRoutes() {
 					<Route path='employee' element={<PostEmployee />} />
 				</Route>
 				<Route path='/messages/:id' element={<Messages />} />
+				<Route path='/cancel-payment' element={<PaymentCancel />} />
+				<Route path='/payment-success' element={<PaymentSuccess />} />
 			</Routes>
 			{background && (
 				<Modal onClose={() => navigate(-1)}>

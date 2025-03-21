@@ -213,7 +213,7 @@ const Messages: React.FC = () => {
 								groupMessages(messages).map((userMes, index) => {
 									return (<>
 										{userMes.isSelf ? (
-											<div className="message-block right">
+											<div className="message-block right" key={index}>
 												<div className="name-message">
 													<div className="name-time">
 														<span className='time'>{userMes.messages[0].createAt}</span>

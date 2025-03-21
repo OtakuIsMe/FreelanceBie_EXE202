@@ -1,0 +1,31 @@
+#payment-success {
+	width: 100%;
+	height: 100vh;
+	background-color: white;
+	display: flex;
+	flex-direction: column;
+	font-family: "Mona Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+#payment-success .container {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
+
+#payment-success .container img {
+	width: 350px;
+	height: 350px;
+}
+
+#payment-success .container .title {
+	font-size: 36px;
+	font-weight: 700;
+}
+
+#payment-success .container .des {
+	font-size: 18px;
+	color: rgb(168, 168, 168);
+}

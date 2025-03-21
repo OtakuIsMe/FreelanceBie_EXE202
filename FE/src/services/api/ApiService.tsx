@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import { postData } from "../../pages/User/PostJob/PostJob";
+import CryptoJS from "crypto-js";
 
 export class ApiGateway {
 	public static readonly API_Base: string = 'http://localhost:5000/api/v1/';
@@ -372,6 +373,41 @@ export class ApiGateway {
 		try {
 			const response = await this.axiosInstance.get<T>(`communication/view-messages?communicationId=${communicationId}`)
 			return response.data
+		} catch (error) {
+			console.error("Error List Designer:", error)
+			throw error;
+		}
+	}
+
+	public static async PaymentUrl(id: number, amount: number, description: string) {
+		this.setAuthHeader()
+		try {
+			const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
+			const API_KEY = import.meta.env.VITE_API_KEY;
+			const CHECKSUM_KEY = import.meta.env.VITE_CHECKSUM_KEY;
+			const CANCLE_URL = "http://localhost:5173/cancel-payment"
+			const RETURN_URL = "http://localhost:5173/payment-success"
+
+			const rawData = `amount=${amount}&cancelUrl=${CANCLE_URL}&description=${description}&orderCode=${id}&returnUrl=${RETURN_URL}`;
+
+			const signature = CryptoJS.HmacSHA256(rawData, CHECKSUM_KEY).toString(CryptoJS.enc.Hex);
+
+			const data = {
+				amount: amount,
+				orderCode: id,
+				description: description,
+				cancelUrl: CANCLE_URL,
+				returnUrl: RETURN_URL,
+				signature: signature
+			}
+			const response = await axios.post("https://api-merchant.payos.vn/v2/payment-requests", data, {
+				headers: {
+					'Content-Type': 'application/json',
+					'x-client-id': CLIENT_ID,
+					'x-api-key': API_KEY
+				}
+			});
+			return response.data.data.checkoutUrl
 		} catch (error) {
 			console.error("Error List Designer:", error)
 			throw error;
