@@ -33,6 +33,7 @@ using Serilog;
 using Nest;
 using BE.src.api.domains.Model;
 using BE.src.api.domains.DTOs.ElasticSearch;
+using BE.src.api.controllers;
 
 Env.Load();
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -99,6 +100,20 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 					ValidAudience = JWT.Audience,
 					IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey))
 				};
+				options.Events = new JwtBearerEvents
+				{
+					OnMessageReceived = context =>
+					{
+						var accessToken = context.Request.Query["access_token"];
+						var path = context.HttpContext.Request.Path;
+
+						if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/chatHub"))
+						{
+							context.Token = accessToken;
+						}
+						return Task.CompletedTask;
+					}
+				};
 			});
 
 builder.Services.AddAuthorization(options =>
@@ -118,7 +133,9 @@ builder.Services.AddCors(options =>
 					  {
 						  policy.WithOrigins("http://localhost:5173")
 								.AllowAnyMethod()
-								.AllowAnyHeader();
+								.AllowAnyHeader()
+								.SetIsOriginAllowed(origin => true)
+								.AllowCredentials();
 					  });
 });
 
@@ -138,7 +155,7 @@ builder.Services.AddScoped<IShotRepo, ShotRepo>();
 
 builder.Services.AddScoped<IUserServ, UserServ>();
 builder.Services.AddScoped<IMembershipServ, MembershipServ>();
-builder.Services.AddSingleton<EmailServ>();
+builder.Services.AddScoped<IEmailServ, EmailServ>();
 builder.Services.AddScoped<INotificationServ, NotificationServ>();
 builder.Services.AddScoped<ISpecialtyServ, SpecialtyServ>();
 builder.Services.AddScoped<ITransactionServ, TransactionServ>();
@@ -147,6 +164,7 @@ builder.Services.AddScoped<ICommunicationServ, CommunicationServ>();
 builder.Services.AddScoped<IShotServ, ShotServ>();
 builder.Services.AddScoped<IAuthServ, AuthServ>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IChatServ, ChatServ>();
 
 builder.Services.AddSingleton(_ =>
 {
@@ -260,6 +278,11 @@ builder.Services.AddOpenTelemetry()
 	})
 	.UseOtlpExporter();
 
+builder.Services.AddSignalR(e =>
+{
+	e.MaximumReceiveMessageSize = 102400000;
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -278,10 +301,16 @@ app.UseSerilogRequestLogging();
 
 app.UseExceptionHandler();
 app.UseStatusCodePages();
+app.UseRouting();
 
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+	endpoints.MapHub<ChatHub>("/chatHub");
+});
 
 app.UseMiddleware<AuthMiddleware>();
 

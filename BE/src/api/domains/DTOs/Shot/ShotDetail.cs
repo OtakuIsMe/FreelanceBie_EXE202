@@ -10,6 +10,7 @@ namespace BE.src.api.domains.DTOs.Shot
 
 	public class ShotOwner
 	{
+		public required Guid Id { get; set; }
 		public required string Image { get; set; }
 		public required string Name { get; set; }
 		public required string Status { get; set; }

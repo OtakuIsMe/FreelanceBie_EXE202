@@ -345,4 +345,36 @@ export class ApiGateway {
 			throw error;
 		}
 	}
+
+	public static async GetInTouch<T>(userId: string) {
+		this.setAuthHeader()
+		try {
+			const response = await this.axiosInstance.post<T>(`communication/get-in-touch?ownerId=${userId}`)
+			return response.data
+		} catch (error) {
+			console.error("Error List Designer:", error)
+			throw error;
+		}
+	}
+
+	public static async ViewCommunication<T>() {
+		this.setAuthHeader()
+		try {
+			const response = await this.axiosInstance.get<T>(`communication/view-all-communications`)
+			return response.data
+		} catch (error) {
+			console.error("Error List Designer:", error)
+			throw error;
+		}
+	}
+	public static async GetMessages<T>(communicationId: string) {
+		this.setAuthHeader()
+		try {
+			const response = await this.axiosInstance.get<T>(`communication/view-messages?communicationId=${communicationId}`)
+			return response.data
+		} catch (error) {
+			console.error("Error List Designer:", error)
+			throw error;
+		}
+	}
 }

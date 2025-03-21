@@ -202,6 +202,7 @@ namespace BE.src.api.services
 					Html = shot.Html,
 					Owner = new ShotOwner
 					{
+						Id = shot.UserId,
 						Image = shot.User.ImageVideos.First().Url,
 						Name = shot.User.Username,
 						Status = "Available",
