@@ -4,7 +4,7 @@ import Home from './pages/User/Home/Home'
 import Inspiration from './pages/User/Inspriration/Inspiration'
 import SearchDesigner from './pages/User/SearchDesigner/SearchDesigner'
 import FindJob from './pages/User/FindJob/FindJob'
-import ProfilePage, { DesProfilePage } from './pages/User/ProfilePage/ProfilePage'
+import ProfilePage from './pages/User/ProfilePage/ProfilePage'
 import AuthenProvider from './hooks/AuthenContext'
 import ShotEdit from './pages/User/Shot/Edit/ShotEdit'
 import ShotDetail from './pages/User/Shot/Detail/ShotDetail'
@@ -40,7 +40,6 @@ function MainRoutes() {
 				<Route path='/search-designer' element={<SearchDesigner />} />
 				<Route path='/find-job' element={<FindJob />} />
 				<Route path='/Profile' element={<ProfilePage />} />
-				<Route path='/des-profile' element={<DesProfilePage />} />
 				<Route path='/job-detail/:id' element={<JobDetail />} />
 				<Route path="/post-job" element={<PostJob />} />
 				<Route path="/shot">

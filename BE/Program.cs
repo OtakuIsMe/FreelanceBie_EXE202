@@ -138,7 +138,7 @@ builder.Services.AddScoped<IShotRepo, ShotRepo>();
 
 builder.Services.AddScoped<IUserServ, UserServ>();
 builder.Services.AddScoped<IMembershipServ, MembershipServ>();
-builder.Services.AddSingleton<EmailServ>();
+builder.Services.AddScoped<IEmailServ, EmailServ>();
 builder.Services.AddScoped<INotificationServ, NotificationServ>();
 builder.Services.AddScoped<ISpecialtyServ, SpecialtyServ>();
 builder.Services.AddScoped<ITransactionServ, TransactionServ>();

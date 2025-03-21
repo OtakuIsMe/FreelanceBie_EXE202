@@ -23,6 +23,7 @@ interface freelancerProp {
 	email: string
 }
 const PostEmployee: React.FC = () => {
+	const [hovered, setHovered] = useState<{ key: number, action: 'accept' | 'deny', isHovered: boolean } | null>(null);
 	const [searchParams] = useSearchParams();
 	const jobId = searchParams.get("q");
 
@@ -74,6 +75,7 @@ const PostEmployee: React.FC = () => {
 
 	const handleApplyStatus = async (applid: string, status: boolean) => {
 		const data = await ApiGateway.ApplyJobStatus(applid, status)
+		console.log(data)
 		if (data) {
 			setFreelancers((prevFreelancers) =>
 				prevFreelancers.map((freelancer) =>
@@ -184,34 +186,34 @@ const PostEmployee: React.FC = () => {
 									</div>
 								</div>
 								<div className="action-btns">
-									<div className={`accept btn ${freelancer.status === 0 ? "active" : ""}`}
-										onClick={() => { handleApplyStatus(freelancer.id, true) }}>
+									<button 
+										className={`accept btn ${freelancer.status === 0 ? "active" : ""}`}
+										onClick={() => { handleApplyStatus(freelancer.id, true)}}
+									>
 										{freelancer.status === 0 ? (
-											<>
-												<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m2.75 8.75l3.5 3.5l7-7.5" /></svg>
-												Applied
-											</>
+											<div>
+												<p>Applied</p>
+											</div>
 										) : (
-											<>
-												<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M5 13v-1h6V6h1v6h6v1h-6v6h-1v-6z" /></svg>
-												Apply
-											</>
+											<div>
+												<p>Apply</p>
+											</div>
 										)}
-									</div>
-									<div className={`deny btn ${freelancer.status === 1 ? "active" : ""}`}
-										onClick={() => { handleApplyStatus(freelancer.id, false) }}>
+									</button>
+									<button 
+										className={`deny btn ${freelancer.status === 1 ? "active" : ""}`}
+										onClick={() => { handleApplyStatus(freelancer.id, false)}}
+									>
 										{freelancer.status === 1 ? (
-											<>
-												<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m2.75 8.75l3.5 3.5l7-7.5" /></svg>
-												Denied
-											</>
+											<div>
+												<p>Denied</p>
+											</div>
 										) : (
-											<>
-												<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6.758 17.243L12.001 12m5.243-5.243L12 12m0 0L6.758 6.757M12.001 12l5.243 5.243" /></svg>
-												Deny
-											</>
+											<div>
+												<p>Deny</p>
+											</div>
 										)}
-									</div>
+									</button>
 								</div>
 								<div className="status-des">
 									{freelancer.status === 0 && (

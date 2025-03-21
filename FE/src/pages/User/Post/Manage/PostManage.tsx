@@ -37,7 +37,7 @@ const PostManage: React.FC = () => {
 
     const FetchPostOwner = async () => {
         const data = await ApiGateway.ListPostOwner<jobCard[]>();
-        console.log(data)
+        setJobs(data);
     }
 
     const handleChangePostStatus = async (postId: string, status: boolean) => {
@@ -173,6 +173,18 @@ const PostManage: React.FC = () => {
         },
     }));
 
+    const checkEditStatus = (date : string) => {
+        const closeDate = new Date(date);
+        const today = new Date();
+
+        if (isNaN(closeDate.getTime())) return false;
+
+        const diffTime = closeDate.getTime() - today.getTime();
+        const daysRemaining = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        return daysRemaining > 0;
+    }
+
     return (
         <div id="post-manage">
             <Header />
@@ -216,11 +228,19 @@ const PostManage: React.FC = () => {
                             <div className="job-card" key={index}>
                                 <div className="status-edit-btn">
                                     <div className="status-type">
-                                        <div className="status" style={job.status ? { backgroundColor: "#9bbe7f" } : { backgroundColor: "#b4431e" }}>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15"><path fill="currentColor" d="M9.875 7.5a2.375 2.375 0 1 1-4.75 0a2.375 2.375 0 0 1 4.75 0" /></svg>
-                                            <span>{job.status ? "Open" : "Close"}</span>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M36 18L24 30L12 18" /></svg>
-                                        </div>
+                                        <select className="status" 
+                                            style={job.status ? { backgroundColor: "#9bbe7f" } : { backgroundColor: "#b4431e" }}
+                                            defaultValue={job.status ? "true" : "false"}
+                                            onChange={(e) => handleChangePostStatus(job.id, e.target.value == 'true' ? true : false)}
+                                            disabled={!checkEditStatus(job.closeAt)}
+                                        >
+                                            <option value={'true'}>
+                                                Open
+                                            </option>
+                                            <option value={'false'}>
+                                                Close
+                                            </option>
+                                        </select>
                                         <div className="type">
                                             {job.Specialty}
                                         </div>

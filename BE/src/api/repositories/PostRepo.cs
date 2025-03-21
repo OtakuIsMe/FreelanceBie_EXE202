@@ -192,6 +192,7 @@ namespace BE.src.api.repositories
 			return _context.UserApplies.Where(ua => ua.PostId == PostId)
 										.Select(ua => new FreelancerCard
 										{
+											Id = ua.Id,
 											Username = ua.User.Username,
 											Image = ua.User.ImageVideos.Select(i => i.Url).FirstOrDefault() ?? "",
 											Place = ua.User.Place ?? "",

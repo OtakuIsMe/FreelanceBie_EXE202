@@ -4,6 +4,7 @@ namespace BE.src.api.domains.DTOs.Post
 {
 	public class FreelancerCard
 	{
+		public required Guid Id { get; set; }
 		public required string Image { get; set; }
 		public required string Username { get; set; }
 		public required string Place { get; set; }
