@@ -90,6 +90,7 @@ const Header = () => {
 								<img src={user.imageVideos[0].url} alt="" className="avatar" />
 								<p className="name">{user.username}</p>
 								<a className="card profile" href="/profile">Profile</a>
+								<a className="card profile" href="/post/manage">Manage Post</a>
 								<div className="card logout" onClick={LogOut}>Sign Out</div>
 							</div>
 						</div>

@@ -124,13 +124,14 @@
 #main_header .auth .user-container .user-dropdown {
 	position: absolute;
 	right: 0;
-	top: calc(100%);
-	padding: 20px 0;
+	/* top: calc(100%); */
+	padding: 20px;
 }
 
 #main_header .auth .user-container .user-dropdown .background {
+	display: flex;
 	background-color: white;
-	box-shadow: 0px 15px 50px 0px rgba(27, 32, 50, 0.1);
+	box-shadow: 0px 0px 10px 0px rgba(27, 32, 50, 0.1);
 	width: 320px;
 	flex-direction: column;
 	align-items: center;
@@ -161,8 +162,7 @@
 #main_header .auth .user-container .user-dropdown .card {
 	width: -moz-available;
 	width: -webkit-fill-available;
-	padding: 20px 0;
-	border-bottom: 1px solid rgb(194, 194, 194);
+	padding: 12px 0;
 	font-size: 14px;
 	color: black;
 	cursor: pointer;
@@ -173,8 +173,8 @@
 }
 
 #main_header .auth .user-container .user-dropdown .logout.card {
-	border-bottom: none;
 	padding-bottom: 0;
+	border-top: 1px solid rgb(194, 194, 194);
 }
 
 #main_header .auth .user-container .user-dropdown p {

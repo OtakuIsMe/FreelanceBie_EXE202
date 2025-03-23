@@ -187,7 +187,16 @@
 	position: relative;
 }
 
-#post-manage .jobs-container .job-card .status-edit-btn .status-type .status::before {
+#post-manage .jobs-container .job-card .status-edit-btn .status-type .status:focus {
+	outline: none;
+}
+
+#post-manage .jobs-container .job-card .status-edit-btn .status-type .status option {
+	background-color: white;
+	color: black;
+}
+
+/* #post-manage .jobs-container .job-card .status-edit-btn .status-type .status::before {
 	content: '';
 	height: 90%;
 	width: 1px;
@@ -204,7 +213,7 @@
 #post-manage .jobs-container .job-card .status-edit-btn .status-type .status svg {
 	width: 15px;
 	height: 15px;
-}
+} */
 
 #post-manage .jobs-container .job-card .status-edit-btn .status-type .type {
 	color: rgb(153, 153, 153);

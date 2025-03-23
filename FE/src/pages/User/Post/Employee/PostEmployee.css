@@ -94,12 +94,12 @@
 	cursor: pointer;
 }
 
-#post-employee .title-status .status.actice svg {
-	color: #9bbe7f;
-}
-
 #post-employee .title-status .status svg {
 	color: #b4431e;
+}
+
+#post-employee .title-status .actice svg {
+	color: #9bbe7f;
 }
 
 #post-employee .title-status .edit {
@@ -223,7 +223,7 @@
 	border-bottom: 1px solid #d4d4d4;
 }
 
-#post-employee .count-action .status-hiring-filter .dropdown .filter.not {
+#post-employee .count-action .status-hiring-filter .dropdown .filter .not {
 	border-bottom: none;
 }
 
@@ -325,28 +325,79 @@
 
 #post-employee .freelancer .action-btns .btn {
 	width: 48%;
-	display: flex;
-	justify-content: center;
+	
 	border: 1px solid #d4d4d4;
 	border-radius: 5px;
 	padding: 6px;
 	box-sizing: border-box;
 	font-size: 14px;
-	align-items: center;
 	cursor: pointer;
+}
+
+#post-employee .freelancer .action-btns .btn div {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+}
+
+#post-employee .freelancer .action-btns .btn p {
+	position: relative;
+	z-index: 2;
 }
 
 #post-employee .freelancer .action-btns .btn.accept {
 	color: #799e5b;
+	position: relative;
+	overflow: hidden;
 }
 
 #post-employee .freelancer .action-btns .btn.deny {
 	color: #b4431e;
+	position: relative;
+	overflow: hidden;
 }
 
-#post-employee .freelancer .action-btns .btn.active {
-	color: black;
-	background-color: #f4f6f8;
+#post-employee .freelancer .action-btns .btn.accept.active {
+	color: white;
+	background-color: #799e5b;
+}
+
+#post-employee .freelancer .action-btns .btn.deny.active {
+	color: white;
+	background-color: #b4431e;
+}
+
+#post-employee .freelancer .action-btns .btn.accept:hover,
+#post-employee .freelancer .action-btns .btn.deny:hover {
+	color: white;
+}
+
+#post-employee .freelancer .action-btns .btn.accept div::before,
+#post-employee .freelancer .action-btns .btn.deny div::before {
+	content: "";
+	width: 0%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-color: transparent;
+	transition: all 0.3s;
+	z-index: 1;
+}
+
+#post-employee .freelancer .action-btns .btn.accept:hover div::before,
+#post-employee .freelancer .action-btns .btn.deny:hover div::before {
+	width: 100%;
+	height: 100%;
+}
+
+#post-employee .freelancer .action-btns .btn.accept:hover div::before{
+	background-color: #799e5b;
+}
+
+#post-employee .freelancer .action-btns .btn.deny:hover div::before{
+    background-color: #b4431e;
 }
 
 #post-employee .freelancer .action-btns .btn svg {
