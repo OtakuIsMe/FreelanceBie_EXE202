@@ -9,10 +9,10 @@ const PaymentSuccess: React.FC = () => {
 
 	useEffect(() => {
 		const timer = setTimeout(() => {
-			navigate("/"); // Chuyển hướng sau 5 giây
+			navigate("/");
 		}, 5000);
 
-		return () => clearTimeout(timer); // Dọn dẹp khi component unmount
+		return () => clearTimeout(timer);
 	}, [navigate]);
 
 	return (

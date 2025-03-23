@@ -409,7 +409,7 @@ const PostJob: React.FC = () => {
 							{currentStep < 3 ? (
 								<button type="button" className="continue-btn" onClick={handleNextStep}>Continue</button>
 							) : (
-								<button type="submit" className="submit-btn" onClick={() => { setIsOpenPopup(true) }}>Submit</button>
+								<button type="submit" className="submit-btn" onClick={UploadJob}>Submit</button>
 							)}
 						</div>
 					</div>
