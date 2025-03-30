@@ -34,6 +34,9 @@ namespace BE.src.api.services
 		Task<IActionResult> GetUserById(Guid userId);
 		Task<IActionResult> CheckNotificationWhenPost(Guid userId);
 		Task<IActionResult> ListDesigner(int item, int page, int countImg);
+		Task<IActionResult> CheckApply(Guid userId, Guid jobId);
+		Task<IActionResult> CheckMembership(Guid userId);
+		Task<IActionResult> BuyMembership(Guid userId);
 	}
 	public class UserServ : IUserServ
 	{
@@ -655,6 +658,49 @@ namespace BE.src.api.services
 			try
 			{
 				return SuccessResp.Ok(await _userRepo.ListDesigner(item, page, countImg));
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+
+		public async Task<IActionResult> CheckApply(Guid userId, Guid jobId)
+		{
+			try
+			{
+				return SuccessResp.Ok(new
+				{
+					status = await _userRepo.CheckApply(userId, jobId)
+				});
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+
+		public async Task<IActionResult> CheckMembership(Guid userId)
+		{
+			try
+			{
+				return SuccessResp.Ok(new
+				{
+					status = await _userRepo.CheckMembership(userId)
+				});
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+
+		public async Task<IActionResult> BuyMembership(Guid userId)
+		{
+			try
+			{
+				await _userRepo.BuyMembership(userId);
+				return SuccessResp.Ok("buys success");
 			}
 			catch (System.Exception ex)
 			{

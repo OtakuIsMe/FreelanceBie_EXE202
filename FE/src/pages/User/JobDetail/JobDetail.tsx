@@ -22,9 +22,13 @@ interface JobPostProps {
 	employmentType: number;
 	files: FileProps[];
 }
+interface statusObj {
+	status: boolean
+}
 const JobDetail: React.FC = () => {
 	const { id } = useParams();
 	const [jobPosts, setJobPost] = useState<JobPostProps | null>(null)
+	const [isApply, setIsApply] = useState<boolean>(false)
 
 	const sameJobs = Array(4).fill({
 		company: "FPT Software",
@@ -36,7 +40,15 @@ const JobDetail: React.FC = () => {
 	});
 	useEffect(() => {
 		fetchingJobDetail();
+		CheckApply();
 	}, [id])
+
+	const CheckApply = async () => {
+		if (id) {
+			const data = await ApiGateway.CheckApply<statusObj>(id)
+			setIsApply(data.status)
+		}
+	}
 
 	const fetchingJobDetail = async () => {
 		console.log(id)
@@ -63,6 +75,7 @@ const JobDetail: React.FC = () => {
 				onScreen: true
 			}
 		});
+		setIsApply(true)
 	}
 
 	return (
@@ -84,6 +97,7 @@ const JobDetail: React.FC = () => {
 							employmentType={jobPosts.employmentType}
 							files={jobPosts.files}
 							applyNoti={handleApplySuccess}
+							isApply={isApply}
 						/>
 					)}
 				</div>

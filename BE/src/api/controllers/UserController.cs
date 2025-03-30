@@ -132,10 +132,33 @@ namespace BE.src.api.controllers
 			Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
 			return await _userServ.CheckNotificationWhenPost(userId);
 		}
+
 		[HttpGet("list-designer")]
 		public async Task<IActionResult> ListDesigner([FromQuery] int item, [FromQuery] int page, [FromQuery] int countImg)
 		{
 			return await _userServ.ListDesigner(item, page, countImg);
+		}
+
+		[Authorize(Policy = "Customer")]
+		[HttpGet("CheckApply")]
+		public async Task<IActionResult> CheckApply([FromQuery] Guid jobId)
+		{
+			Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
+			return await _userServ.CheckApply(userId, jobId);
+		}
+		[Authorize(Policy = "Customer")]
+		[HttpGet("CheckMembership")]
+		public async Task<IActionResult> CheckMembership()
+		{
+			Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
+			return await _userServ.CheckMembership(userId);
+		}
+		[Authorize(Policy = "Customer")]
+		[HttpPost("BuyMembership")]
+		public async Task<IActionResult> BuyMembership()
+		{
+			Guid userId = Guid.Parse(User.Claims.First(u => u.Type == "userId").Value);
+			return await _userServ.BuyMembership(userId);
 		}
 	}
 }

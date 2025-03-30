@@ -54,7 +54,16 @@ const ShotDetail = () => {
 			}
 		};
 
+		const fetchView = async (id: string | undefined) => {
+			if (id) {
+				const data = await ApiGateway.ViewControl(id);
+				console.log(data)
+			}
+		}
+
 		fetchData();
+		fetchView(id);
+
 	}, [id]);
 
 	const handleLikeClick = async () => {

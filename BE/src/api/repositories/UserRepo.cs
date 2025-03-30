@@ -35,6 +35,9 @@ namespace BE.src.api.repositories
 		Task<bool> AddImageVideo(ImageVideo img);
 		Task<bool> UpdateImageVideo(ImageVideo img);
 		Task<List<DesignerCard>> ListDesigner(int item, int page, int countImg);
+		Task<bool> CheckApply(Guid userId, Guid jobId);
+		Task<bool> CheckMembership(Guid userId);
+		Task BuyMembership(Guid userId);
 	}
 	public class UserRepo : IUserRepo
 	{
@@ -245,6 +248,28 @@ namespace BE.src.api.repositories
 								.FirstOrDefault() ?? ""
 				})
 				.ToListAsync();
+		}
+
+		public async Task<bool> CheckApply(Guid userId, Guid jobId)
+		{
+			return await _context.UserApplies.AnyAsync(i => i.UserId == userId && i.PostId == jobId);
+		}
+
+		public async Task<bool> CheckMembership(Guid userId)
+		{
+			return await _context.MemberUsers.AnyAsync(i => i.UserId == userId);
+		}
+
+		public async Task BuyMembership(Guid userId)
+		{
+			var membershipUser = new MembershipUser
+			{
+				UserId = userId,
+				MembershipId = Guid.Parse("5c8d3a6f-7e4b-4d2a-b1c9-e3f7d5b4a2c8") // Sử dụng Guid.Parse()
+			};
+
+			await _context.MemberUsers.AddAsync(membershipUser);
+			await _context.SaveChangesAsync();
 		}
 	}
 }

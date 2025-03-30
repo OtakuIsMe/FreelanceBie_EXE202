@@ -8,6 +8,7 @@ import PDF from '../../../assets/pdf.png'
 import DOCX from '../../../assets/docx.png'
 import CheckOut from '../../../components/CheckOut/CheckOut';
 import { ApiGateway } from '../../../services/api/ApiService';
+import Utils from '../../../helper/Utils';
 
 export interface postData {
 	title: string;
@@ -145,9 +146,42 @@ const PostJob: React.FC = () => {
 	};
 
 	const UploadJob = async () => {
-		const response = await ApiGateway.AddPostJob(data);
-		console.log(response)
-	}
+		// Tách dữ liệu: Loại bỏ `companyLogo` và `files`
+		const { companyLogo, files, ...postDataWithoutFiles } = data;
+
+		// Lưu dữ liệu text vào localStorage
+		localStorage.setItem("pendingPostJob", JSON.stringify(postDataWithoutFiles));
+
+		// Lưu File vào sessionStorage dưới dạng Base64
+		if (companyLogo) {
+			const reader = new FileReader();
+			reader.onload = () => {
+				sessionStorage.setItem("pendingPostJob_companyLogo", reader.result as string);
+			};
+			reader.readAsDataURL(companyLogo);
+		}
+
+		if (files) {
+			files.forEach((file, index) => {
+				const reader = new FileReader();
+				reader.onload = () => {
+					sessionStorage.setItem(`pendingPostJob_files_${index}`, reader.result as string);
+				};
+				reader.readAsDataURL(file);
+			});
+		}
+
+		// Gọi API tạo payment URL
+		const url = await ApiGateway.PaymentUrl(
+			Utils.generateRandomCode(),
+			Utils.convertUsdToVnd(1),
+			"Add post",
+			"post"
+		);
+
+		// Chuyển hướng đến trang thanh toán
+		window.location.href = url;
+	};
 
 	return (
 		<div id="post-job">
@@ -398,6 +432,7 @@ const PostJob: React.FC = () => {
 									employmentType={data.employmentType}
 									files={data.files}
 									applyNoti={() => { }}
+									isApply={false}
 								/>
 							</>
 						)}

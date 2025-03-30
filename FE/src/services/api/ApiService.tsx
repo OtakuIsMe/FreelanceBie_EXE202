@@ -3,7 +3,7 @@ import { postData } from "../../pages/User/PostJob/PostJob";
 import CryptoJS from "crypto-js";
 
 export class ApiGateway {
-	public static readonly API_Base: string = import.meta.env.VITE_API_SERVICE;
+	public static readonly API_Base: string = import.meta.env.VITE_API_SERVICE + 'api/v1/';
 	private static axiosInstance: AxiosInstance = axios.create({
 		baseURL: ApiGateway.API_Base,
 		headers: {
@@ -379,14 +379,14 @@ export class ApiGateway {
 		}
 	}
 
-	public static async PaymentUrl(id: number, amount: number, description: string) {
+	public static async PaymentUrl(id: number, amount: number, description: string, transactionType: string) {
 		this.setAuthHeader()
 		try {
 			const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
 			const API_KEY = import.meta.env.VITE_API_KEY;
 			const CHECKSUM_KEY = import.meta.env.VITE_CHECKSUM_KEY;
 			const CANCLE_URL = import.meta.env.VITE_API_CLIENT + "cancel-payment"
-			const RETURN_URL = import.meta.env.VITE_API_CLIENT + "payment-success"
+			const RETURN_URL = import.meta.env.VITE_API_CLIENT + `payment-success?transactionType=${transactionType}`
 
 			const rawData = `amount=${amount}&cancelUrl=${CANCLE_URL}&description=${description}&orderCode=${id}&returnUrl=${RETURN_URL}`;
 
@@ -408,6 +408,48 @@ export class ApiGateway {
 				}
 			});
 			return response.data.data.checkoutUrl
+		} catch (error) {
+			console.error("Error List Designer:", error)
+			throw error;
+		}
+	}
+	public static async ViewControl<T>(shotId: string) {
+		this.setAuthHeader();
+		try {
+			const response = await this.axiosInstance.get<T>(`shot/ViewControl?shotId=${shotId}`);
+			return response.data
+		} catch (error) {
+			console.error("Error List Designer:", error)
+			throw error;
+		}
+	}
+
+	public static async BuyMembership<T>() {
+		this.setAuthHeader();
+		try {
+			const response = await this.axiosInstance.post<T>(`user/BuyMembership`)
+			return response.data
+		} catch (error) {
+			console.error("Error List Designer:", error)
+			throw error;
+		}
+	}
+
+	public static async CheckMembership<T>() {
+		this.setAuthHeader();
+		try {
+			const response = await this.axiosInstance.get<T>(`user/CheckMembership`)
+			return response.data
+		} catch (error) {
+			console.error("Error List Designer:", error)
+			throw error;
+		}
+	}
+	public static async CheckApply<T>(id: string) {
+		this.setAuthHeader();
+		try {
+			const response = await this.axiosInstance.get<T>(`user/CheckApply?jobId=${id}`)
+			return response.data
 		} catch (error) {
 			console.error("Error List Designer:", error)
 			throw error;

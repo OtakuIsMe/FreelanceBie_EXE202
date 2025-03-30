@@ -19,6 +19,7 @@ interface JobInfoProps {
 	employmentType: number;
 	files: File[] | FileProps[] | null;
 	applyNoti: () => void;
+	isApply: boolean;
 }
 
 export interface FileProps {
@@ -47,7 +48,8 @@ const JobInfo: React.FC<JobInfoProps> = (props) => {
 			<div className="job-header">
 				<div className="top">
 					<h1>{props.title}</h1>
-					<button className="apply-button" onClick={handleApplyClick}>Apply Now</button>
+					<button className="apply-button" onClick={handleApplyClick} disabled={props.isApply}>
+						{props.isApply ? "Applied" : "Apply Now"}</button>
 				</div>
 				<div className="bottom">
 					<div className="img-container">
