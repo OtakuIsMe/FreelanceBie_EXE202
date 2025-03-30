@@ -57,7 +57,7 @@ const Inspiration: React.FC = () => {
 		if (target.isIntersecting && !loading && hasMore) {
 			const now = Date.now();
 			const timeSinceLastFetch = now - lastFetchTime;
-			
+
 			// Ensure at least 1s has passed since the last fetch
 			if (timeSinceLastFetch >= 1000) {
 				loadMoreShots();
@@ -75,13 +75,13 @@ const Inspiration: React.FC = () => {
 			rootMargin: "20px",
 			threshold: 0
 		};
-		
+
 		const observer = new IntersectionObserver(handleObserver, option);
-		
+
 		if (loader.current) {
 			observer.observe(loader.current);
 		}
-		
+
 		return () => {
 			if (loader.current) {
 				observer.unobserve(loader.current);
@@ -94,7 +94,7 @@ const Inspiration: React.FC = () => {
 		try {
 			const data = await ApiGateway.ListShot<ShotView[]>(pageNum, 10);
 			setLastFetchTime(Date.now());
-			
+
 			if (data.length === 0) {
 				setHasMore(false);
 			} else {

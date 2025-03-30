@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-import Tag from '../Tag/Tag'
+import React from 'react'
 import './Designer.css'
 import { Link, useLocation } from 'react-router-dom';
 import { ApiGateway } from '../../../services/api/ApiService';
@@ -18,15 +17,10 @@ interface GetInTouchRp {
 	communicationId: string
 }
 
-const Designer: React.FC<Designer> = ({ id, avatarURL, name, place, isSaved, specialty, products }) => {
-
-	const [hideSkills, setHideSkills] = useState(true)
+const Designer: React.FC<Designer> = ({ id, avatarURL, name, place, products }) => {
 
 	const location = useLocation();
 
-	function hideShillToggle() {
-		setHideSkills(!hideSkills);
-	}
 
 	const handleGetInTouchClick = async () => {
 		console.log(id)
@@ -71,7 +65,7 @@ const Designer: React.FC<Designer> = ({ id, avatarURL, name, place, isSaved, spe
 						)}
 					</div>
 				</div>
-				<div className="card-section user-skills">
+				{/* <div className="card-section user-skills">
 					<div className="skill-container">
 						{
 							(specialty.length > 3 && hideSkills) ? specialty.slice(0, 3).map((specialty, index) =>
@@ -90,7 +84,7 @@ const Designer: React.FC<Designer> = ({ id, avatarURL, name, place, isSaved, spe
 								<span onClick={() => hideShillToggle()} style={{ paddingLeft: '5px' }}>Hide</span>
 						}
 					</div>
-				</div>
+				</div> */}
 			</div>
 		</div>
 	)
