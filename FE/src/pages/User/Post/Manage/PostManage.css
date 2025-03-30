@@ -17,7 +17,32 @@
 }
 
 #post-manage .manage-container .title-container {
+	display: flex;
+	justify-content: space-between;
 	margin-bottom: 15px;
+}
+
+#post-manage .manage-container .title-container .add-project {
+	color: white;
+	background-color: #9bbe7f;
+	font-size: 13px;
+	display: flex;
+	align-items: center;
+	padding: 5px 10px 5px 6px;
+	font-weight: 700;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+}
+
+#post-manage .manage-container .title-container .add-project:hover {
+	background-color: #83af5e;
+}
+
+#post-manage .manage-container .title-container .add-project svg {
+	width: 20px;
+	height: 20px;
+	margin-right: 2px;
 }
 
 #post-manage .manage-container .title-container .title {

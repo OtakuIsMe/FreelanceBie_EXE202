@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '../../../../components/Header/Header';
 import './PostManage.css';
 import Stack from '@mui/material/Stack';
@@ -29,6 +30,7 @@ interface DropdownBarProp {
 }
 
 const PostManage: React.FC = () => {
+    const navigate = useNavigate();
     const [jobs, setJobs] = useState<jobCard[]>([])
 
     useEffect(() => {
@@ -191,6 +193,11 @@ const PostManage: React.FC = () => {
             <div className="manage-container">
                 <div className="title-container">
                     <p className="title">Post Opening</p>
+                    
+					<button className="add-project" onClick={() => navigate('/post-job')}>
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M5 13v-1h6V6h1v6h6v1h-6v6h-1v-6z" /></svg>
+						Post
+					</button>
                 </div>
                 <div className="status-counting">
                     <div className="status open">

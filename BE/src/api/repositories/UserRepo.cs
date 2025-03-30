@@ -243,6 +243,7 @@ namespace BE.src.api.repositories
 					Price = u.Price,
 					Place = u.Place,
 					Username = u.Username,
+					UserId = u.Id,
 					UserImage = u.ImageVideos
 								.Select(iv => iv.Url)
 								.FirstOrDefault() ?? ""

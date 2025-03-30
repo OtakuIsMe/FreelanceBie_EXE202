@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import Header from '../../../components/Header/Header'
 import Explore from '../../../components/Cards/Explore/Explore'
 import Tag from '../../../components/Cards/Tag/Tag'
+import CircularProgress from '@mui/material/CircularProgress';
 import './Inspiration.css'
 import { ApiGateway } from '../../../services/api/ApiService'
 import { Link, useLocation } from "react-router-dom";
@@ -20,8 +21,12 @@ interface ShotView {
 
 const Inspiration: React.FC = () => {
 	const location = useLocation();
-
-	const [shots, setShots] = useState<ShotView[]>([])
+	const [shots, setShots] = useState<ShotView[]>([]);
+	const [page, setPage] = useState<number>(1);
+	const [loading, setLoading] = useState<boolean>(false);
+	const [hasMore, setHasMore] = useState<boolean>(true);
+	const [lastFetchTime, setLastFetchTime] = useState<number>(0);
+	const loader = useRef<HTMLDivElement>(null);
 
 	const tags = [
 		{ tag: 'Landing Page' },
@@ -41,13 +46,76 @@ const Inspiration: React.FC = () => {
 	]);
 	const [suggestedText, setSuggestedText] = useState<string>('');
 
+	// Fetch initial shots
 	useEffect(() => {
-		fetchShots()
-	}, [])
+		fetchShots(1);
+	}, []);
 
-	const fetchShots = async () => {
-		const data = await ApiGateway.ListShot<ShotView[]>(1, 10)
-		setShots(data)
+	// Setup intersection observer for infinite scrolling
+	const handleObserver = useCallback((entries: IntersectionObserverEntry[]) => {
+		const target = entries[0];
+		if (target.isIntersecting && !loading && hasMore) {
+			const now = Date.now();
+			const timeSinceLastFetch = now - lastFetchTime;
+			
+			// Ensure at least 1s has passed since the last fetch
+			if (timeSinceLastFetch >= 1000) {
+				loadMoreShots();
+			} else {
+				// If less than 1s has passed, wait for the remaining time
+				const timeToWait = 1000 - timeSinceLastFetch;
+				setTimeout(loadMoreShots, timeToWait);
+			}
+		}
+	}, [loading, hasMore, lastFetchTime]);
+
+	useEffect(() => {
+		const option = {
+			root: null,
+			rootMargin: "20px",
+			threshold: 0
+		};
+		
+		const observer = new IntersectionObserver(handleObserver, option);
+		
+		if (loader.current) {
+			observer.observe(loader.current);
+		}
+		
+		return () => {
+			if (loader.current) {
+				observer.unobserve(loader.current);
+			}
+		};
+	}, [handleObserver]);
+
+	const fetchShots = async (pageNum: number) => {
+		setLoading(true);
+		try {
+			const data = await ApiGateway.ListShot<ShotView[]>(pageNum, 10);
+			setLastFetchTime(Date.now());
+			
+			if (data.length === 0) {
+				setHasMore(false);
+			} else {
+				if (pageNum === 1) {
+					setShots(data);
+				} else {
+					setShots(prevShots => [...prevShots, ...data]);
+				}
+				setPage(pageNum);
+			}
+		} catch (error) {
+			console.error("Error fetching shots:", error);
+		} finally {
+			setLoading(false);
+		}
+	}
+
+	const loadMoreShots = () => {
+		if (!loading && hasMore) {
+			fetchShots(page + 1);
+		}
 	}
 
 	const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,7 +165,6 @@ const Inspiration: React.FC = () => {
 						<p>Ready to bring your vision to life with local expertise and creative excellence</p>
 					</div>
 					<div className="search">
-						{/* <input type="text" placeholder='Looking for inspiration?' value={searchString}/> */}
 						<input
 							type="text"
 							value={searchString}
@@ -140,6 +207,9 @@ const Inspiration: React.FC = () => {
 								<Explore username={shot.user.username} liked={shot.countLike} viewed={shot.countView} img={shot.image} />
 							</Link>
 						)}
+					</div>
+					<div ref={loader} className="loading-container">
+						{loading && <CircularProgress />}
 					</div>
 				</div>
 			</div>

@@ -2,8 +2,10 @@ import React, { useState } from 'react'
 import Tag from '../Tag/Tag'
 import './Designer.css'
 import { Link, useLocation } from 'react-router-dom';
+import { ApiGateway } from '../../../services/api/ApiService';
 
 interface Designer {
+	id: string,
 	avatarURL: string,
 	name: string,
 	place?: string | null,
@@ -12,7 +14,11 @@ interface Designer {
 	products: { id: string; image: string }[]
 }
 
-const Designer: React.FC<Designer> = ({ avatarURL, name, place, isSaved, specialty, products }) => {
+interface GetInTouchRp {
+	communicationId: string
+}
+
+const Designer: React.FC<Designer> = ({ id, avatarURL, name, place, isSaved, specialty, products }) => {
 
 	const [hideSkills, setHideSkills] = useState(true)
 
@@ -20,6 +26,17 @@ const Designer: React.FC<Designer> = ({ avatarURL, name, place, isSaved, special
 
 	function hideShillToggle() {
 		setHideSkills(!hideSkills);
+	}
+
+	const handleGetInTouchClick = async () => {
+		console.log(id)
+		if (id) {
+			console.log(id)
+			const data = await ApiGateway.GetInTouch<GetInTouchRp>(id)
+			if (data) {
+				window.location.href = `/messages/${data.communicationId}`
+			}
+		}
 	}
 
 	return (
@@ -34,13 +51,7 @@ const Designer: React.FC<Designer> = ({ avatarURL, name, place, isSaved, special
 						</div>
 					</div>
 					<div className='second-part'>
-						<div className="saved-icon">
-							{!isSaved && <svg width="15" height="80" viewBox="0 0 125 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-								<path d="M0 10C0 4.47716 4.47715 0 10 0H115C120.523 0 125 4.47715 125 10V200L62.5 150L0 200V10Z" fill="#FD73DA" />
-							</svg>
-							}
-						</div>
-						<div className='contact-btn'>
+						<div className='contact-btn' onClick={() => handleGetInTouchClick()}>
 							Contact
 						</div>
 					</div>

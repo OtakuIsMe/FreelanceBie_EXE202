@@ -110,7 +110,8 @@
 }
 
 #messages .nav .time {
-	font-size: 15px;
+	font-size: .8rem;
+	color: #A0A0A0;
 }
 
 #messages .message-container {

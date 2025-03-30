@@ -164,23 +164,25 @@ const Messages: React.FC = () => {
 		<div id="messages">
 			<div className="logo-search block">
 				<a href="/" className="logo">FreelanceBie</a>
-				<div className="search">
+				{/* <div className="search">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="m21 21l-4.343-4.343m0 0A8 8 0 1 0 5.343 5.343a8 8 0 0 0 11.314 11.314" stroke-width="1" /></svg>
-				</div>
+				</div> */}
 			</div>
 			<div className="user-control-bar block">
-				<div className="user-info-container">
-					<img src={messages?.partner.userImage} alt="" className="user-image" />
-					<div className="info-status">
-						<p className="name">{messages?.partner.username}</p>
-						<p className="status">
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48"><path fill="#4dc953" stroke="#4dc953" stroke-width="4" d="M24 33a9 9 0 1 0 0-18a9 9 0 0 0 0 18Z" /></svg>Online
-						</p>
+				{id &&
+					<div className="user-info-container">
+						<img src={messages?.partner.userImage} alt="" className="user-image" />
+						<div className="info-status">
+							<p className="name">{messages?.partner.username}</p>
+							<p className="status">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48"><path fill="#4dc953" stroke="#4dc953" stroke-width="4" d="M24 33a9 9 0 1 0 0-18a9 9 0 0 0 0 18Z" /></svg>Online
+							</p>
+						</div>
 					</div>
-				</div>
-				<div className="detail">
-					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48"><g fill="none"><path stroke="#b6b6b6" stroke-linejoin="round" stroke-width="4" d="M24 44c11.046 0 20-8.954 20-20S35.046 4 24 4S4 12.954 4 24s8.954 20 20 20Z" /><circle cx="14" cy="24" r="3" fill="#b6b6b6" /><circle cx="24" cy="24" r="3" fill="#b6b6b6" /><circle cx="34" cy="24" r="3" fill="#b6b6b6" /></g></svg>
-				</div>
+					/* <div className="detail">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48"><g fill="none"><path stroke="#b6b6b6" stroke-linejoin="round" stroke-width="4" d="M24 44c11.046 0 20-8.954 20-20S35.046 4 24 4S4 12.954 4 24s8.954 20 20 20Z" /><circle cx="14" cy="24" r="3" fill="#b6b6b6" /><circle cx="24" cy="24" r="3" fill="#b6b6b6" /><circle cx="34" cy="24" r="3" fill="#b6b6b6" /></g></svg>
+					</div> */
+				}
 			</div>
 			<div className="navbar block">
 				<div className="title-nav">
@@ -198,7 +200,13 @@ const Messages: React.FC = () => {
 										<p className="username">{nav.username}</p>
 										<p className="message">{nav.lastMessage}</p>
 									</div>
-									<div className="time">{nav.lastMessageTime}</div>
+									<div className="time">{new Date(nav.lastMessageTime).toLocaleString("vi-VN", {
+										hour: "2-digit",
+										minute: "2-digit",
+										day: "2-digit",
+										month: "2-digit",
+										year: "numeric",
+									})}</div>
 								</div>
 							</div>
 						)
@@ -206,73 +214,83 @@ const Messages: React.FC = () => {
 				</div>
 			</div>
 			<div className="message-container block">
-				<div className="messages">{
-					messages && (
-						<>
-							{
-								groupMessages(messages).map((userMes, index) => {
-									return (<>
-										{userMes.isSelf ? (
-											<div className="message-block right" key={index}>
-												<div className="name-message">
-													<div className="name-time">
-														<span className='time'>{userMes.messages[0].createAt}</span>
-														<span className="name">{userMes.username}</span>
+				{id && 
+				<>
+					<div className="messages">{
+						messages && (
+							<>
+								{
+									groupMessages(messages).map((userMes, index) => {
+										return (<>
+											{userMes.isSelf ? (
+												<div className="message-block right" key={index}>
+													<div className="name-message">
+														<div className="name-time">
+															<span className='time'>{new Date(userMes.messages[0].createAt).toLocaleString("vi-VN", {
+																hour: "2-digit",
+																minute: "2-digit",
+																day: "2-digit",
+																month: "2-digit",
+																year: "numeric",
+															})}</span>
+															<span className="name">{userMes.username}</span>
+														</div>
+														<div className="messages-show">
+															{userMes.messages.map((mes, index) => {
+																return (
+																	<div key={index} className="message">
+																		{mes.message}
+																	</div>
+																)
+															})}
+														</div>
 													</div>
-													<div className="messages-show">
-														{userMes.messages.map((mes, index) => {
-															return (
-																<div key={index} className="message">
-																	{mes.message}
-																</div>
-															)
-														})}
-													</div>
-												</div>
-												<div className="user-container">
-													<img src={userMes.userImage} alt="" />
-												</div>
-											</div>
-										) : (
-											<div className="message-block left">
-												<div className="user-container">
-													<img src={userMes.userImage} alt="" />
-												</div>
-												<div className="name-message">
-													<div className="name-time">
-														<span className="name">{userMes.username}</span>
-														<span className='time'>{userMes.messages[0].createAt}</span>
-													</div>
-													<div className="messages-show">
-														{userMes.messages.map((mes, index) => {
-															return (
-																<div key={index} className="message">
-																	{mes.message}
-																</div>
-															)
-														})}
+													<div className="user-container">
+														<img src={userMes.userImage} alt="" />
 													</div>
 												</div>
-											</div>
+											) : (
+												<div className="message-block left">
+													<div className="user-container">
+														<img src={userMes.userImage} alt="" />
+													</div>
+													<div className="name-message">
+														<div className="name-time">
+															<span className="name">{userMes.username}</span>
+															<span className='time'>{userMes.messages[0].createAt}</span>
+														</div>
+														<div className="messages-show">
+															{userMes.messages.map((mes, index) => {
+																return (
+																	<div key={index} className="message">
+																		{mes.message}
+																	</div>
+																)
+															})}
+														</div>
+													</div>
+												</div>
+											)
+											}
+										</>
 										)
-										}
-									</>
-									)
-								})
-							}
-						</>
-					)
-				}
-				</div>
-				<div className="input-message">
-					<div className="input-bar">
-						<svg className='micro' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 56 56"><path fill="#a3a3a3" d="M35.102 28V11.266c0-4.336-2.93-7.547-7.102-7.547s-7.102 3.21-7.102 7.547V28c0 4.313 2.93 7.547 7.102 7.547s7.102-3.234 7.102-7.547M17.055 48.742c-.938 0-1.758.844-1.758 1.781c0 .938.82 1.758 1.758 1.758h21.89c.938 0 1.758-.82 1.758-1.758c0-.937-.82-1.78-1.758-1.78h-9.187v-5.134c8.531-.75 14.18-7.054 14.18-15.632v-5.508c0-.914-.82-1.711-1.735-1.711c-.914 0-1.71.797-1.71 1.71v5.509c0 7.148-5.157 12.398-12.493 12.398s-12.492-5.25-12.492-12.398v-5.508c0-.914-.797-1.711-1.711-1.711s-1.735.797-1.735 1.71v5.509c0 8.578 5.649 14.882 14.157 15.632v5.133Z" /></svg>
-						<input type="text" value={inputMes} onChange={(e) => { setInputMes(e.target.value) }} name="" id="" className="input" placeholder='Type a message' />
-						<div className="send-btn" onClick={handleSendBtn}>
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#a3a3a3" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.76 12H6.832m0 0c0-.275-.057-.55-.17-.808L4.285 5.814c-.76-1.72 1.058-3.442 2.734-2.591L20.8 10.217c1.46.74 1.46 2.826 0 3.566L7.02 20.777c-1.677.851-3.495-.872-2.735-2.591l2.375-5.378A2 2 0 0 0 6.83 12" /></svg>
+									})
+								}
+							</>
+						)
+					}
+					</div>
+					<div className="input-message">
+						<div className="input-bar">
+							<svg className='micro' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 56 56"><path fill="#a3a3a3" d="M35.102 28V11.266c0-4.336-2.93-7.547-7.102-7.547s-7.102 3.21-7.102 7.547V28c0 4.313 2.93 7.547 7.102 7.547s7.102-3.234 7.102-7.547M17.055 48.742c-.938 0-1.758.844-1.758 1.781c0 .938.82 1.758 1.758 1.758h21.89c.938 0 1.758-.82 1.758-1.758c0-.937-.82-1.78-1.758-1.78h-9.187v-5.134c8.531-.75 14.18-7.054 14.18-15.632v-5.508c0-.914-.82-1.711-1.735-1.711c-.914 0-1.71.797-1.71 1.71v5.509c0 7.148-5.157 12.398-12.493 12.398s-12.492-5.25-12.492-12.398v-5.508c0-.914-.797-1.711-1.711-1.711s-1.735.797-1.735 1.71v5.509c0 8.578 5.649 14.882 14.157 15.632v5.133Z" /></svg>
+							<input type="text" value={inputMes} onChange={(e) => { setInputMes(e.target.value) }} onKeyDown={(e) => {if (e.key === "Enter") {handleSendBtn();}}} name="" id="" className="input" placeholder='Type a message' />
+							<div className="send-btn" onClick={handleSendBtn}>
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#a3a3a3" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.76 12H6.832m0 0c0-.275-.057-.55-.17-.808L4.285 5.814c-.76-1.72 1.058-3.442 2.734-2.591L20.8 10.217c1.46.74 1.46 2.826 0 3.566L7.02 20.777c-1.677.851-3.495-.872-2.735-2.591l2.375-5.378A2 2 0 0 0 6.83 12" /></svg>
+							</div>
 						</div>
 					</div>
-				</div>
+				</>
+				}
 			</div>
 		</div>
 	)
