@@ -22,8 +22,30 @@
 }
 
 #designer_card>.des-container>.user-info>.second-part>div {
+	border-radius: 999px;
+	border: 1px solid rgb(231, 231, 233);
+	width: 40px;
+	height: 40px;
 	display: flex;
 	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+}
+
+#designer_card>.des-container>.user-info>.second-part>.contact-btn {
+	width: fit-content;
+	padding: 0 15px;
+	color: white;
+	background-color: #0d0c22;
+	font-weight: 600;
+	border: 1px solid #0d0c22;
+	font-size: 13px;
+	transition: all .3s;
+}
+
+#designer_card>.des-container>.user-info>.second-part>.contact-btn:hover {
+	background-color: #2f2f2f;
+	border-color: #2f2f2f;
 }
 
 #designer_card>.des-container>.user-info>div>div>p:first-child {

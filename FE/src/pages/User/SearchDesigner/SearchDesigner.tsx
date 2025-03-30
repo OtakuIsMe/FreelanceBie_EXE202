@@ -5,6 +5,7 @@ import './SearchDesigner.css'
 import { ApiGateway } from '../../../services/api/ApiService'
 
 interface DesignerCard {
+	userId: string;
 	shots: { id: string; image: string }[];
 	specialties: string[];
 	price?: number | null;
@@ -14,7 +15,6 @@ interface DesignerCard {
 }
 
 const SearchDesigner = () => {
-
 
 	// const categories = [
 	// 	'All',
@@ -33,6 +33,7 @@ const SearchDesigner = () => {
 	const fetchDesigners = async () => {
 		const data = await ApiGateway.ListDesigner<DesignerCard[]>(4, 1, 4);
 		setDesigners(data);
+		console.log(data);
 	}
 
 	useEffect(() => {
@@ -49,16 +50,16 @@ const SearchDesigner = () => {
 				</div>
 				<div className="search-filter section">
 					{/* <div className="toggle-bar">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  className={`toggle-button ${active === category ? 'active' : ''}`}
-                  onClick={() => handleToggle(category)}
-                >
-                  {category}
-                </button>
-              ))}
-            </div> */}
+						{categories.map((category) => (
+							<button
+							key={category}
+							className={`toggle-button ${active === category ? 'active' : ''}`}
+							onClick={() => handleToggle(category)}
+							>
+							{category}
+							</button>
+						))}
+					</div> */}
 					<div className="addition">
 						<div className='location'>
 							<label>
@@ -80,6 +81,7 @@ const SearchDesigner = () => {
 					{designers.map((designer, index) =>
 						<Designer
 							key={index}
+							id={designer.userId}
 							avatarURL={designer.userImage}
 							name={designer.username}
 							place={designer.place}

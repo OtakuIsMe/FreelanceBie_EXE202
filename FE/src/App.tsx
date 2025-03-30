@@ -56,7 +56,7 @@ function MainRoutes() {
 					<Route path='manage' element={<PostManage />} />
 					<Route path='employee' element={<PostEmployee />} />
 				</Route>
-				<Route path='/messages/:id' element={<Messages />} />
+				<Route path='/messages/:id?' element={<Messages />} />
 				<Route path='/cancel-payment' element={<PaymentCancel />} />
 				<Route path='/payment-success' element={<PaymentSuccess />} />
 			</Routes>

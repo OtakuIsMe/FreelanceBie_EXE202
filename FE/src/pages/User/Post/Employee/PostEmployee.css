@@ -13,7 +13,7 @@
 
 #post-employee .btn-actions {
 	display: flex;
-	justify-content: space-between;
+	justify-content: left;
 	margin-bottom: 40px;
 	align-items: center;
 }
@@ -39,28 +39,6 @@
 	margin-right: 10px;
 	width: 15px;
 	height: 15px;
-}
-
-#post-employee .btn-actions .add-project {
-	color: white;
-	background-color: #9bbe7f;
-	font-size: 13px;
-	display: flex;
-	align-items: center;
-	padding: 5px 10px 5px 6px;
-	font-weight: 700;
-	border-radius: 6px;
-	cursor: pointer;
-}
-
-#post-employee .btn-actions .add-project:hover {
-	background-color: #83af5e;
-}
-
-#post-employee .btn-actions .add-project svg {
-	width: 20px;
-	height: 20px;
-	margin-right: 2px;
 }
 
 #post-employee .title-status {

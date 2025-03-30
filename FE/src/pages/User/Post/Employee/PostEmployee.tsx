@@ -93,10 +93,6 @@ const PostEmployee: React.FC = () => {
 						<svg xmlns="http://www.w3.org/2000/svg" width="12" height="24" viewBox="0 0 12 24"><path fill="currentColor" fill-rule="evenodd" d="m3.343 12l7.071 7.071L9 20.485l-7.778-7.778a1 1 0 0 1 0-1.414L9 3.515l1.414 1.414z" /></svg>
 						Back to Posts
 					</button>
-					<button className="add-project">
-						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M5 13v-1h6V6h1v6h6v1h-6v6h-1v-6z" /></svg>
-						Post
-					</button>
 				</div>
 				<div className="title-status">
 					<p className="title">{post.title}</p>

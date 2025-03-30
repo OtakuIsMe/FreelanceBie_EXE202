@@ -8,6 +8,7 @@ namespace BE.src.api.domains.DTOs.User
 		public string? Place { get; set; } = null!;
 		public string Username { get; set; } = null!;
 		public string UserImage { get; set; } = null!;
+		public Guid UserId { get; set; }
 	}
 
 	public class ShotDesigner
