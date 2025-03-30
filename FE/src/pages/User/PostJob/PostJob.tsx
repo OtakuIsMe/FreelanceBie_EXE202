@@ -386,6 +386,7 @@ const PostJob: React.FC = () => {
 								<h3>Step 3</h3>
 								<h4>Confirm & Complete</h4>
 								<JobInfo
+									id=''
 									title={data.title}
 									description={data.description}
 									workType={data.workType}
@@ -396,6 +397,7 @@ const PostJob: React.FC = () => {
 									experience={data.experience}
 									employmentType={data.employmentType}
 									files={data.files}
+									applyNoti={() => { }}
 								/>
 							</>
 						)}

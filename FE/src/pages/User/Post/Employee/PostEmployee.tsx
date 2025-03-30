@@ -23,7 +23,6 @@ interface freelancerProp {
 	email: string
 }
 const PostEmployee: React.FC = () => {
-	const [hovered, setHovered] = useState<{ key: number, action: 'accept' | 'deny', isHovered: boolean } | null>(null);
 	const [searchParams] = useSearchParams();
 	const jobId = searchParams.get("q");
 
@@ -186,9 +185,9 @@ const PostEmployee: React.FC = () => {
 									</div>
 								</div>
 								<div className="action-btns">
-									<button 
+									<button
 										className={`accept btn ${freelancer.status === 0 ? "active" : ""}`}
-										onClick={() => { handleApplyStatus(freelancer.id, true)}}
+										onClick={() => { handleApplyStatus(freelancer.id, true) }}
 									>
 										{freelancer.status === 0 ? (
 											<div>
@@ -200,9 +199,9 @@ const PostEmployee: React.FC = () => {
 											</div>
 										)}
 									</button>
-									<button 
+									<button
 										className={`deny btn ${freelancer.status === 1 ? "active" : ""}`}
-										onClick={() => { handleApplyStatus(freelancer.id, false)}}
+										onClick={() => { handleApplyStatus(freelancer.id, false) }}
 									>
 										{freelancer.status === 1 ? (
 											<div>

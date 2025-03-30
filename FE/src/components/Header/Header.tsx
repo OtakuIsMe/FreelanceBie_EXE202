@@ -14,7 +14,6 @@ interface UserProps {
 }
 
 const Header = () => {
-	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 	const [isLoginOpen, setIsLoginOpen] = useState(false);
 	const [user, setUser] = useState<UserProps | null>(null);
 	const [type, setType] = useState<string>("Login");
@@ -47,7 +46,7 @@ const Header = () => {
 	return (
 		<header id="main_header">
 			<Link to="/" className="logo">FreelanceBie</Link>
-			<nav className={`navbar ${isMobileMenuOpen ? "open" : ""}`}>
+			<nav className={`navbar`}>
 				<ul>
 					<li>
 						<Link to="/inspiration">Explore</Link>

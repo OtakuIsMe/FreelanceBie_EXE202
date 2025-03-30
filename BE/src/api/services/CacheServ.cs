@@ -3,31 +3,32 @@ using StackExchange.Redis;
 
 namespace BE.src.api.services
 {
-    public interface ICacheService
-    {
-        Task<T?> Get<T>(string key);
-        Task Set<T>(string key, T value);
-        Task Set<T>(string key, T value, TimeSpan expiration);
-        Task<bool> Update<T>(string key, T value);
-        Task Remove(string key);
-        Task<bool> Exists(string key);
-        Task ClearWithPattern(string prefix);
-    }
+	public interface ICacheService
+	{
+		Task<T?> Get<T>(string key);
+		Task Set<T>(string key, T value);
+		Task Set<T>(string key, T value, TimeSpan expiration);
+		Task<bool> Update<T>(string key, T value);
+		Task Remove(string key);
+		Task<bool> Exists(string key);
+		Task ClearWithPattern(string prefix);
+		Task Increase(string key);
+	}
 	public class CacheServ : ICacheService
 	{
-        private readonly IDatabase _database;
-        private readonly string _redisKey = "be_server";
-        public CacheServ(IConnectionMultiplexer connectionMultiplexer)
-        {
-            _database = connectionMultiplexer.GetDatabase();
-        }
+		private readonly IDatabase _database;
+		private readonly string _redisKey = "be_server";
+		public CacheServ(IConnectionMultiplexer connectionMultiplexer)
+		{
+			_database = connectionMultiplexer.GetDatabase();
+		}
 
 		public Task ClearWithPattern(string prefix)
 		{
 			var endpoints = _database.Multiplexer.GetEndPoints();
-            var server = _database.Multiplexer.GetServer(endpoints.First());
-            var keys = server.Keys(pattern: $"{_redisKey}:{prefix}*").ToArray();
-            return _database.KeyDeleteAsync(keys);
+			var server = _database.Multiplexer.GetServer(endpoints.First());
+			var keys = server.Keys(pattern: $"{_redisKey}:{prefix}*").ToArray();
+			return _database.KeyDeleteAsync(keys);
 		}
 
 		public Task<bool> Exists(string key)
@@ -38,12 +39,17 @@ namespace BE.src.api.services
 		public async Task<T?> Get<T>(string key)
 		{
 			var value = await _database.StringGetAsync($"{_redisKey}:{key}");
-            if (value.IsNullOrEmpty)
-                return default(T);
+			if (value.IsNullOrEmpty)
+				return default(T);
 
-            return JsonSerializer.Deserialize<T>(value);
+			return JsonSerializer.Deserialize<T>(value);
 		}
 
+		public async Task Increase(string key)
+		{
+			string fullKey = $"{_redisKey}:{key}";
+			await _database.StringIncrementAsync(fullKey);
+		}
 		public Task Remove(string key)
 		{
 			return _database.KeyDeleteAsync($"{_redisKey}:{key}");
@@ -62,7 +68,7 @@ namespace BE.src.api.services
 		public Task<bool> Update<T>(string key, T value)
 		{
 			TimeSpan? timeSpan = _database.KeyTimeToLive($"{_redisKey}:{key}");
-            return _database.StringSetAsync($"{_redisKey}:{key}", JsonSerializer.Serialize(value), timeSpan);
+			return _database.StringSetAsync($"{_redisKey}:{key}", JsonSerializer.Serialize(value), timeSpan);
 		}
 	}
 }

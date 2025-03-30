@@ -1,11 +1,9 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import './Profile.css'
 import { MdEmail } from "react-icons/md";
 import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
-import avatarImg from '../../../assets/avatar.jpg'
 import { FiEdit2 } from 'react-icons/fi';
 import { ApiGateway } from '../../../services/api/ApiService';
-import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 
 interface ProfileData {

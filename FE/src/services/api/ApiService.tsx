@@ -3,7 +3,7 @@ import { postData } from "../../pages/User/PostJob/PostJob";
 import CryptoJS from "crypto-js";
 
 export class ApiGateway {
-	public static readonly API_Base: string = 'http://localhost:5000/api/v1/';
+	public static readonly API_Base: string = import.meta.env.VITE_API_SERVICE;
 	private static axiosInstance: AxiosInstance = axios.create({
 		baseURL: ApiGateway.API_Base,
 		headers: {
@@ -385,8 +385,8 @@ export class ApiGateway {
 			const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
 			const API_KEY = import.meta.env.VITE_API_KEY;
 			const CHECKSUM_KEY = import.meta.env.VITE_CHECKSUM_KEY;
-			const CANCLE_URL = "http://localhost:5173/cancel-payment"
-			const RETURN_URL = "http://localhost:5173/payment-success"
+			const CANCLE_URL = import.meta.env.VITE_API_CLIENT + "cancel-payment"
+			const RETURN_URL = import.meta.env.VITE_API_CLIENT + "payment-success"
 
 			const rawData = `amount=${amount}&cancelUrl=${CANCLE_URL}&description=${description}&orderCode=${id}&returnUrl=${RETURN_URL}`;
 

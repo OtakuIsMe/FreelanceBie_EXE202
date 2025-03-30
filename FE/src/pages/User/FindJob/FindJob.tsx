@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { IoSearch } from "react-icons/io5";
 import Header from "../../../components/Header/Header";
 import Job from "../../../components/Cards/Job/Job";
-import FPTLogo from "../../../assets/logo-fpt.jpg";
 import "./FindJob.css";
 import { ApiGateway } from "../../../services/api/ApiService";
+import { Link, useLocation } from "react-router-dom";
 
 interface jobcard {
 	id: string,
@@ -18,6 +18,7 @@ interface jobcard {
 const FindJob: React.FC = () => {
 
 	const [jobPosts, setJobPosts] = useState<jobcard[]>([]);
+	const location = useLocation();
 
 	useEffect(() => {
 		fetchingPosts()
@@ -41,7 +42,11 @@ const FindJob: React.FC = () => {
 					<p style={{ fontSize: "1.2em", fontWeight: '600' }}>Recent Post</p>
 					<div className="job-list">
 						{jobPosts.map((job, index) => (
-							<a href={`/job-detail/${job.id}`}>
+							<Link
+								key={index}
+								to={`/job-detail/${job.id}`}
+								state={{ background: location }}
+							>
 								<Job
 									key={index}
 									img={job.companyLogo}
@@ -51,7 +56,7 @@ const FindJob: React.FC = () => {
 									timePosted={job.lastPosted}
 									mini={false}
 								/>
-							</a>
+							</Link>
 						))}
 					</div>
 				</div>

@@ -86,5 +86,16 @@ namespace BE.src.api.controllers
 		{
 			return await _shotServ.ListShotView(page, count);
 		}
+
+		[HttpGet("ViewControl")]
+		public async Task<IActionResult> ViewControl([FromQuery] Guid shotId)
+		{
+			return await _shotServ.ViewControl(shotId);
+		}
+		[HttpGet("ViewShot")]
+		public async Task<IActionResult> ViewShot([FromQuery] Guid shotId)
+		{
+			return await _shotServ.ViewsShot(shotId);
+		}
 	}
 }

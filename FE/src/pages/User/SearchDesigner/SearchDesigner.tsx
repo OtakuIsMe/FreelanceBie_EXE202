@@ -16,20 +16,19 @@ interface DesignerCard {
 const SearchDesigner = () => {
 
 
-	const categories = [
-		'All',
-		'Animation',
-		'Branding',
-		'Illustration',
-		'Mobile',
-		'Print',
-		'Product Design',
-		'Typography',
-		'Web Design',
-	];
+	// const categories = [
+	// 	'All',
+	// 	'Animation',
+	// 	'Branding',
+	// 	'Illustration',
+	// 	'Mobile',
+	// 	'Print',
+	// 	'Product Design',
+	// 	'Typography',
+	// 	'Web Design',
+	// ];
 
 	const [designers, setDesigners] = useState<DesignerCard[]>([]);
-	const [active, setActive] = useState<string>('All');
 
 	const fetchDesigners = async () => {
 		const data = await ApiGateway.ListDesigner<DesignerCard[]>(4, 1, 4);
@@ -39,10 +38,6 @@ const SearchDesigner = () => {
 	useEffect(() => {
 		fetchDesigners()
 	}, []);
-
-	const handleToggle = (category: string) => {
-		setActive(category);
-	};
 
 	return (
 		<div id='search_designer'>

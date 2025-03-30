@@ -23,6 +23,7 @@ namespace BE.src.api.repositories
 		Task<List<ShotView>> GetShotRandom(int index);
 		Task<List<ShotLiked>> GetShotLikeds(Guid userId);
 		Task<List<ShotView>> ListShotView(int page, int count);
+		Task AddViewShot(Guid shotId, int countViews);
 	}
 	public class ShotRepo : IShotRepo
 	{
@@ -223,5 +224,12 @@ namespace BE.src.api.repositories
 			return shotViews;
 		}
 
+		public async Task AddViewShot(Guid shotId, int countViews)
+		{
+			var shot = await GetShotById(shotId);
+			shot.View += countViews;
+			_context.Shots.Update(shot);
+			await _context.SaveChangesAsync();
+		}
 	}
 }

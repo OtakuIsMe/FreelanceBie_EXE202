@@ -4,6 +4,7 @@ using BE.src.api.domains.Model;
 using BE.src.api.helpers;
 using BE.src.api.repositories;
 using BE.src.api.shared.Type;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -20,6 +21,8 @@ namespace BE.src.api.services
 		Task<IActionResult> ShotRandom(int item);
 		Task<IActionResult> ListShotLiked(Guid userId);
 		Task<IActionResult> ListShotView(int page, int count);
+		Task<IActionResult> ViewControl(Guid shotId);
+		Task<IActionResult> ViewsShot(Guid shotId);
 	}
 	public class ShotServ : IShotServ
 	{
@@ -300,6 +303,35 @@ namespace BE.src.api.services
 			try
 			{
 				return SuccessResp.Ok(await _shotRepo.ListShotView(page, count));
+			}
+			catch (System.Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+
+		public async Task<IActionResult> ViewControl(Guid shotId)
+		{
+			try
+			{
+				string cacheKey = $"views_count:{shotId}";
+				await _cacheService.Increase(cacheKey);
+				return SuccessResp.Ok("view success");
+			}
+			catch (Exception ex)
+			{
+				return ErrorResp.BadRequest(ex.Message);
+			}
+		}
+
+		public async Task<IActionResult> ViewsShot(Guid shotId)
+		{
+			try
+			{
+				string cacheKey = $"views_count:{shotId}";
+				// await _cacheService.Remove(cacheKey);
+				return SuccessResp.Ok(await _cacheService.Get<int>(cacheKey));
+				// return SuccessResp.Ok("Hey");
 			}
 			catch (System.Exception ex)
 			{

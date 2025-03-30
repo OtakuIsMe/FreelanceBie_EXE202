@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { createContext, ReactNode, useContext } from "react";
 import { ApiGateway } from "../services/api/ApiService";
 
 interface AuthenContextProps {

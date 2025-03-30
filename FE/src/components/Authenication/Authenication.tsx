@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import './Authenication.css';
 import LoginSide from '../../assets/login-side.png'
 import { useAuthenContext } from '../../hooks/AuthenContext';

@@ -166,6 +166,8 @@ builder.Services.AddScoped<IAuthServ, AuthServ>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IChatServ, ChatServ>();
 
+builder.Services.AddHostedService<RedisPollingService>();
+
 builder.Services.AddSingleton(_ =>
 {
 	Console.WriteLine($"AZURE_KEY (after Env.Load()): {blogcConnectionString}");

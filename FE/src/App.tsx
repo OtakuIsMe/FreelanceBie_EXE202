@@ -47,7 +47,7 @@ function MainRoutes() {
 				<Route path="/post-job" element={<PostJob />} />
 				<Route path="/shot">
 					<Route path="edit" element={<ShotEdit />} />
-					<Route path='detail' element={<ShotDetail />} />
+					<Route path=':id' element={<ShotDetail />} />
 				</Route>
 				<Route path='/pro'>
 					<Route index element={<Pricing />} />
@@ -64,6 +64,7 @@ function MainRoutes() {
 				<Modal onClose={() => navigate(-1)}>
 					<Routes>
 						<Route path="/shot/:id" element={<ShotDetail />} />
+						<Route path='/job-detail/:id' element={<JobDetail />} />
 					</Routes>
 				</Modal>
 			)}

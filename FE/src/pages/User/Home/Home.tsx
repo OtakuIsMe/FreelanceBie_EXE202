@@ -69,7 +69,7 @@ export default function Home() {
 					<p className='title'>Specialties</p>
 					<div className="spec-container">
 						{spec.map((spec, index) =>
-							<Specialities type={spec.type} img={spec.image} />
+							<Specialities key={index} type={spec.type} img={spec.image} />
 						)}
 					</div>
 				</div>
