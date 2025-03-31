@@ -642,8 +642,8 @@ namespace BE.src.api.services
 					await _cacheService.Set("latest-post", post, TimeSpan.FromMinutes(5));
 				}
 
-				var eventMessage = new PostCreatedEvent(userId, cachedPost.Id, cachedPost.Title, DateTime.Now);
-				_eventBus.Publish(Queue.PostNotificationQueue, eventMessage);
+				// var eventMessage = new PostCreatedEvent(userId, cachedPost.Id, cachedPost.Title, DateTime.Now);
+				// _eventBus.Publish(Queue.PostNotificationQueue, eventMessage);
 
 				return SuccessResp.Ok("Notification sent successfully");
 			}

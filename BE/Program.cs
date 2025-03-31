@@ -19,7 +19,7 @@ using Newtonsoft.Json.Serialization;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Azure.Storage.Blobs;
-using RabbitMQ.Client;
+// using RabbitMQ.Client;
 using BE.src.api.domains.eventbus;
 using BE.src.api.domains.eventbus.Producers;
 using BE.src.api.domains.eventbus.Consumers;
@@ -232,18 +232,18 @@ builder.WebHost.ConfigureKestrel(options =>
 	options.ListenAnyIP(5149);
 });
 
-builder.Services.AddSingleton<IConnectionFactory>(sp =>
-{
-	return new ConnectionFactory()
-	{
-		HostName = BE.src.api.shared.Constant.Azure.RabbitMQHost,
-		Port = int.Parse(BE.src.api.shared.Constant.Azure.RabbitMQPort),
-		UserName = BE.src.api.shared.Constant.Azure.RabbitMQUsername,
-		Password = BE.src.api.shared.Constant.Azure.RabbitMQPassword
-	};
-});
-builder.Services.AddSingleton<IRabbitMQConnection, RabbitMQConnection>();
-builder.Services.AddSingleton<IEventBusRabbitMQProducer, EventBusRabbitMQProducer>();
+// builder.Services.AddSingleton<IConnectionFactory>(sp =>
+// {
+// 	return new ConnectionFactory()
+// 	{
+// 		HostName = BE.src.api.shared.Constant.Azure.RabbitMQHost,
+// 		Port = int.Parse(BE.src.api.shared.Constant.Azure.RabbitMQPort),
+// 		UserName = BE.src.api.shared.Constant.Azure.RabbitMQUsername,
+// 		Password = BE.src.api.shared.Constant.Azure.RabbitMQPassword
+// 	};
+// });
+// builder.Services.AddSingleton<IRabbitMQConnection, RabbitMQConnection>();
+// builder.Services.AddSingleton<IEventBusRabbitMQProducer, EventBusRabbitMQProducer>();
 builder.Services.AddHostedService<PostNotificationConsumer>();
 
 builder.Services.AddScoped<IElasticSeachServ<User>, ElasticSeachServ<User>>();
