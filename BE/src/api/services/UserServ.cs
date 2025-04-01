@@ -47,10 +47,10 @@ namespace BE.src.api.services
 		private readonly IPostRepo _postRepo;
 		private readonly INotificationRepo _notificationRepo;
 		private readonly ICacheService _cacheService;
-		private readonly IEventBusRabbitMQProducer _eventBus;
+		// private readonly IEventBusRabbitMQProducer _eventBus;
 		public UserServ(IUserRepo userRepo, IEmailServ emailServ, ISocialProfileRepo socialProfileRepo,
 						IMembershipRepo membershipRepo, IPostRepo postRepo, INotificationRepo notificationRepo,
-						ICacheService cacheService, IEventBusRabbitMQProducer eventBus)
+						ICacheService cacheService)
 		{
 			_userRepo = userRepo;
 			_emailServ = emailServ;
@@ -59,7 +59,6 @@ namespace BE.src.api.services
 			_postRepo = postRepo;
 			_notificationRepo = notificationRepo;
 			_cacheService = cacheService;
-			_eventBus = eventBus ?? throw new ApplicationException(nameof(eventBus));
 		}
 
 		public async Task<IActionResult> Login(LoginRq data)

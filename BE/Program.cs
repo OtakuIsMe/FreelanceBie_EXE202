@@ -244,7 +244,7 @@ builder.WebHost.ConfigureKestrel(options =>
 // });
 // builder.Services.AddSingleton<IRabbitMQConnection, RabbitMQConnection>();
 // builder.Services.AddSingleton<IEventBusRabbitMQProducer, EventBusRabbitMQProducer>();
-builder.Services.AddHostedService<PostNotificationConsumer>();
+// builder.Services.AddHostedService<PostNotificationConsumer>();
 
 builder.Services.AddScoped<IElasticSeachServ<User>, ElasticSeachServ<User>>();
 builder.Services.AddScoped<IElasticSeachServ<PostJob>, ElasticSeachServ<PostJob>>();
