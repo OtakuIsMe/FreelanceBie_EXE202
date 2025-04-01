@@ -229,7 +229,7 @@ const ShotEdit = () => {
 		<div id="Shot-edit">
 			<div className="body-edit">
 				<div className="control-btn">
-					<button type="button" className='btn cancel'>Cancel</button>
+					<button type="button" className='btn cancel' onClick={() => { window.location.href = '/profile' }}>Cancel</button>
 					<div className="save-continute">
 						<button type="button" className='btn save'>Save As Draft</button>
 						<button type="button" onClick={hanldeContinuteClick} className='btn continute'>Continute</button>

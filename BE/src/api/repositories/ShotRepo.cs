@@ -193,7 +193,7 @@ namespace BE.src.api.repositories
 			// Truy vấn dữ liệu trước
 			var shots = await _context.Shots
 				.OrderByDescending(s => s.View)
-				.Skip(page * count)
+				.Skip((page - 1) * count)
 				.Take(count)
 				.Include(s => s.User)
 				.Include(s => s.ImageVideos)
@@ -204,7 +204,6 @@ namespace BE.src.api.repositories
 			foreach (var item in shots)
 			{
 				var countLikeTask = await GetLikeCount(item.Id);
-				var countViewTask = await GetViewCount(item.Id);
 
 				shotViews.Add(new ShotView
 				{
@@ -216,7 +215,7 @@ namespace BE.src.api.repositories
 						Image = item.User?.ImageVideos?.FirstOrDefault()?.Url ?? ""
 					},
 					CountLike = countLikeTask,
-					CountView = countViewTask,
+					CountView = item.View,
 					Image = item.ImageVideos?.Where(i => i.IsMain).Select(i => i.Url).FirstOrDefault() ?? ""
 				});
 			}
