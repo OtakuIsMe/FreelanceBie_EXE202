@@ -67,7 +67,7 @@ namespace BE.src.api.services
 					CompanyLink = data.CompanyLink,
 					Payment = data.Payment,
 					Status = true,
-					CloseAt = new DateTime(2025, 4, 1)
+					CloseAt = new DateTime(2025, 4, 30)
 				};
 
 				var fileUrl = await Utils.GenerateAzureUrl(MediaTypeEnum.Image,
@@ -270,15 +270,17 @@ namespace BE.src.api.services
 			try
 			{
 				var posts = await _postRepo.GetListPost(item, page);
-				var postsCard = posts.Select(s => new PostCard
-				{
-					Id = s.Id,
-					CompanyLogo = s.CompanyLogo.Url,
-					CompanyName = s.CompanyName,
-					Title = s.Title,
-					WorkLocation = s.WorkLocation,
-					LastPosted = (DateTime.UtcNow - s.CreateAt).TotalSeconds
-				}).ToList();
+				var postsCard = posts.Select(s =>
+					new PostCard
+					{
+						Id = s.Id,
+						CompanyLogo = s.CompanyLogo.Url,
+						CompanyName = s.CompanyName,
+						Title = s.Title,
+						WorkLocation = s.WorkLocation,
+						LastPosted = (DateTime.UtcNow - s.CreateAt.ToUniversalTime()).TotalSeconds
+					}).ToList();
+
 				return SuccessResp.Ok(postsCard);
 			}
 			catch (System.Exception ex)

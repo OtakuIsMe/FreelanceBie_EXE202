@@ -23,10 +23,10 @@ const PaymentSuccess: React.FC = () => {
 	useEffect(() => {
 		if (transactionType === "membership") {
 			BuyMembership();
-		} else if (transactionType == "post") {
+		} else if (transactionType === "post") {
 			PostJob();
 		}
-	}, [])
+	}, [transactionType]);
 
 	const BuyMembership = async () => {
 		await ApiGateway.BuyMembership();

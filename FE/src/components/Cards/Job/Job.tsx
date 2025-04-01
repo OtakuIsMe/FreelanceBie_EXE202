@@ -17,6 +17,7 @@ const Job: React.FC<Job> = ({ img, company, title, location, timePosted, mini })
 		const hour = 60 * minute;
 		const day = 24 * hour;
 
+
 		if (seconds >= day) {
 			const days = Math.floor(seconds / day);
 			return `${days} day${days > 1 ? 's' : ''} ago`;

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import './PostJob.css'
 import { FaDollarSign } from 'react-icons/fa'
 import Header from '../../../components/Header/Header';
@@ -25,10 +25,15 @@ export interface postData {
 	payment: number;
 }
 
+interface statusObj {
+	status: boolean
+}
+
 const PostJob: React.FC = () => {
 	const [currentStep, setCurrentStep] = useState(1);
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
 	const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false)
+	const [isBuyMembership, setIsBuyMembership] = useState<boolean>(false)
 	const [data, setData] = useState<postData>(
 		{
 			title: '',
@@ -45,6 +50,15 @@ const PostJob: React.FC = () => {
 			payment: 0
 		}
 	)
+
+	useEffect(() => {
+		fetchCheckMembership()
+	}, [])
+
+	const fetchCheckMembership = async () => {
+		const data = await ApiGateway.CheckMembership<statusObj>();
+		setIsBuyMembership(data.status)
+	}
 	const handleFilesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const files = event.target.files;
 		if (files) {
@@ -146,41 +160,47 @@ const PostJob: React.FC = () => {
 	};
 
 	const UploadJob = async () => {
-		// Tách dữ liệu: Loại bỏ `companyLogo` và `files`
-		const { companyLogo, files, ...postDataWithoutFiles } = data;
+		if (isBuyMembership) {
+			const response = await ApiGateway.AddPostJob(data);
+			if (response) {
+				window.location.href = '/post/manage'
+			}
+		} else {
+			const { companyLogo, files, ...postDataWithoutFiles } = data;
 
-		// Lưu dữ liệu text vào localStorage
-		localStorage.setItem("pendingPostJob", JSON.stringify(postDataWithoutFiles));
+			// Lưu dữ liệu text vào localStorage
+			localStorage.setItem("pendingPostJob", JSON.stringify(postDataWithoutFiles));
 
-		// Lưu File vào sessionStorage dưới dạng Base64
-		if (companyLogo) {
-			const reader = new FileReader();
-			reader.onload = () => {
-				sessionStorage.setItem("pendingPostJob_companyLogo", reader.result as string);
-			};
-			reader.readAsDataURL(companyLogo);
-		}
-
-		if (files) {
-			files.forEach((file, index) => {
+			// Lưu File vào sessionStorage dưới dạng Base64
+			if (companyLogo) {
 				const reader = new FileReader();
 				reader.onload = () => {
-					sessionStorage.setItem(`pendingPostJob_files_${index}`, reader.result as string);
+					sessionStorage.setItem("pendingPostJob_companyLogo", reader.result as string);
 				};
-				reader.readAsDataURL(file);
-			});
+				reader.readAsDataURL(companyLogo);
+			}
+
+			if (files) {
+				files.forEach((file, index) => {
+					const reader = new FileReader();
+					reader.onload = () => {
+						sessionStorage.setItem(`pendingPostJob_files_${index}`, reader.result as string);
+					};
+					reader.readAsDataURL(file);
+				});
+			}
+
+			// Gọi API tạo payment URL
+			const url = await ApiGateway.PaymentUrl(
+				Utils.generateRandomCode(),
+				Utils.convertUsdToVnd(1),
+				"Add post",
+				"post"
+			);
+
+			// Chuyển hướng đến trang thanh toán
+			window.location.href = url;
 		}
-
-		// Gọi API tạo payment URL
-		const url = await ApiGateway.PaymentUrl(
-			Utils.generateRandomCode(),
-			Utils.convertUsdToVnd(1),
-			"Add post",
-			"post"
-		);
-
-		// Chuyển hướng đến trang thanh toán
-		window.location.href = url;
 	};
 
 	return (
