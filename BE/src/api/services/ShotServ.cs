@@ -190,6 +190,13 @@ namespace BE.src.api.services
 		{
 			try
 			{
+				var cacheKey = $"shot_detail:{shotCode}";
+				var cachedData = await _cacheService.Get<ShotDetail>(cacheKey);
+				if (cachedData != null)
+				{
+					return SuccessResp.Ok(cachedData);
+				}
+
 				var shot = await _shotRepo.GetShotByShotCode(shotCode);
 				if (shot == null)
 				{
@@ -199,7 +206,7 @@ namespace BE.src.api.services
 				{
 					throw new ApplicationException("Owner is not set up profile");
 				}
-				var shotDetail = new ShotDetail
+				ShotDetail shotDetail = new ShotDetail
 				{
 					Title = shot.Title,
 					Html = shot.Html,
@@ -220,6 +227,9 @@ namespace BE.src.api.services
 						IsSaved = await _shotRepo.IsSaved(userId.Value, shot.Id)
 					};
 				}
+
+				await _cacheService.Set<ShotDetail>(cacheKey, shotDetail, TimeSpan.FromMinutes(10));
+
 				return SuccessResp.Ok(shotDetail);
 			}
 			catch (System.Exception ex)
@@ -258,6 +268,12 @@ namespace BE.src.api.services
 		{
 			try
 			{
+				var cacheKey = $"other_shots:{shotId}";
+				var cachedData = await _cacheService.Get<List<Shot>>(cacheKey);
+				if (cachedData != null)
+				{
+					return SuccessResp.Ok(cachedData);
+				}
 				Shot? shot = await _shotRepo.GetShotById(shotId);
 				if (shot == null)
 				{
@@ -266,6 +282,7 @@ namespace BE.src.api.services
 				List<Shot> shotOwner = await _shotRepo.GetShotsByUser(shot.UserId);
 				shotOwner = shotOwner.Where(s => s.Id != shot.Id).ToList();
 				var otherShots = shotOwner.Take(4).ToList();
+				await _cacheService.Set<List<Shot>>(cacheKey, otherShots, TimeSpan.FromMinutes(10));
 				return SuccessResp.Ok(otherShots);
 			}
 			catch (System.Exception ex)
@@ -302,7 +319,15 @@ namespace BE.src.api.services
 		{
 			try
 			{
-				return SuccessResp.Ok(await _shotRepo.ListShotView(page, count));
+				var cacheKey = $"shot_view:{page}_{count}";
+				var cachedData = await _cacheService.Get<List<ShotView>>(cacheKey);
+				if (cachedData != null)
+				{
+					return SuccessResp.Ok(cachedData);
+				}
+				var result = await _shotRepo.ListShotView(page, count);
+				await _cacheService.Set<List<ShotView>>(cacheKey, result, TimeSpan.FromMinutes(10));
+				return SuccessResp.Ok(result);
 			}
 			catch (System.Exception ex)
 			{

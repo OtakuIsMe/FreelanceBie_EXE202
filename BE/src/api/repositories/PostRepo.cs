@@ -161,7 +161,7 @@ namespace BE.src.api.repositories
 		public async Task<List<PostJob>> GetListPost(int item, int page)
 		{
 			return await _context.PostJobs
-							.OrderBy(s => s.CreateAt)
+							.OrderByDescending(s => s.CreateAt)
 							.Skip((page - 1) * item)
 							.Take(item)
 							.Include(p => p.CompanyLogo)
