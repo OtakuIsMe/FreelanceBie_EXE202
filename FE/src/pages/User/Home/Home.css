@@ -36,9 +36,10 @@
 }
 
 #home>.page-content .explore {
-	justify-content: center;
 	align-items: center;
 	position: relative;
+	height: fit-content;
+	padding: 60px 0;
 }
 
 #home>.page-content .banner::before {
