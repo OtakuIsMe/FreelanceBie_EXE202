@@ -23,11 +23,7 @@ interface designProps {
 interface otherDesignProps {
 	id: string;
 	title: string;
-	imageVideos: [
-		{
-			url: string
-		}
-	]
+	image: string;
 }
 
 interface GetInTouchRp {
@@ -147,7 +143,7 @@ const ShotDetail = () => {
 							return (
 								<div className="other-design" key={index} onClick={() => { navigate(`/shot/${otherDesign.id}`) }}>
 									<div className='image-info'>
-										<img src={otherDesign.imageVideos[0].url} alt="" className="background" />
+										<img src={otherDesign.image} alt="" className="background" />
 										<div className="info-container">
 											<div className="info-border">
 												<div className="text">

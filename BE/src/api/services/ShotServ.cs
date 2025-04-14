@@ -269,7 +269,7 @@ namespace BE.src.api.services
 			try
 			{
 				var cacheKey = $"other_shots:{shotId}";
-				var cachedData = await _cacheService.Get<List<Shot>>(cacheKey);
+				var cachedData = await _cacheService.Get<List<OtherShot>>(cacheKey);
 				if (cachedData != null)
 				{
 					return SuccessResp.Ok(cachedData);
@@ -282,8 +282,14 @@ namespace BE.src.api.services
 				List<Shot> shotOwner = await _shotRepo.GetShotsByUser(shot.UserId);
 				shotOwner = shotOwner.Where(s => s.Id != shot.Id).ToList();
 				var otherShots = shotOwner.Take(4).ToList();
-				await _cacheService.Set<List<Shot>>(cacheKey, otherShots, TimeSpan.FromMinutes(10));
-				return SuccessResp.Ok(otherShots);
+				var otherShotDTO = otherShots.Select(x => new OtherShot
+				{
+					Id = x.Id,
+					Title = x.Title,
+					Image = x.ImageVideos.FirstOrDefault()?.Url
+				}).ToList();
+				await _cacheService.Set(cacheKey, otherShotDTO, TimeSpan.FromMinutes(10));
+				return SuccessResp.Ok(otherShotDTO);
 			}
 			catch (System.Exception ex)
 			{
